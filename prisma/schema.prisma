@@ -1,0 +1,315 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource postgres {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String?   @unique
+  SDT       String?   @unique
+  password  String
+  provider  String?  // "google", "facebook", "zalo"
+  providerId String? @unique
+  profile   Profile?
+  roles     UserRole[]
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id          String         @id @default(uuid())
+  name        String         @unique
+  permissions RolePermission[]
+  users       UserRole[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model UserRole {
+  id      String @id @default(uuid())
+  userId  String
+  roleId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role    Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+}
+
+
+model Permission {
+  id          String         @id @default(uuid())
+  name        String         @unique
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+}
+
+model Menu {
+  id        String   @id @default(uuid())
+  title     String
+  icon      String?  // Optional icon for menu
+  slug      String?  // URL of the menu item
+  parentId  String?  // Reference to parent menu (null if root)
+  parent    Menu?    @relation("MenuChildren", fields: [parentId], references: [id])
+  children  Menu[]   @relation("MenuChildren")
+  order     Int?      // For sorting menus
+  isActive  Boolean  @default(false) // Enable/Disable menu
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Profile {
+  id     String  @id @default(uuid())
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id])
+  name   String
+  avatar String?
+  bio    String?
+}
+
+model Banggia {
+  id        String   @id @default(uuid())
+  title     String
+  type      String
+  batdau    DateTime?
+  ketthuc   DateTime?
+  order     Int?     @default(1)
+  ghichu   String?
+  status   String?
+  isActive Boolean    @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sanpham   Banggiasanpham[]
+  khachhang Khachhang[] @relation("Banggiakhachhang")
+}
+model Khachhang {
+  id           String   @id @default(uuid())
+  name         String?
+  namenn       String?
+  makh         String   @unique
+  diachi       String?
+  sdt          String?
+  mst          String?
+  gionhanhang  String?
+  quan         String?
+  email        String? 
+  phone        String?
+  address      String?
+  loaikh       String?
+  ghichu       String?
+  hiengia     Boolean  @default(false)
+  isActive     Boolean  @default(false)
+  banggia      Banggia[] @relation("Banggiakhachhang")
+  donhang      Donhang[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  nhomkhachhang Nhomkhachhang[] @relation("KhachhangNhom")
+}
+model Nhomkhachhang {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  khachhang   Khachhang[]  @relation("KhachhangNhom")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Donhangsanpham {
+  id        String   @id @default(uuid())
+  idSP      String
+  sldat     Float?
+  slgiao    Float?
+  slnhan    Float?
+  ttdat     Float?
+  ttgiao    Float?
+  ttnhan    Float?
+  ghichu    String?
+  sanpham   Sanpham  @relation(fields: [idSP], references: [id])
+  donhang   Donhang  @relation(fields: [donhangId], references: [id],onDelete: Cascade)
+  donhangId String
+  order     Int?
+  isActive  Boolean?  @default(false)
+}
+
+enum StatusDonhang {
+  dadat     // Đã xác nhận
+  dagiao       // Đã giao hàng
+  danhan     // Đã nhận hàng
+  huy     // Đã hủy
+}
+model Donhang {
+  id          String  @id @default(uuid())
+  title       String
+  type        String?
+  madonhang   String  @unique
+  ngaygiao    DateTime?
+  ghichu      String?
+  status      StatusDonhang @default(dadat) // Dùng Enum
+  khachhangId String
+  khachhang   Khachhang @relation(fields: [khachhangId], references: [id])
+  sanpham     Donhangsanpham[]
+  order       Int?
+  isActive    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Banggiasanpham {
+  id        String   @id @default(uuid())
+  giaban    Float     @default(0)
+  sanphamId String
+  banggiaId String
+  sanpham   Sanpham  @relation(fields: [sanphamId], references: [id])
+  banggia   Banggia  @relation(fields: [banggiaId], references: [id])
+  order     Int?
+  isActive  Boolean  @default(false)
+}
+
+
+model Nhacungcap {
+  id       String     @id @default(uuid())
+  name     String?
+  mancc    String     @unique
+  diachi   String?
+  email    String?  
+  sdt      String?
+  ghichu   String?
+  isActive Boolean    @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  dathang  Dathang[]  // 1 nhà cung cấp có nhiều đơn đặt hàng
+}
+
+model Dathang {
+  id          String  @id @default(uuid())
+  title       String?
+  type        String?
+  madncc      String?     @unique
+  ngaynhan    DateTime?
+  ghichu      String?
+  nhacungcapId String
+  nhacungcap   Nhacungcap @relation(fields: [nhacungcapId], references: [id])
+  order       Int?
+  isActive    Boolean  @default(false)
+  sanpham     Dathangsanpham[]
+}
+
+model Dathangsanpham {
+  id        String   @id @default(uuid())
+  idSP      String
+  sldat     Float?
+  slgiao    Float?
+  slnhan    Float?
+  ttdat     Float?
+  ttgiao    Float?
+  ttnhan    Float?
+  ghichu    String?
+  sanpham   Sanpham  @relation(fields: [idSP], references: [id])
+  dathang   Dathang  @relation(fields: [dathangId], references: [id],onDelete: Cascade)
+  dathangId String
+  order     Int?
+  isActive  Boolean  @default(false)
+}
+
+model Congty {
+  id        String @id @default(uuid())
+  name      String
+  diachi    String?
+  email     String?
+  sdt       String?
+  isActive  Boolean @default(true)
+  kho       Kho[] // 1 Công ty có nhiều Kho
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Kho {
+  id        String @id @default(uuid())
+  name      String
+  makho     String?
+  diachi    String?
+  sdt       String?
+  ghichu    String?
+  congtyId  String?
+  congty    Congty? @relation(fields: [congtyId], references: [id])
+  sanphamKho SanphamKho[]
+  phieukho  PhieuKho[]
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model SanphamKho {
+  id        String @id @default(uuid())
+  khoId     String
+  sanphamId String
+  soluong   Float @default(0)
+  ghichu    String?
+  kho       Kho @relation(fields: [khoId], references: [id])
+  sanpham   Sanpham @relation(fields: [sanphamId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PhieuKho {
+  id        String @id @default(uuid())
+  maphieu   String
+  ngay      DateTime
+  type      String // "nhap" | "xuat"
+  khoId     String
+  kho       Kho @relation(fields: [khoId], references: [id])
+  ghichu    String?
+  isActive  Boolean @default(true)
+  sanpham   PhieuKhoSanpham[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PhieuKhoSanpham {
+  id        String @id @default(uuid())
+  phieuKhoId String
+  sanphamId  String
+  sldat     Float @default(0)
+  soluong   Float @default(0)
+  ghichu    String?
+  sanpham    Sanpham @relation(fields: [sanphamId], references: [id])
+  phieuKho   PhieuKho @relation(fields: [phieuKhoId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+model Sanpham {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String?   @unique
+  masp      String   @unique
+  giagoc    Float @default(0)
+  dvt       String?
+  hinhanh   String?
+  soluong   Float @default(0)
+  soluongkho Float @default(0)
+  haohut    Float @default(0)
+  ghichu    String?
+  order     Int? @default(1)
+  isActive  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  banggia   Banggiasanpham[]
+  Donhangsanpham Donhangsanpham[]
+  Dathangsanpham Dathangsanpham[]
+  SanphamKho SanphamKho[]
+  PhieuKhoSanpham PhieuKhoSanpham[]
+}
