@@ -1,7 +1,12 @@
+git add .
+git commit -m "update"
+git push
+
+
 npx bun add @nestjs/config @nestjs/jwt @nestjs/passport passport passport-jwt bcryptjs
 npx bun add @prisma/client
 npx bun add -d prisma
-npx bun prisma migrate dev --name rau2.2.5
+npx bun prisma migrate dev --name tazagroup2.2.5
 npx prisma db push
 npx bun prisma generate
 npx ts-node prisma/exportData.ts
