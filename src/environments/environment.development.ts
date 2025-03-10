@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  APIURL: 'http://localhost:3331',
-  ImageURL: 'http://localhost:4301',
+  APIURL: 'http://localhost:3332',
+  ImageURL: 'http://localhost:4302',
   app_id: '1416835846626859002',
   secret_key: 'HLBWj23hToA9fuiQvQY4',
   zalo_redirect_uri: 'https://zalo.tazaskinclinic.com/admin/zalotoken',
