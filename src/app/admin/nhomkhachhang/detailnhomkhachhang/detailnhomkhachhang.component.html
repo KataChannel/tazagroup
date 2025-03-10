@@ -1,0 +1,75 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailNhomkhachhang()?.name || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailNhomkhachhang().isActive" [disabled]="!isEdit()">{{DetailNhomkhachhang().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleNhomkhachhangAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Nhomkhachhang -->
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+      <div class="w-full flex flex-col space-y-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Nhóm Khách hàng</mat-label>
+          <input matInput [(ngModel)]="DetailNhomkhachhang().name" (input)="FillSlug()" [disabled]="!isEdit()" placeholder="Vui lòng nhập Nhóm Khách hàng"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Mô Tả</mat-label>
+          <input matInput [(ngModel)]="DetailNhomkhachhang().description" (input)="FillSlug()" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mô Tả"/>
+        </mat-form-field>
+        <div>
+        <span class="lg:flex hidden whitespace-nowrap p-2 rounded-lg bg-slate-200" [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger">
+          {{CheckListKhachhang.length}} Khách Hàng
+        </span>
+           <mat-menu  #menu="matMenu">
+               <div (click)="$event.stopPropagation()"  class="cursor-pointer flex flex-col space-y-4 p-3">                                        
+               <div class="relative w-full">
+                   <input type="text"
+                       placeholder="Tìm Kiếm..." (keyup)="doFilterKhachhang($event)"
+                       class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                       <span class="material-symbols-outlined text-gray-500">search</span>
+                   </div>
+               </div>
+               <div class="w-full flex flex-col space-y-2 max-h-44 overflow-auto">
+                       <div *ngFor="let item of ListKhachhang; trackBy:trackByFn" (click)="ChosenKhachhang(item)" class="flex flex-row space-x-2 items-center p-2 rounded-lg hover:bg-slate-100">
+                          <span *ngIf="CheckKhachhang(item)" class="material-symbols-outlined text-blue-600">check</span>                        
+                          {{item.name}}
+                       </div>
+               </div>
+               <div class="flex flex-row space-x-2 items-end justify-end">
+                   <button mat-flat-button color="warn" (click)="menuTrigger.closeMenu()">Đóng</button>
+                   <button mat-flat-button color="primary" (click)="ApplyKhachhang(menuTrigger)">Áp Dụng</button>
+               </div>
+               </div>
+           </mat-menu>
+          </div>
+      </div>
+     </ng-container>
+
+  </ng-container>
+</div>

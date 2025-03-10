@@ -1,0 +1,273 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div
+       [contentEditable]="true"
+       (blur)="updateValue($event,null,DetailDonhang(), 'title','string')"
+       class="p-2 min-w-28 font-bold focus:border focus:rounded-lg focus:border-blue-600 focus:bg-slate-100 focus:outline-none"
+     >
+     {{ DetailDonhang()?.madonhang || 'Không có dữ liệu' }}
+  </div>
+  <div class="flex flex-row space-x-2 items-center">
+    <button mat-flat-button color="primary" [disabled]="DetailDonhang().status=='danhan'" (click)="DoneDonhang()"> Đã Nhận</button>
+    <button mat-icon-button color="primary" [disabled]="DetailDonhang().status=='danhan'" (click)="CoppyDon()">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="printContent()">
+      <mat-icon>print</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleDonhangAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" [disabled]="DetailDonhang().status=='danhan'" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" [disabled]="DetailDonhang().status=='danhan'" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+    <ng-container *ngIf="isDelete()">
+      <div class="flex flex-col space-y-4 items-center justify-center">
+        <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+        <div class="flex flex-row space-x-2 items-center justify-center">
+          <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+          <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isDelete()">
+  <div id="printContent" class="min-w-[800px] flex flex-col space-y-6 items-center p-2 border rounded-lg">
+    <div class="w-full flex flex-col space-y-4 items-center justify-center"> 
+        <div *ngIf="!isEdit()" class="w-full flex flex-row space-x-2 items-center justify-between">
+          <img src="/images/logo-full.png" class="h-20 mx-auto">
+          <div class="w-2/3 flex flex-col space-y-2">
+            <div class="font-bold text-[18px]">CÔNG TY TNHH NÔNG SẢN THỰC PHẨM TRẦN GIA</div>
+            <div>Hợp tác xã: Ấp Lộc Tiến, Xã Mỹ Lộc, Huyện Cần Giuộc, Tỉnh Long An</div>
+            <div>Văn phòng: Tòa nhà An Phú Plaza, 117-119 Lý Chính Thắng, P.7, Q.3, TP.HCM</div>
+            <div>Kho sơ chế: 30 Kha Vạn Cân, P. Hiệp Bình Chánh, TP. Thủ Đức, TP.HCM</div>
+            <div>Website: http://rausachtrangia.com - Hotline: 090.245.8081</div>
+          </div>
+        </div>
+        <div class="font-bold text-[18px] uppercase">Bảng Sao Kê Hàng Ngày</div>
+      <div class="font-bold text-[18px] uppercase {{DetailDonhang()?.khachhangId?'':'text-red-700 italic'}}">{{getName(DetailDonhang()?.khachhangId)?.name||"Chưa Chọn Khách Hàng"}}</div>
+      <div *ngIf="isEdit() && DetailDonhang()?.khachhang?.ghichu" class="p-2 rounded-lg border text-red-600" [innerHTML]="DetailDonhang().khachhang.ghichu"></div>
+      <!-- <div *ngIf="isEdit()" class="grid lg:grid-cols-3 grid-cols-1 gap-4">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Khách Hàng</mat-label>
+          <mat-select [(ngModel)]="DetailDonhang().khachhangId" [ngModelOptions]="{ standalone: true }"
+            (selectionChange)="SelectKhachhang($event)">
+            <div class="w-full flex flex-col">
+              <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                <input matInput (input)="DoFindKhachhang($event)" placeholder="Tìm Kiếm" />
+              </mat-form-field>
+              <div class="overflow-y-auto max-h-44">
+                @for (item of filterKhachhang; track item.id) {
+                <mat-option [value]="item.id">{{item.name}}</mat-option>
+                }
+              </div>
+            </div>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Bảng Giá</mat-label>
+          <mat-select [(ngModel)]="DetailDonhang().banggiaId" [ngModelOptions]="{ standalone: true }"
+            (selectionChange)="SelectBanggia($event)">
+            <div class="w-full flex flex-col">
+              <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                <input matInput (input)="DoFindBanggia($event)" placeholder="Tìm Kiếm" />
+              </mat-form-field>
+              <div class="overflow-y-auto max-h-44">
+                @for (item of filterBanggia; track item.id) {
+                <mat-option [value]="item.id">{{item.title}}</mat-option>
+                }
+              </div>
+            </div>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field [appearance]="'outline'" [subscriptSizing]="'dynamic'">
+          <mat-label>Ngày Giao Hàng</mat-label>
+          <input matInput [matDatepicker]="datepicker" [(ngModel)]="DetailDonhang().ngaygiao" [ngModelOptions]="{ standalone: true }" />
+          <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+          <mat-datepicker #datepicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full lg:col-span-3" subscriptSizing="dynamic">
+          <mat-label>Ghi Chú Đơn Hàng</mat-label>  
+          <textarea matInput [(ngModel)]="DetailDonhang().ghichu" [ngModelOptions]="{ standalone: true }" placeholder="Vui lòng Nhập Ghi Chú"></textarea>   
+       </mat-form-field>
+      </div> -->
+
+      <div class="w-full flex items-start"><strong>Địa Chỉ : </strong> {{DetailDonhang()?.khachhang?.diachi}}</div>
+      <div class="w-full flex items-start"><strong>Ghi Chú : </strong> {{DetailDonhang()?.ghichu}}</div> 
+      <div class="w-full flex items-start"><strong>Số Điện Thoại : </strong> {{DetailDonhang()?.khachhang?.sdt}}</div>
+      <div class="w-full flex items-start"><strong>Tổng khối lượng nhận  : {{TinhTong(DetailDonhang().sanpham,'slnhan')|number:'1.0-2'}}</strong> </div>
+     
+      <div *ngIf="isEdit()" class="w-full flex flex-col overflow-y-auto">
+        @defer () {
+          <!-- <div class="cursor-pointer w-full relative flex lg:flex-row lg:space-y-2 space-y-0 flex-col space-x-2 justify-between items-center p-2 bg-white rounded-lg">
+            <div class="flex flex-row space-x-2 items-center">
+                <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Sản Phẩm</mat-label>
+                  <mat-select (selectionChange)="SelectSanpham($event)">
+                    <div class="w-full flex flex-col">
+                      <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                        <input matInput (input)="DoFindSanpham($event)" placeholder="Tìm Kiếm" />
+                      </mat-form-field>
+                      <div class="overflow-y-auto max-h-44">
+                        @for (item of filterSanpham; track item.id) {
+                        <mat-option [value]="item.id">{{item.title}}</mat-option>
+                        }
+                        @empty {
+                        <mat-option disabled>Không có dữ liệu</mat-option>
+                        }
+                      </div>
+                    </div>
+                  </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                    <mat-label>Tìm Kiếm</mat-label>
+                    <input matInput (keyup)="applyFilter($event)" placeholder="Tìm Kiếm" />
+                </mat-form-field>
+                <button [disabled]="!isEdit()" matTooltip="Tải dữ liệu từ drive" (click)="LoadDrive()" color="primary" mat-icon-button>
+                  <mat-icon>cloud_download</mat-icon>
+              </button>
+                   <button [disabled]="!isEdit()" matTooltip="Làm Trống Giỏ Hàng" (click)="EmptyCart()" color="warn" mat-icon-button>
+                     <mat-icon>delete</mat-icon>
+                 </button>
+
+            </div>
+        </div> -->
+          <div class="w-full overflow-auto">
+            <table class="!border w-full cursor-pointer" mat-table [dataSource]="dataSource()" matSort>
+                @for (column of displayedColumns; track column) {
+                <ng-container [matColumnDef]="column">
+                    <th class="whitespace-nowrap" mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <span class="line-clamp-4 me-4">
+                            {{ ColumnName[column] }}
+                        </span>
+                    </th>
+                    <td mat-cell *matCellDef="let row; let idx = index">
+                        @switch (column) {
+                          @case ('STT') {
+                            <span class="max-w-20 line-clamp-4 flex flex-row items-center">
+                               <span>{{ idx + 1 }} </span>
+                                <button mat-icon-button color="warn" (click)="RemoveSanpham(row)"><mat-icon>delete</mat-icon></button>
+                            </span>
+                            }
+                        @case ('slnhan') {
+                        <div
+                          [contentEditable]="true"
+                          (blur)="updateValue($event,idx, row, 'slnhan','number')"
+                          (keydown.enter)="updateValue($event,idx, row, 'slnhan','number')"
+                          class="p-2 min-w-28 text-end bg-slate-200 focus:border rounded-lg focus:border-blue-600 focus:bg-slate-100 focus:outline-none"
+                        >
+                        {{ row[column]||0|number:'1.0-2' }}
+                         </div>
+                         <!-- <div>(SL:{{row.soluong}})-(SLkho:{{row.soluongkho}})-(Hao hụt:{{row.haohut}}%)(Gợi ý: {{GetGoiy(row)}})</div> -->
+                        }
+                        @case ('slgiao') {
+                      <div class="text-end">{{ row[column]||0|number:'1.0-2' }}</div>
+                        }
+                        @case ('sldat') {
+                          <div class="text-end">{{ row[column]||0|number:'1.0-2' }}</div>
+                        }
+                        @case ('giaban') {
+                          <div class="text-end">{{ row[column]||0|number:'1.0-2' }}</div>
+                        }
+                        @case ('ttnhan') {
+                          <div class="text-end">{{ row[column]||0|number:'1.0-2' }}</div>
+                        }
+                        @case ('ghichu') {
+                      <div
+                          [contentEditable]="true"
+                          (blur)="updateValue($event,idx, row, 'ghichu','string')"
+                          class="p-2 min-w-28 bg-slate-200 focus:border rounded-lg focus:border-blue-600 focus:bg-slate-100 focus:outline-none"
+                        >
+                        {{ row[column]||'' }}
+                         </div>
+                        }
+                        @default {
+                        <span class="max-w-40 line-clamp-4">
+                            {{ row[column] }}
+                        </span>
+                        }
+                        }
+                    </td>
+                </ng-container>
+                }
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell p-4" colspan="4">Không tìm thấy</td>
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100,dataSource().data.length]" [pageSize]="dataSource().data.length"></mat-paginator>
+        </div>
+        }
+      </div>   
+     
+      <table *ngIf="!isEdit()" class="w-full border-collapse border mt-4">
+        <thead>
+          <tr class="border">
+            <th class="border p-2">STT</th>
+            <th class="border p-2">Tên sản phẩm</th>
+            <th class="border p-2">ĐVT</th>
+            <th class="border p-2 max-w-10">SL Đặt</th>
+            <th class="border p-2 max-w-10">SL Giao</th>
+            <th class="border p-2 max-w-10">SL Nhận</th>
+            <th class="border p-2 max-w-10">Giá Bán</th>
+            <th class="border p-2 max-w-10">TT Nhận</th>
+            <th class="border p-2">Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of DetailDonhang().sanpham; track item.id; let idx = $index) {
+            <tr class="border">
+              <td class="border p-2 text-center">{{idx+1}}</td>
+              <td class="border p-2">{{item.title}}</td>
+              <td class="border p-2 text-center">{{item.dvt}}</td>
+              <td class="border p-2 text-end max-w-10">{{item.sldat|number:'1.0-2'}}</td>
+              <td class="border p-2 text-end max-w-">{{item.slgiao|number:'1.0-2'}}</td>
+              <td class="border p-2 text-end max-w-10">{{item.slnhan|number:'1.0-2'}}</td>
+              <td class="border p-2 text-end max-w-10">{{item.giaban|number:'1.0-2'}}</td>
+              <td class="border p-2 text-end max-w-10">{{item.ttnhan|number:'1.0-2'}}</td>
+              <td class="border p-2">{{item.ghichu}}</td>
+            </tr>
+          }
+          <tr class="border">
+            <td colspan="3" class="border p-2 text-start">Tổng:</td>
+            <td class="border p-2 text-end font-bold">{{TinhTong(DetailDonhang().sanpham,'sldat')|number:'1.0-2'}}</td>
+            <td class="border p-2 text-end font-bold">{{TinhTong(DetailDonhang().sanpham,'slgiao')|number:'1.0-2'}}</td>
+            <td class="border p-2 text-end font-bold">{{TinhTong(DetailDonhang().sanpham,'slnhan')|number:'1.0-2'}}</td>
+            <td class="border p-2 text-end font-bold"></td>
+            <td class="border p-2 text-end font-bold">{{TinhTong(DetailDonhang().sanpham,'ttnhan')|number:'1.0-2'}}</td>
+            <td class="border p-2 text-end"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="w-full text-end font-bold p-2">Ngày In:</div>
+      <div class="w-full flex justify-between items-center text-center mt-6 p-2">
+        <p><strong>Người vận chuyển</strong></p>
+        <p><strong>Người nhận hàng</strong></p>
+        <p><strong>Thủ kho</strong></p>
+        <p><strong>Người lập</strong></p>
+      </div>
+      <!-- <div class="w-full flex justify-between items-center text-center !mt-20 p-2">
+        <p><strong>Nguyễn Văn A</strong></p>
+        <p><strong>Nguyễn Thị B</strong></p>
+        <p><strong>Lê Văn C</strong></p>
+        <p><strong>Ngô Thị D</strong></p>
+      </div> -->
+  
+    </div>
+  </div>
+    </ng-container> 
+</div>

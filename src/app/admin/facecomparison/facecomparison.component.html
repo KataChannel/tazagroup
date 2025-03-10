@@ -1,0 +1,22 @@
+<div class="w-screen h-screen flex justify-center p-8">
+    <div class="container flex flex-col space-y-2 items-center">
+    <div class="flex flex-row space-x-4">
+        <div class="flex flex-col space-y-2 items-center justify-center">
+              <button mat-raised-button (click)="image1.click()">Tải Hình 1</button>
+              <input #image1 hidden type="file" (change)="onImageUpload1($event)" />
+            <img class="min-w-32 max-h-64 p-2 rounded-lg border" #image1>
+        </div>
+        @if (isShowImage2) {
+            <div class="flex flex-col space-y-2 items-center justify-center">
+                <button mat-raised-button (click)="image2.click()">Tải Hình 2</button>
+                <input #image2 hidden type="file" (change)="onImageUpload2($event)" />
+                <img class="min-w-32 max-h-64 p-2 rounded-lg border" src="">
+            </div>
+        }
+     </div>
+        <div class="col-span-2 flex flex-col space-y-2 items-center justify-center">
+            <button mat-flat-button color="primary" (click)="compareFaces()">So Sánh</button>
+            <span class="text-red-500 text-xl">{{comparisonResult}}</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="relative flex flex-col w-full h-screen-16">
+  <div class="relative flex flex-row justify-between items-center space-x-2 p-2">
+    <button mat-icon-button color="primary" (click)="_ListbaivietComponent.drawer.close()">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="font-bold">{{Detail?.Hoten||'Không có dữ liệu'}}</div>
+    <div class="flex flex-row space-x-2 items-center">
+      @if(isEdit==true){
+        <button mat-icon-button color="primary" (click)="SaveData()">
+            <mat-icon>save</mat-icon>
+        </button>
+      }
+      @else{
+        <button mat-icon-button color="primary" (click)="isEdit=true">
+            <mat-icon>edit</mat-icon>
+  
+        </button>
+      }
+        <button mat-icon-button color="warn" (click)="isDelete=true">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+  </div>
+  <div class="relative flex flex-col w-full p-4 overflow-auto">
+    @if(isDelete==true){
+      <div>Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 mt-4 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="isDelete=false">
+          Đồng Ý
+        </button>
+        <button mat-flat-button color="warn" (click)="isDelete=false">
+          Huỷ Bỏ
+        </button>
+      </div>
+    }
+    @else {
+      @for (item of Detail?.Forms; track item.id; let idx = $index) {
+        @if(isEdit)
+        {      
+          @switch (item.Type) {
+            @case ('editor') {
+              <div class="flex flex-col w-full space-y-2 p-2">
+                <span class="font-bold">{{item.Title}}</span>
+                <app-ckeditor class="border border-dashed border-blue-500 rounded-lg" [Detail]="Detail?.Data[item.value]"></app-ckeditor>
+              </div>
+            }
+            @default {
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>{{item.Title}}</mat-label>
+                <input matInput [(ngModel)]="Detail?.Data[item.value]" [disabled]="!isEdit" [ngModelOptions]="{standalone: true}" [placeholder]="item.Title">
+              </mat-form-field>
+            }
+          }
+        }
+        @else {
+          @switch (item.Type) {
+            @case ('editor') {
+              <div class="flex flex-col w-full space-y-2 p-2">
+                <span class="font-bold">{{item.Title}}</span>
+                <div class="p-2" [innerHTML]="Detail?.Data[item.value]||'Chưa có nội dung'"></div>
+              </div>
+            }
+            @default {
+              <div class="flex flex-col w-full space-y-2 p-2">
+                <span class="font-bold">{{item.Title}}</span>
+                <div class="p-2">{{Detail?.Data[item.value]||'Chưa có nội dung'}}</div>
+              </div>
+            }
+          }
+        }
+      }
+      @empty {
+        <span class="p-2 text-center">There are no items.</span>
+       }
+    }
+  </div>
+</div>

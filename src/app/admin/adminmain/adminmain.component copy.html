@@ -1,0 +1,194 @@
+<mat-drawer-container class="!w-screen !h-screen" autosize>
+  <mat-drawer #drawer class="" mode="side" opened="true" position="start">
+    <div class="relative h-full flex flex-col space-y-2">
+      <div class="relative flex flex-col space-y-2 p-2">
+        <img [src]="Config.Logoimage" class="max-h-10 object-cover" alt="Logo">
+      </div>
+      <div class="relative h-full flex flex-col space-y-2 overflow-auto p-2">
+        <mat-tree class="cursor-pointer" [dataSource]="dataSource" [treeControl]="treeControl">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <a [routerLink]="[node.node.Slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button disabled></button>
+              <span>{{node.node.name}}</span>
+            </a>
+          </mat-tree-node>
+          <mat-tree-node class="flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+            routerLinkActive="bg-slate-300" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding
+            matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
+            <a [routerLink]="[node.node.Slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              <span [routerLink]="[node.node.Slug]"> {{node.node.name}} </span>
+            </a>
+          </mat-tree-node>
+        </mat-tree>
+      </div>
+      <div class="relative w-full justify-between flex flex-row space-x-2 items-center p-2">
+        <div class="flex flex-row space-x-2">
+          <img [src]="User.Avatar" alt="Avatar" class="max-w-14 max-h-14 object-cover rounded-full">
+          <div class="flex flex-col">
+            <div class="font-bold">{{User.Hoten}}</div>
+            <div class="italic text-xs">{{User.Vitri}}</div>
+          </div>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Profile</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-drawer>
+
+  <div class="relative flex flex-col w-full h-full">
+    <div class="relative flex flex-row space-x-2 justify-between items-center p-2 bg-gray-100">
+      <div class="flex flex-row space-x-2 items-center">
+        <button mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="relative max-w-xl flex flex-row items-center">
+          <input type="text" placeholder="Tìm Kiếm..."
+            class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <span class="material-symbols-outlined text-gray-500">search</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-row space-x-2 items-center">
+        <button mat-icon-button>
+          <mat-icon class="!text-white">dashboard</mat-icon>
+        </button>
+        <button mat-icon-button (click)="drawer1.toggle()">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button mat-icon-button (click)="drawer1.toggle()">
+          <mat-icon>chat</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="menu1">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #menu1="matMenu">
+          <mat-tab-group (click)="$event.stopPropagation()">
+            <mat-tab label="Profile">
+              <mat-list>
+                <div mat-subheader>Folders</div>
+                @for (folder of folders; track folder) {
+                <mat-list-item>
+                  <mat-icon matListItemIcon>folder</mat-icon>
+                  <div matListItemTitle>{{folder.name}}</div>
+                  <div matListItemLine>{{folder.updated | date}}</div>
+                </mat-list-item>
+                }
+                <mat-divider></mat-divider>
+                <div mat-subheader>Notes</div>
+                @for (note of notes; track note) {
+                <mat-list-item>
+                  <mat-icon matListItemIcon>note</mat-icon>
+                  <div matListItemTitle>{{note.name}}</div>
+                  <div matListItemLine>{{note.updated | date}}</div>
+                </mat-list-item>
+                }
+              </mat-list>
+
+            </mat-tab>
+            <mat-tab label="Settings">
+              <mat-list>
+                <div mat-subheader>Notes</div>
+                @for (note of notes; track note) {
+                <mat-list-item>
+                  <mat-icon matListItemIcon>note</mat-icon>
+                  <div matListItemTitle>{{note.name}}</div>
+                  <div matListItemLine>{{note.updated | date}}</div>
+                </mat-list-item>
+                }
+              </mat-list>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-menu>
+
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+
+
+  <mat-drawer #drawer1 class="!w-[300px]" mode="over" position="end">
+    <div class="relative w-[300px] h-full flex flex-col space-y-2">
+
+      <div class="relative flex flex-col space-y-2 p-2">
+        <img [src]="Config.Logoimage" class="max-h-10 object-cover" alt="Logo">
+      </div>
+      <div class="relative h-full flex flex-col space-y-2 overflow-auto p-2">
+        <mat-tree class="cursor-pointer" [dataSource]="dataSource" [treeControl]="treeControl">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <a [routerLink]="[node.node.Slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button disabled></button>
+              <span>{{node.node.name}}</span>
+            </a>
+          </mat-tree-node>
+          <mat-tree-node class="flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+            routerLinkActive="bg-slate-300" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding
+            matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
+            <a [routerLink]="[node.node.Slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-50"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              <span [routerLink]="[node.node.Slug]"> {{node.node.name}} </span>
+            </a>
+          </mat-tree-node>
+        </mat-tree>
+      </div>
+      <div class="relative w-full justify-between flex flex-row space-x-2 items-center p-2">
+        <div class="flex flex-row space-x-2">
+          <img [src]="User.Avatar" alt="Avatar" class="max-w-14 max-h-14 object-cover rounded-full">
+          <div class="flex flex-col">
+            <div class="font-bold">{{User.Hoten}}</div>
+            <div class="italic text-xs">{{User.Vitri}}</div>
+          </div>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Profile</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-drawer>
+</mat-drawer-container>

@@ -1,0 +1,128 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailPhieuchiahang()?.title || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailPhieuchiahang().isActive" [disabled]="!isEdit()">{{DetailPhieuchiahang().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handlePhieuchiahangAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Phieuchiahang -->
+  <ng-container *ngIf="!isDelete()">
+    <!-- <div *ngIf="!isEdit()" class="flex flex-col space-y-2 justify-center items-center border p-4 rounded-lg">
+      <div class="font-bold p-2 rounded-lg border">{{ DetailPhieuchiahang()?.Nhacungcap?.Title }}</div>
+      <div>{{ DetailPhieuchiahang()?.CreateAt | date: 'dd/MM/yyyy' }}</div>
+      <table class="min-w-full divide-y divide-gray-200 border">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">STT</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sản Phẩm</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số Lượng</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ghi Chú</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let item of DetailPhieuchiahang()?.Phieuchiahang; let i = index; trackBy: trackByFn">
+            <td class="px-6 py-4 text-sm text-gray-500">{{ i + 1 }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ GetInfoPhieuchiahang(item.idSP)?.Title }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">
+              {{ item.Soluong }} {{ GetInfoPhieuchiahang(item.idSP)?.dvt }}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ item.Ghichu }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+ -->
+    <ng-container>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tiêu Đề</mat-label>
+        <input matInput [(ngModel)]="DetailPhieuchiahang().title" (input)="FillSlug()" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tiêu Đề"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Mã Sản Phẩm</mat-label>
+        <input matInput [(ngModel)]="DetailPhieuchiahang().masp" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Giá Gốc</mat-label>
+        <input matInput type="number" [(ngModel)]="DetailPhieuchiahang().giagoc" [disabled]="!isEdit()" placeholder="Vui lòng nhập Giá Gốc"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Đơn Vị Tính</mat-label>
+        <input matInput [(ngModel)]="DetailPhieuchiahang().dvt" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+      </mat-form-field>
+      <div class="flex flex-row space-x-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Số Lượng</mat-label>
+          <input matInput type="number" [(ngModel)]="DetailPhieuchiahang().soluong" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Số Lượng Kho</mat-label>
+          <input matInput type="number" [(ngModel)]="DetailPhieuchiahang().soluongkho" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+        </mat-form-field>
+      </div>
+ 
+
+<!--       
+      <mat-form-field appearance="outline">
+        <mat-label>Nhà Cung Cấp</mat-label>
+        <mat-select [(ngModel)]="Detail.idNCC" (selectionChange)="SelectNhacungcap($event)">
+          <mat-option *ngFor="let item of FilterNhacungcap" [value]="item.id">
+            {{ item.MaNCC }} - {{ item.Title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid grid-cols-3 gap-2">
+        <ng-container *ngFor="let item of Detail?.Phieuchiahang; let idx = index; trackBy: trackByFn">
+          <mat-form-field appearance="outline">
+            <mat-label>Sản Phẩm</mat-label>
+            <mat-select [(ngModel)]="item.idSP" (selectionChange)="SelectPhieuchiahang($event)">
+              <mat-option *ngFor="let sp of FilterPhieuchiahang" [value]="sp.id">
+                {{ sp.Title }} [Tồn: {{ sp.Soluong }}{{ sp.dvt }}]
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Số Lượng</mat-label>
+            <input matInput [(ngModel)]="item.Soluong" (change)="onChangeSoluong(item, $event)" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Ghi Chú</mat-label>
+            <input matInput [(ngModel)]="item.Ghichu" placeholder="Nhập ghi chú" />
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="addPhieuchiahang()">
+        <mat-icon>add</mat-icon> Thêm Sản Phẩm
+      </button> -->
+    </ng-container>
+
+  </ng-container>
+</div>

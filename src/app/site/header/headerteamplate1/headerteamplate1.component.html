@@ -1,0 +1,39 @@
+<div class="w-full flex flex-row space-x-2 items-center">
+    <nav class="w-full bg-gray-800">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex-shrink-0">
+              <a href="#" class="text-white font-bold text-xl">Your Logo</a>
+            </div>
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <div class="group" *ngFor="let topLevelItem of Menus">
+                  <button *ngIf="topLevelItem?.children && topLevelItem?.children.length > 0" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
+                    {{ topLevelItem.Title }}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1 inline" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <a *ngIf="!topLevelItem?.children || topLevelItem?.children.length === 0" [routerLink]="topLevelItem.Slug" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{topLevelItem.Title}}</a>
+                  <div *ngIf="topLevelItem?.children && topLevelItem?.children.length > 0" class="absolute w-[80vw] left-1/2 transform -translate-x-1/2 z-10 hidden group-hover:block bg-white rounded-md shadow-lg py-1">
+                    <div class="grid grid-cols-3 gap-4 p-4">
+                      <div *ngFor="let childItem of topLevelItem?.children">
+                        <h3 class="text-gray-900 font-medium mb-2">{{ childItem.Title }}</h3>
+                        <a *ngIf="!childItem?.children || childItem?.children.length === 0" [routerLink]="childItem.Slug" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{childItem.Title}}</a>
+                        <div *ngIf="childItem?.children && childItem?.children.length > 0">
+                          <a *ngFor="let grandChild of childItem?.children" [routerLink]="grandChild.Slug" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{grandChild.Title}}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <app-changeteamplate></app-changeteamplate>
+        </div>
+      </div>
+    </nav>
+</div>
+
+
+

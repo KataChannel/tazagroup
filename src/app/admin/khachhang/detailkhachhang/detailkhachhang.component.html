@@ -1,0 +1,79 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailKhachhang()?.name || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailKhachhang().isActive" [disabled]="!isEdit()">{{DetailKhachhang().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleKhachhangAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Khachhang -->
+  <ng-container *ngIf="!isDelete()">
+    <div class="w-full flex flex-col space-y-4">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Tên Khách Hàng</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().name" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tên Khách Hàng"/>
+      </mat-form-field>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Khách Hàng</mat-label>
+      <mat-select [(ngModel)]="DetailKhachhang().loaikh" [disabled]="!isEdit()">
+        <mat-option *ngFor="let item of [{value:'khachsi',title:'Khách Sỉ'},{value:'khachle',title:'Khách Lẻ'}]" [value]="item.value">
+          {{item.title}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Địa Chỉ</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().diachi" [disabled]="!isEdit()" placeholder="Vui lòng nhập Địa Chỉ"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().email" [disabled]="!isEdit()" placeholder="Vui lòng nhập Email"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Số Điện Thoại</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().sdt" [disabled]="!isEdit()" placeholder="Vui lòng nhập Số Điện Thoại"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Mã Số Thuế</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().mst" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Số Thuế"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Giờ Nhận Hàng</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().gionhanhang" [disabled]="!isEdit()" placeholder="Vui lòng nhập Giờ Nhận Hàng"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Quận</mat-label>
+        <input matInput [(ngModel)]="DetailKhachhang().quan" [disabled]="!isEdit()" placeholder="Vui lòng nhập Quận"/>
+      </mat-form-field>
+      <mat-slide-toggle color="primary" [(ngModel)]="DetailKhachhang().hiengia" [disabled]="!isEdit()">Hiện Giá</mat-slide-toggle>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Ghi Chú</mat-label>
+        <textarea matInput [(ngModel)]="DetailKhachhang().ghichu" [disabled]="!isEdit()" placeholder="Vui lòng nhập Ghi Chú"></textarea>
+      </mat-form-field>   
+    </div>
+
+  </ng-container>
+</div>

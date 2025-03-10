@@ -1,0 +1,25 @@
+<div class="swiper h-96" #swiperRef>
+    <div class="swiper-wrapper">
+      @if(slides.length>0)
+      {
+        @for (item of slides; track item; let idx = $index) {
+          <div class="swiper-slide">
+              <img [src]="item.image" class="object-cover" [alt]="item.title">
+              <!-- <div class="slide-content">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+              </div> -->
+            </div>
+      }
+      @empty {
+        <span class="p-2 text-center">There are no items.</span>
+        }
+      }
+
+
+    </div>
+    <div class="swiper-pagination"></div>
+  
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+  </div>

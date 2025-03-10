@@ -1,0 +1,105 @@
+
+
+<div class="w-full flex flex-col space-y-8 items-center bg-slate-100">
+    <div class="w-full relative">
+        <img src="https://demo.alhikmahsoft.com/edufu/wp-content/uploads/2023/05/bred.png" alt="Banner" class="w-full h-20 object-cover">
+        <div class="container absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+            <div class="flex flex-row space-x-2 items-center justify-center p-2">
+                <app-breadscrumb [Breadcrumbs]="Breadcrumbs"></app-breadscrumb>
+            </div>
+        </div>
+    </div>
+    <div class="container mx-auto w-full rounded-lg bg-white flex flex-col space-y-4 justify-center p-1">
+             <div class="w-full h-96 flex justify-center">
+                <img src="/demo/banner1.jpg" class="rounded-lg object-cover" alt="" srcset="">
+            </div>
+            <!-- <div class="flex flex-col space-y-4">
+                <h2 class="!m-0">{{Gioithieu?.Title}}</h2>
+                <div [innerHTML]="Gioithieu.Mota"></div>
+            </div> -->
+            
+        <!-- <div class="flex flex-col space-y-2 rounded-lg bg-white">
+            <div class="text-lg font-bold p-4">Câu hỏi Thường Gặp</div>
+            <mat-accordion class="p-4">
+                @for (item of Cauhois; track item.id; let idx = $index, e = $even, first = $first, last = $last){
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                          <mat-panel-title> 
+                            <div class="flex flex-row space-x-2 items-center">
+                                <span class="p-1 flex text-center justify-center items-center w-5 h-5 rounded-full bg-slate-100">{{idx+1}}</span>
+                                <span>{{item.Title}}</span>
+                            </div>
+                             </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <p>{{item.Answer}}</p>
+                      </mat-expansion-panel>
+                }
+              </mat-accordion>
+        </div> -->
+    </div>
+    <div class="container flex flex-col space-y-2 rounded-lg bg-white">
+        <div class="grid grid-cols-2 gap-4 p-4 mx-auto">
+            <h2 class="col-span-2 text-center text-2xl font-bold text-gray-800 pt-8">Thông Tin Liên Hệ</h2>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Họ tên quý khách</mat-label>
+                <input matInput  placeholder="Vui lòng Nhập Họ tên" />
+            </mat-form-field> 
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Số điện thoại</mat-label>
+                <input matInput  placeholder="Vui lòng Nhập Số điện thoại" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Email</mat-label>
+                <input matInput  placeholder="Vui lòng Nhập Email" />
+            </mat-form-field>         
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Quý Khách Hàng Là</mat-label>
+              <mat-select>
+                @for (item of [
+                    {id:1,Title:'Bác sỹ phòng khám'},
+                    {id:2,Title:'Chủ spa clinic'},
+                    {id:3,Title:'Chủ shop kinh doanh'}
+                    ]; track item.id) {
+                  <mat-option [value]="item.id">{{item.Title}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Địa Chỉ Làm Việc</mat-label>
+                <input matInput  placeholder="Vui lòng Nhập Email" />
+            </mat-form-field> 
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Đăng Ký Demo</mat-label>
+                <mat-select multiple>
+                  @for (item of ListLieutrinhs; track item.id) {
+                    <mat-option [value]="item.id">{{item.Title}}</mat-option>
+                  }
+                </mat-select>
+            </mat-form-field>
+
+       
+            <mat-form-field class="col-span-2" [appearance]="'outline'" [subscriptSizing]="'dynamic'">
+                <mat-label>Thời Gian Mong Muốn</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                  <input matStartDate  [(ngModel)]="SearchParams.Batdau" [ngModelOptions]="{standalone: true}" placeholder="Start date">
+                  <input matEndDate [(ngModel)]="SearchParams.Ketthuc" [ngModelOptions]="{standalone: true}" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker touchUi #picker>
+                    <mat-date-range-picker-actions>
+                        <button mat-stroked-button color="warn" matDateRangePickerCancel>Huỷ Bỏ</button>
+                        <button mat-stroked-button color="primary" matDateRangePickerApply (click)="ApplyDate()">Đồng Ý</button>
+                      </mat-date-range-picker-actions>
+                </mat-date-range-picker>
+              </mat-form-field>
+              <div class="col-span-2 text-center">
+                <button mat-raised-button color="primary">Gửi Đăng Ký</button>
+              </div>
+        </div>
+ 
+    </div>
+    <div class="container flex flex-col space-y-2 rounded-lg bg-white">
+        <h2 class="text-center text-2xl font-bold text-gray-800 pt-8">Bài Viết Liên Quan</h2>
+        <app-swiper class="p-8" [Config]="Config" [Type]="'Gioithieu'" [slides]="ListGioithieu"/>
+    </div>
+</div>

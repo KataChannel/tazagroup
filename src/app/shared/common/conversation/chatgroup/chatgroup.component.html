@@ -1,0 +1,73 @@
+<div class="w-96 mx-auto bg-white shadow-lg rounded-lg p-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center border-b pb-2">
+      <h2 class="text-lg font-semibold">Tạo nhóm</h2>
+      <button class="text-gray-400 hover:text-gray-600" (click)="closeModal()">✖</button>
+    </div>
+  
+    <!-- Nhập tên nhóm -->
+    <div class="mt-4 flex items-center">
+      <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+        <i class="fas fa-camera"></i>
+      </div>
+      <input
+        type="text"
+        class="ml-4 border border-gray-300 rounded-lg p-2 flex-grow focus:ring focus:ring-blue-300"
+        placeholder="Nhập tên nhóm..."
+        [(ngModel)]="groupName"
+      />
+    </div>
+  
+    <!-- Tìm kiếm -->
+    <div class="mt-4">
+      <input
+        type="text"
+        class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-300"
+        placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
+        [(ngModel)]="searchQuery"
+        (input)="filterContacts()"
+      />
+    </div>
+  
+    <!-- Bộ lọc danh mục -->
+    <div class="mt-4 flex space-x-2 overflow-x-auto">
+      <button
+        *ngFor="let category of categories"
+        class="px-4 py-2 text-sm border rounded-full"
+        [ngClass]="{'bg-blue-600 text-white': selectedCategory === category, 'bg-gray-100': selectedCategory !== category}"
+        (click)="selectCategory(category)"
+      >
+        {{ category }}
+      </button>
+    </div>
+  
+    <!-- Danh sách trò chuyện -->
+    <div class="mt-4">
+      <h3 class="text-sm font-medium text-gray-500">Trò chuyện gần đây</h3>
+      <div class="mt-2 space-y-2 max-h-64 overflow-y-auto">
+        <div
+          *ngFor="let contact of filteredContacts"
+          class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+        >
+          <input type="radio" name="contact" [value]="contact" [(ngModel)]="selectedContact" />
+          <img [src]="contact.avatar || defaultAvatar" alt="Avatar" class="w-10 h-10 rounded-full">
+          <div>
+            <p class="text-sm font-semibold">{{ contact.name }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Nút hành động -->
+    <div class="mt-6 flex justify-between items-center">
+      <button class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200" (click)="cancel()">Hủy</button>
+      <button
+        class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+        [disabled]="!groupName || !selectedContact"
+        (click)="createGroup()"
+      >
+        Tạo nhóm
+      </button>
+    </div>
+  </div>
+  

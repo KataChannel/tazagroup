@@ -1,0 +1,20 @@
+<div class="w-full flex flex-col space-y-2 p-4">
+  <div class="flex flex-row space-x-2">
+    <a class="p-2 rounded-lg hover:bg-slate-100" [routerLink]="['general']" routerLinkActive="bg-slate-100">
+      General
+    </a>
+    <a class="p-2 rounded-lg hover:bg-slate-100" [routerLink]="['billing']" routerLinkActive="bg-slate-100">
+      Billing
+    </a>
+    <a class="p-2 rounded-lg hover:bg-slate-100" [routerLink]="['notifications']" routerLinkActive="bg-slate-100">
+      Notifications
+    </a>
+    <a class="p-2 rounded-lg hover:bg-slate-100" [routerLink]="['sociallinks']" routerLinkActive="bg-slate-100">
+      Sociallinks
+    </a>
+    <a class="p-2 rounded-lg hover:bg-slate-100" [routerLink]="['password']" routerLinkActive="bg-slate-100">
+      Security
+    </a>
+  </div>
+  <router-outlet></router-outlet>
+</div>

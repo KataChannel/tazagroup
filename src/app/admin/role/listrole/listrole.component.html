@@ -1,0 +1,147 @@
+<mat-drawer-container class="w-full h-full" autosize>
+    <mat-drawer #drawer class="flex flex-col !w-full h-full" [position]="'end'" mode="over">
+        <router-outlet></router-outlet>
+    </mat-drawer>
+    <div class="flex flex-col space-y-2 h-screen-12 w-full p-2">
+        <div class="cursor-pointer w-full relative flex lg:flex-row lg:space-y-2 space-y-0 flex-col space-x-2 justify-between items-center p-2 bg-white rounded-lg">
+            <div class="flex flex-row space-x-2 items-center">
+                <button matTooltip="Thêm mới" (click)="create()" color="primary" mat-icon-button>
+                    <mat-icon>add_circle</mat-icon>
+                </button>
+                <button matTooltip="Ẩn hiện cột" mat-icon-button color="primary" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon>tune</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <div class="p-4">
+                        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                            <input (input)="doFilterColumns($event)" (click)="$event.stopPropagation()" matInput placeholder="Tìm Kiếm" />
+                            <mat-icon matPrefix>search</mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex flex-col max-h-80 overflow-auto">
+                        @for (item of FilterColumns; track item.key) {
+                        <button mat-menu-item (click)="toggleColumn(item);$event.stopPropagation()">
+                            <mat-icon>{{item.isShow ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+                            <span>{{item.value}}</span>
+                        </button>
+                        }
+                    </div>
+                </mat-menu>
+                <button matTooltip="Bộ Lọc" color="primary" class="{{isFilter ? '!bg-slate-200' : ''}}" (click)="isFilter = !isFilter" mat-icon-button>
+                    <mat-icon>filter_list</mat-icon>
+                </button>
+                <button matTooltip="Tải file excel Mẫu" (click)="ExportExcel(Listrole(),'Role')" color="primary" mat-icon-button>
+                    <mat-icon>file_download</mat-icon>
+                </button>
+                <button matTooltip="Tải lên file excel" (click)="uploadfile.click()" color="primary" mat-icon-button>
+                    <mat-icon>file_upload</mat-icon>
+                </button>
+                <input class="hidden" (change)="ImporExcel($event)" type="file" #uploadfile>
+                <button matTooltip="Tải dữ liệu từ drive" (click)="LoadDrive()" color="primary" mat-icon-button>
+                    <mat-icon>cloud_download</mat-icon>
+                </button>
+                <span class="lg:flex hidden whitespace-nowrap p-2 rounded-lg bg-slate-200">
+                    {{CountItem}} Nhà Cung Cấp
+                </span>
+            </div>
+        </div>
+        <div *ngIf="isFilter" class="w-full grid grid-cols-2 gap-2 lg:flex lg:flex-row lg:space-x-2 items-center">
+            <mat-form-field *ngFor="let column of displayedColumns" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>{{ ColumnName[column] }}</mat-label>
+                <input matInput (keyup)="applyFilter()" [(ngModel)]="filterValues[column]" [ngModelOptions]="{ standalone: true }" placeholder="Vui lòng Nhập {{ column }}" />
+            </mat-form-field>
+        </div>
+        <div class="w-full overflow-auto">
+            <table class="!border w-full cursor-pointer" mat-table [dataSource]="dataSource" matSort>
+                @for (column of displayedColumns; track column) {
+                <ng-container [matColumnDef]="column">
+                    <th class="whitespace-nowrap" mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <span class="max-w-40 line-clamp-4 me-4">
+                            {{ ColumnName[column] }}
+                        </span>
+                             <span class="z-10 material-symbols-outlined text-gray-500" [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger">
+                                 filter_alt
+                             </span>
+                                    <mat-menu  #menu="matMenu">
+                                        <div (click)="$event.stopPropagation()"  class="cursor-pointer flex flex-col space-y-4 p-3">                                        
+                                        <div class="relative w-full">
+                                            <input type="text"
+                                                placeholder="Tìm Kiếm..." (keyup)="doFilterHederColumn($event,column)"
+                                                class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <span class="material-symbols-outlined text-gray-500">search</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-row space-x-2 items-center justify-between">
+                                            <div class="flex flex-row space-x-2 items-center">
+                                                <span class="text-xs text-blue-600 underline" (click)="ChosenAll(FilterHederColumn(dataSource.filteredData,column))">Chọn Tất Cả {{FilterHederColumn(dataSource.filteredData,column).length||0}}</span>
+                                                <span class="text-xs text-blue-600 underline" (click)="EmptyFiter()">Xoá</span>
+                                            </div>
+   
+                                            <span class="text-xs text-blue-600 underline" (click)="ResetFilter()">Reset</span>
+                                        </div>
+                                        <div class="w-full flex flex-col space-y-2 max-h-44 overflow-auto">
+                                            @for (item of FilterHederColumn(dataSource.filteredData,column); track $index) {
+                                                <div (click)="ChosenItem(item)" class="flex flex-row space-x-2 items-center p-2 rounded-lg hover:bg-slate-100">
+                                                   <span *ngIf="CheckItem(item)" class="material-symbols-outlined text-blue-600">check</span>
+                                                   @if(column=='createdAt'||column=='updatedAt'){
+                                                    <span>{{item[column]|date:'dd/MM/yyyy'}}</span>
+                                                   }@else{
+                                                    <span>{{item[column]||'Trống'}}</span>
+                                                   }
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="flex flex-row space-x-2 items-end justify-end">
+                                            <button mat-flat-button color="warn" (click)="menuTrigger.closeMenu()">Đóng</button>
+                                            <button mat-flat-button color="primary" (click)="ApplyFilterColum(menuTrigger)" >Áp Dụng</button>
+                                        </div>
+                                        </div>
+                                    </mat-menu>
+                    </th>
+                    <td mat-cell *matCellDef="let row; let idx = index">
+                        @switch (column) {
+                        @case ('STT') {
+                        <span class="max-w-40 line-clamp-4">
+                            {{ idx + 1 }}
+                        </span>
+                        }
+                        @case ('createdAt') {
+                        <span class="max-w-40 line-clamp-4">
+                            {{ row[column]|date:'dd/MM/yyyy'}}
+                        </span>
+                        }
+                        @case ('isActive') {
+                        <span class="max-w-40 line-clamp-4">
+                            @if (row[column]) {
+                            <mat-icon class="text-green-500">check_circle</mat-icon>
+                            }
+                            @else {
+                            <mat-icon class="text-red-500">cancel</mat-icon>
+                            }
+                        </span>
+                        }
+                        @case ('updatedAt') {
+                        <span class="max-w-40 line-clamp-4">
+                            {{ row[column]|date:'dd/MM/yyyy'}}
+                        </span>
+                        }
+                        @default {
+                        <span class="max-w-40 line-clamp-4">
+                            {{ row[column] }}
+                        </span>
+                        }
+                        }
+                    </td>
+                </ng-container>
+                }
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-slate-100 {{roleId()==row.id?'!bg-slate-200':''}}" (click)="goToDetail(row);"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell p-4" colspan="4">Không tìm thấy</td>
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+    </div>
+</mat-drawer-container>

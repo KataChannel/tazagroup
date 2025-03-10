@@ -1,0 +1,72 @@
+@if(ListMenu().length>0)
+{
+<mat-tree class="!bg-white p-2" [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node">
+    <div class="w-full flex items-center justify-between">
+      <!-- <button mat-icon-button disabled></button> -->
+      <a [routerLink]="node.Item.Slug" routerLinkActive="bg-slate-200"
+        class="hover:bg-slate-200 rounded-lg p-2 truncate flex-grow">{{ node.Item.Title }}</a>
+      <!-- @if(node.node.TypeMenu == 'Task'){
+              <a routerLinkActive="bg-slate-200" class="hover:bg-slate-200 rounded-lg p-2 truncate flex-grow">{{ node.Title }}</a>
+            }@else{
+              <a routerLinkActive="bg-slate-200" class="hover:bg-slate-200 rounded-lg p-2 truncate flex-grow">{{ node.Title }}</a>
+            } -->
+      <button mat-icon-button [matMenuTriggerFor]="menu1">
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+      <mat-menu #menu1="matMenu">
+        <button mat-menu-item (click)="Update(node.Item)">
+          <div class="flex flex-row items-center">
+            <span class="material-symbols-outlined text-blue-500 mr-2">edit</span>
+            <span>Sửa</span>
+          </div>
+        </button>
+        <button mat-menu-item (click)="Delete(node.Item)">
+          <div class="flex flex-row items-center">
+            <span class="material-symbols-outlined text-red-500 mr-2">delete</span>
+            <span>Xoá</span>
+          </div>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-tree-node>
+
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.Title">
+
+
+    <div class="w-full flex items-center justify-between">
+      <a mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.Title">
+        <span class="material-symbols-outlined">
+          {{
+          treeControl.isExpanded(node)
+          ? "expand_more"
+          : "chevron_right"
+          }}
+        </span>
+      </a>
+      <a [routerLink]="node.Slug" class="hover:bg-slate-200 rounded-lg p-2 truncate flex-grow">{{node.Title}}</a>
+      <button mat-icon-button [matMenuTriggerFor]="menu2">
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+      <mat-menu #menu2="matMenu">
+        <button mat-menu-item (click)="Update(node.Item)">
+          <div class="flex flex-row items-center">
+            <span class="material-symbols-outlined text-blue-500 mr-2">edit</span>
+            <span>Sửa</span>
+          </div>
+        </button>
+        <button mat-menu-item (click)="Delete(node.Item)">
+          <div class="flex flex-row items-center">
+            <span class="material-symbols-outlined text-red-500 mr-2">delete</span>
+            <span>Xoá</span>
+          </div>
+        </button>
+      </mat-menu>
+    </div>
+
+  </mat-tree-node>
+</mat-tree>
+}
+@else {
+<span class="p-2 text-center">Chưa Có Dữ Liệu</span>
+}

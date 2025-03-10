@@ -1,0 +1,66 @@
+
+
+<mat-drawer-container class="lg:w-2/3 w-full h-full m-auto" autosize>
+  <mat-drawer #drawer class="flex flex-col space-y-3 lg:!w-2/3 !w-full h-full p-4" [position]="'end'" [mode]="'side'" [opened]="true">
+      <span (click)="drawer.close()" class="cursor-pointer material-symbols-outlined p-2 rounded-lg hover:bg-slate-100">arrow_back</span>
+      <router-outlet></router-outlet>
+  </mat-drawer>
+
+<div class="flex flex-col space-y-2 h-full w-full justify-between p-2">
+    <div class="my-2 relative flex flex-col space-y-6 h-full overflow-auto">
+      <div class="p-8">
+        @if(!isEditAvatar)
+        {
+          <div class="flex flex-col items-center my-4">
+            <div class="w-48 h-48 overflow-hidden mb-2">
+            @if (profile().Avatar) {
+              <img lazyLoad [src]="getTrustUrl('https://lh3.googleusercontent.com/d/'+profile().Avatar)" loading="lazy" class="w-full h-full rounded-full border object-cover"/> 
+              } @else {
+                <img lazyLoad [src]="getTrustUrl('https://tazagroup.vn/assets/images/tazagroup-logo-trangchu.svg')" loading="lazy" class="w-full h-full rounded-full border object-cover"/> 
+              }
+            </div>
+            <button class="text-sm text-blue-500 hover:text-blue-700" (click)="isEditAvatar=true">
+              Thay đổi ảnh đại diện
+            </button>
+          </div>
+        }
+        <!-- Ảnh đại diện -->
+        @else {
+          @if(isLoading)
+          {
+            <div class="relative flex flex-row space-x-4 justify-center items-center w-full py-4">
+              <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <span class="font-bold text-blue-500">Đang Tải</span>
+            </div>
+          }
+          @else {
+            <div class="w-full relative cursor-pointer flex flex-row justify-center space-x-2 items-center py-3 border rounded-lg border-dotted">
+              <div (paste)="handlePaste($event)">
+                <ngx-file-drop class="whitespace-nowrap" browseBtnLabel="Browse files" [showBrowseBtn]="true" dropZoneLabel="Drag and drop your files here" (onFileDrop)="dropped($event)">
+                  <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                    <div class="p-4 flex flex-col space-y-3">
+                      <span>Drop file Here</span>
+                      <span class="font-bold p-2 rounded-lg border hover:bg-slate-100" (click)="openFileSelector()">Chọn File</span>
+                    </div>
+                  </ng-template>
+                </ngx-file-drop>
+              </div> 
+              <span (click)="isEditAvatar=false" class="text-xs material-symbols-outlined absolute -top-4 -right-4 px-2 py-1 rounded-lg border text-white bg-red-300 hover:bg-red-500">close</span>
+            </div>
+  
+          }
+        }
+      </div>
+      <div class="flex flex-col space-y-2">
+        @for(menu of Menus;track menu.id)
+        {
+        <a (click)="drawer.open()" [routerLink]="[menu.Slug]" [routerLinkActive]="'bg-slate-200'" class="flex flex-row space-x-2 items-center hover:bg-slate-200 rounded-lg p-2">
+            <span class="material-symbols-outlined">{{menu.Icon}}</span>
+            <span class="">{{menu.Title}}</span>
+        </a>
+        }
+      </div>
+    </div>
+    <div class="relative flex flex-row justify-center items-center"></div>
+</div>
+</mat-drawer-container>

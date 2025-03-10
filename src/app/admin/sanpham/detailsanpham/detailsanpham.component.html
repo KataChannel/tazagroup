@@ -1,0 +1,65 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailSanpham()?.title || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailSanpham().isActive" [disabled]="!isEdit()">{{DetailSanpham().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleSanphamAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isDelete()">
+    <div class="w-full flex flex-col space-y-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Tiêu Đề</mat-label>
+        <input matInput [(ngModel)]="DetailSanpham().title" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tiêu Đề"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Mã Sản Phẩm</mat-label>
+        <input matInput [(ngModel)]="DetailSanpham().masp" [disabled]="true" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Giá Gốc</mat-label>
+        <input matInput type="number" [(ngModel)]="DetailSanpham().giagoc" [disabled]="!isEdit()" placeholder="Vui lòng nhập Giá Gốc"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Đơn Vị Tính</mat-label>
+        <input matInput [(ngModel)]="DetailSanpham().dvt" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+      </mat-form-field>
+      <div class="flex flex-row space-x-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Số Lượng</mat-label>
+          <input matInput type="number" [(ngModel)]="DetailSanpham().soluong" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Số Lượng Kho</mat-label>
+          <input matInput type="number" [(ngModel)]="DetailSanpham().soluongkho" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Sản Phẩm"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Hao Hụt %</mat-label>
+          <input matInput type="number" [(ngModel)]="DetailSanpham().haohut" [disabled]="!isEdit()" placeholder="Vui lòng nhập haohut"/>
+        </mat-form-field>
+      </div>
+    </div>
+  </ng-container>
+</div>

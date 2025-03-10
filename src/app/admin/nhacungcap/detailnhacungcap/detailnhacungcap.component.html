@@ -1,0 +1,98 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailNhacungcap()?.name || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailNhacungcap().isActive" [disabled]="!isEdit()">{{DetailNhacungcap().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleNhacungcapAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Nhacungcap -->
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+      <mat-form-field appearance="outline">
+        <mat-label>Tên Nhà Cung Cấp</mat-label>
+        <input matInput [(ngModel)]="DetailNhacungcap().name" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tên Nhà Cung Cấp"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Mã Nhà Cung Cấp</mat-label>
+        <input matInput [(ngModel)]="DetailNhacungcap().mancc" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Nhà Cung Cấp"/>
+      </mat-form-field> 
+      <mat-form-field appearance="outline">
+        <mat-label>Địa Chỉ</mat-label>
+        <input matInput [(ngModel)]="DetailNhacungcap().diachi" [disabled]="!isEdit()" placeholder="Vui lòng nhập Địa Chỉ"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="DetailNhacungcap().email" [disabled]="!isEdit()" placeholder="Vui lòng nhập Email"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Số Điện Thoại</mat-label>
+        <input matInput [(ngModel)]="DetailNhacungcap().sdt" [disabled]="!isEdit()" placeholder="Vui lòng nhập Số Điện Thoại"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Ghi Chú</mat-label>
+        <textarea matInput [(ngModel)]="DetailNhacungcap().ghichu" [disabled]="!isEdit()" placeholder="Vui lòng nhập Ghi Chú"></textarea>
+      </mat-form-field>
+<!--       
+      <mat-form-field appearance="outline">
+        <mat-label>Nhà Cung Cấp</mat-label>
+        <mat-select [(ngModel)]="Detail.idNCC" (selectionChange)="SelectNhacungcap($event)">
+          <mat-option *ngFor="let item of FilterNhacungcap" [value]="item.id">
+            {{ item.MaNCC }} - {{ item.Title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid grid-cols-3 gap-2">
+        <ng-container *ngFor="let item of Detail?.Nhacungcap; let idx = index; trackBy: trackByFn">
+          <mat-form-field appearance="outline">
+            <mat-label>Sản Phẩm</mat-label>
+            <mat-select [(ngModel)]="item.idSP" (selectionChange)="SelectNhacungcap($event)">
+              <mat-option *ngFor="let sp of FilterNhacungcap" [value]="sp.id">
+                {{ sp.Title }} [Tồn: {{ sp.Soluong }}{{ sp.dvt }}]
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Số Lượng</mat-label>
+            <input matInput [(ngModel)]="item.Soluong" (change)="onChangeSoluong(item, $event)" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Ghi Chú</mat-label>
+            <input matInput [(ngModel)]="item.Ghichu" placeholder="Nhập ghi chú" />
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="addNhacungcap()">
+        <mat-icon>add</mat-icon> Thêm Sản Phẩm
+      </button> -->
+    </ng-container>
+
+  </ng-container>
+</div>

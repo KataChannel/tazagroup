@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json.schemastore.org/angular-schematic",
+    "schematics": {
+      "ng-generate-ecommerce": {
+        "factory": "./home/index",
+        "schema": "./home/schema.json",
+        "description": "Tạo module home với cart, payment, order"
+      }
+    }
+  }

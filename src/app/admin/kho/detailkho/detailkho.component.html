@@ -1,0 +1,61 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailKho()?.name || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailKho().isActive" [disabled]="!isEdit()">{{DetailKho().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleKhoAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Kho -->
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+      <div class="w-full flex flex-col space-y-2">
+        <div class="w-full flex lg:flex-row flex-col lg:space-x-2 space-x-0 space-y-2 items-center">
+      <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Tên Kho</mat-label>
+        <input matInput [(ngModel)]="DetailKho().name" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tên Kho"/>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Mã Kho</mat-label>
+        <input matInput [(ngModel)]="DetailKho().makho" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mã Kho"/>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Địa Chỉ</mat-label>
+        <input matInput [(ngModel)]="DetailKho().diachi" [disabled]="!isEdit()" placeholder="Vui lòng nhập Địa Chỉ"/>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Số Điện Thoại</mat-label>
+        <input matInput [(ngModel)]="DetailKho().sdt" [disabled]="!isEdit()" placeholder="Vui lòng nhập Số Điện Thoại"/>
+      </mat-form-field>
+    </div>
+      <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Ghi Chú</mat-label>
+        <textarea matInput [(ngModel)]="DetailKho().ghichu" [disabled]="!isEdit()" placeholder="Vui lòng nhập Ghi Chú"></textarea>
+      </mat-form-field>
+     </div>
+    </ng-container>
+  </ng-container>
+</div>

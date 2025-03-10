@@ -1,0 +1,15 @@
+<div class="flex flex-row space-x-2 items-center justify-center p-2 px-8">
+    @for (item of Breadcrumbs; track item; let idx = $index, e = $even, first = $first, last = $last) {
+        <div class="lg:max-w-40 max-w-32 breadcrumb-item truncate">
+            @if(last){
+                <span class="truncate p-2 font-bold text-red-500">{{ item.name }}</span>
+            }
+            @else {
+                <a class="truncate" [routerLink]="item.link">{{ item.name }} </a>
+            }
+         </div>
+         @if(!last){
+            <span>/</span>
+        }
+    }
+</div>

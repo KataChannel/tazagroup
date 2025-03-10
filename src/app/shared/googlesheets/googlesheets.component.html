@@ -1,0 +1,48 @@
+<div class="w-full flex flex-col space-y-8 p-4">
+    <div class="font-bold text-xl p-2 text-center">Cấu hình File Google Sheets</div>
+    <div class="w-full flex lg:flex-row flex-col lg:space-x-2 lg:space-y-0 space-y-2 items-center">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>API Key</mat-label>
+            <input matInput [(ngModel)]="DriveInfo.ApiKey" [ngModelOptions]="{ standalone: true }"
+                placeholder="Vui lòng API Key" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>ID Google Sheet</mat-label>
+            <input matInput [(ngModel)]="DriveInfo.IdSheet" [ngModelOptions]="{ standalone: true }"
+                placeholder="Vui lòng Nhập ID Google Sheet" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Sheet Name</mat-label>
+            <input matInput [(ngModel)]="DriveInfo.SheetName" [ngModelOptions]="{ standalone: true }"
+                placeholder="Vui lòng Nhập Sheet Name" />
+        </mat-form-field>
+        <div class="flex flex-row space-x-2 items-center">
+            <button mat-icon-button color="primary" (click)="GetDrive()"><mat-icon>sync</mat-icon></button>
+            <button mat-icon-button color="primary" (click)="RemoveDrive()"><mat-icon>delete</mat-icon></button>
+        </div>
+    </div>
+    @for (item of ListSheets; track item) {
+        <div class="w-full flex flex-col space-y-4">
+        <div>
+            <span class="font-bold p-2 rounded-lg bg-slate-100">{{item.Title}}</span>
+        </div>
+        <div class="w-full grid lg:grid-cols-3 gap-2 items-center">
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>API Key</mat-label>
+                <input matInput [(ngModel)]="item.ApiKey" [ngModelOptions]="{ standalone: true }"
+                    placeholder="Vui lòng API Key" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>ID Google Sheet</mat-label>
+                <input matInput [(ngModel)]="item.IdSheet" [ngModelOptions]="{ standalone: true }"
+                    placeholder="Vui lòng Nhập ID Google Sheet" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-label>Sheet Name</mat-label>
+                <input matInput [(ngModel)]="item.SheetName" [ngModelOptions]="{ standalone: true }"
+                    placeholder="Vui lòng Nhập Sheet Name" />
+            </mat-form-field>
+        </div>
+    </div>
+    }
+</div>

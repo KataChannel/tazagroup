@@ -1,0 +1,79 @@
+<div class="swiper" #swiperRef>
+  <div class="swiper-wrapper">
+    @if(slides.length>0)
+    {
+    @switch (Type) {
+    @case ('sanpham') {
+    @for (item of slides; track item; let idx = $index) {
+    <a [href]="item.Slug+'-'+item.View"
+      class="swiper-slide cursor-pointer border flex flex-col space-y-2 rounded-lg overflow-hidden w-full">
+      <div class="h-60 w-full overflow-hidden">
+        <img src="demo/banner1.jpg" class="w-full object-cover hover:scale-125 transition-transform duration-300" alt=""
+          srcset="">
+      </div>
+      <div class="slide-content px-4 py-2 flex flex-col space-y-2">
+        <h3 class="!m-0 line-clamp-2 h-12 text-lg font-bold hover:text-[#57A345] hover:font-extrabold">{{item.Title}}
+        </h3>
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-red-500">{{item.Gia||'Liên Hệ'}}</span>
+          <button color="primary" mat-icon-button><mat-icon>shopping_cart</mat-icon></button>
+        </div>
+      </div>
+    </a>
+
+    }
+    }
+    @case ('slide') {
+    @for (item of slides; track item; let idx = $index) {
+    <div class="swiper-slide">
+      <img [src]="item.image" class="object-cover" [alt]="item.title">
+      <div class="slide-content">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
+    }
+    }
+    @case ('Baiviet') {
+    @for (item of slides; track item; let idx = $index) {
+    <div class="swiper-slide">
+      <img [src]="item.Image" class="object-cover rounded-lg" [alt]="item.Title">
+      <div class="slide-content rounded-lg">
+        <h3 class="!m-0 line-clamp-2">{{ item.Title }}</h3>
+        <p class="text-xs italic line-clamp-2" [innerHTML]="item.Mota"></p>
+      </div>
+    </div>
+    }
+    }
+    @case ('review') {
+    @for (item of slides; track item; let idx = $index) {
+    <div class="swiper-slide relative">
+      <img [src]="item.background" class="object-cover relative" [alt]="item.Title" />
+        <div class="p-2 rounded-lg bg-slate-500 text-white absolute top-5 left-5">
+          1920x820
+        </div>
+        <div class="max-w-md absolute lg:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+          <img [src]="item.avatar" class="!h-40 !w-40 mx-auto object-cover rounded-full border-4 border-white" [alt]="item.Title">
+          <h3 class="!m-0 font-bold text-xl !my-4">{{item.Title}}</h3>
+          <p class="!m-0" [innerHTML]="item.Review"></p>
+        </div>
+    </div>
+    }
+    }
+    @default {
+    @for (item of slides; track item; let idx = $index) {
+    <div class="swiper-slide relative">
+      <img [src]="item.Image" class="object-cover" [alt]="item.Title">
+      <div class="p-2 rounded-lg bg-slate-500 text-white absolute top-5 left-5">
+        1920x820
+      </div>
+    </div>
+    }
+    }
+    }
+    }
+  </div>
+  <div class="swiper-pagination"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>

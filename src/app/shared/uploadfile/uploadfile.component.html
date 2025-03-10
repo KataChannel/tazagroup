@@ -1,0 +1,80 @@
+<div class="w-full flex flex-col space-y-2 justify-center items-center p-2">
+  <div class="relative w-full flex flex-row space-x-2 items-center">
+    <div class="relative w-full">
+        <input type="text"
+            placeholder="Tìm Kiếm..."
+            class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <span class="material-symbols-outlined text-gray-500">search</span>
+        </div>
+    </div>
+  </div>
+
+  
+  @if(isLoading)
+  {
+    <div class="relative flex flex-row space-x-4 justify-center items-center w-full py-4">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <span class="font-bold text-blue-500">Đang Tải</span>
+    </div>
+  }
+  @else {
+    
+    <div class="w-full relative cursor-pointer flex flex-row justify-center space-x-2 items-center py-3 border rounded-lg border-dotted">
+      <div (paste)="handlePaste($event)">
+        <ngx-file-drop class="whitespace-nowrap" browseBtnLabel="Browse files" [showBrowseBtn]="true" dropZoneLabel="Drag and drop your files here" (onFileDrop)="dropped($event)">
+          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+            <div class="p-4 flex flex-col space-y-3">
+              <span>Drop file Here</span>
+              <span class="font-bold p-2 rounded-lg border hover:bg-slate-100" (click)="openFileSelector()">Chọn File</span>
+            </div>
+          </ng-template>
+        </ngx-file-drop>
+      </div> 
+    </div>
+    <div class="relative w-full flex flex-col space-y-2 items-center overflow-auto">
+      @for (item of listFiles; track item.id) { 
+        @switch (item.type) { 
+          @case ("application/x-zip-compressed") {
+            <div class="rounded-lg border p-2">.zip</div> 
+          } 
+          @default { 
+            <div (click)="ViewImage(imageDialog); SelectImage = item" class="w-full cursor-pointer flex flex-row space-x-2 rounded-lg hover:bg-slate-100">
+              <img lazyLoad [src]="getTrustUrl('https://drive.google.com/thumbnail?id='+item.fileId)" 
+              loading="lazy" class="max-h-24 max-w-24 rounded-lg border p-2" /> 
+              <div class="flex flex-col truncate">
+                <div class="flex flex-row space-x-1">
+                  <span>Ngày tải lên :</span>
+                  <span>{{item.CreateAt|date:'hh:mm:ss dd/MM/yyyy'}}</span>
+                </div>
+                <span>{{item.Title}}</span>
+              </div>
+            </div>
+
+          } 
+        } 
+      }
+      @empty { 
+        <div>Chưa có file đính kèm</div> 
+      }
+    </div>
+
+  }
+</div>
+
+
+<ng-template #imageDialog>
+  <div class="relative flex flex-col space-y-2 h-[100vh] w-[100vw]">
+    <div class="cursor-pointer relative flex flex-row justify-between items-center border-b p-2">
+      <span class="truncate">{{ SelectImage?.Title }}</span>
+      <div class="flex flex-row space-x-2">
+        <span (click)="DownloadImage()" class="p-2 rounded-lg hover:bg-slate-200 items-center justify-center material-symbols-outlined">download</span>
+        <span class="p-2 rounded-lg hover:bg-slate-200 items-center justify-center material-symbols-outlined" mat-dialog-close>close</span>
+      </div>
+    </div>
+    <mat-dialog-content class="relative justify-center items-center overflow-auto">
+      <img lazyLoad [src]="getTrustUrl('https://lh3.googleusercontent.com/d/'+SelectImage.fileId)" [alt]="SelectImage?.Title" class="max-w-full max-h-full mx-auto" loading="lazy" />
+    </mat-dialog-content>
+    <div class="relative"></div>
+  </div>
+</ng-template>

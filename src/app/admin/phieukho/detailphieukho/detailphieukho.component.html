@@ -1,0 +1,142 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailPhieukho()?.title || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailPhieukho().isActive" [disabled]="!isEdit()">{{DetailPhieukho().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handlePhieukhoAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Phieukho -->
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+      <div class="w-full flex flex-col space-y-2">
+        <div class="w-full flex flex-row space-x-2">
+          <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Mã Phiếu</mat-label>
+            <input matInput [(ngModel)]="DetailPhieukho().maphieu" [disabled]="!isEdit()"
+              placeholder="Vui lòng nhập Mã Phiếu" />
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Loại Phiếu</mat-label>
+            <mat-select [(ngModel)]="DetailPhieukho().type" [disabled]="!isEdit()"
+              (selectionChange)="ChangeType($event)">
+              <mat-option *ngFor="let item of [
+            {title:'Phiếu Nhập',value:'nhap'},
+            {title:'Phiếu Xuất',value:'xuat'},
+            {title:'Chuyển Kho',value:'chuyenkho'},
+            {title:'Điều Chỉnh',value:'dieuchinh'}]" [value]="item.value">
+                {{ item.title }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Kho</mat-label>
+            <mat-select [(ngModel)]="DetailPhieukho().khoId" [disabled]="!isEdit()">
+              <mat-option *ngFor="let item of _KhoService.ListKho()" [value]="item.id">
+                ({{ item.makho }}){{ item.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full" *ngIf="DetailPhieukho().type=='xuat'" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Đơn Bán</mat-label>
+            <mat-select [disabled]="!isEdit()" (selectionChange)="ChosenDonhang($event,'xuat')">
+              <mat-option *ngFor="let item of _DonhangService.ListDonhang()" [value]="item.id">
+                {{ item.madonhang }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full" *ngIf="DetailPhieukho().type=='nhap'" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Đơn Mua</mat-label>
+            <mat-select [disabled]="!isEdit()" (selectionChange)="ChosenDonhang($event,'nhap')">
+              <mat-option *ngFor="let item of _DathangService.ListDathang()" [value]="item.id">
+                {{ item.madncc }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Ngày</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="DetailPhieukho().ngay" [disabled]="!isEdit()" placeholder="Chọn ngày">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+
+        </div>
+        <div class="w-full flex flex-col space-y-2 items-center">
+          @for (item of DetailPhieukho().sanpham; track item.id; let idx = $index) {
+          <div class="w-full flex flex-row space-x-2 items-center">
+            <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Sản Phẩm</mat-label>
+              <mat-select [disabled]="!isEdit" [disabled]="!isEdit()" [(ngModel)]="DetailPhieukho().sanpham[idx].sanphamId"
+                [ngModelOptions]="{ standalone: true }">
+                <div class="w-full flex flex-col px-4">
+                  <div class="flex flex-row space-x-2 items-center">
+                    <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                      <input matInput (input)="DoFindSanpham($event)" placeholder="Tìm Kiếm" />
+                    </mat-form-field>
+                    <button mat-icon-button color="primary">
+                      <mat-icon>add_circle</mat-icon>
+                    </button>
+                  </div>
+                  <div class="overflow-y-auto max-h-44">
+                    @for (item of filterSP; track item.id) {
+                    <mat-option [value]="item.id">{{item.title}} [SL : {{item.soluong}}{{item.dvt}}][SL Tồn :
+                      {{item.soluongkho}}{{item.dvt}}]</mat-option>
+                    }
+                  </div>
+                </div>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-60" subscriptSizing="dynamic">
+              <mat-label>SL</mat-label>
+              <input matInput type="number" [disabled]="true" [(ngModel)]="DetailPhieukho().sanpham[idx].sldat"
+                (change)="onChangeSoluong(item,$event)" [ngModelOptions]="{ standalone: true }"
+                placeholder="Vui lòng Nhập Số Lượng" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-60" subscriptSizing="dynamic">
+              <mat-label>SL Thực tế</mat-label>
+              <input matInput type="number" [disabled]="!isEdit()" [(ngModel)]="DetailPhieukho().sanpham[idx].soluong"
+                (change)="onChangeSoluong(item,$event)" [ngModelOptions]="{ standalone: true }"
+                placeholder="Vui lòng Nhập Số Lượng Thực Tế" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Ghi Chú</mat-label>
+              <input matInput [disabled]="!isEdit()" [(ngModel)]="DetailPhieukho().sanpham[idx].ghichu"
+                [ngModelOptions]="{ standalone: true }" placeholder="Vui lòng Nhập Ghi Chú" />
+            </mat-form-field>
+          </div>
+          }
+        </div>
+        <div>
+          <button [disabled]="!isEdit()" mat-flat-button color="primary"
+            (click)="AddSanpham()"><span>Thêm</span><mat-icon>add</mat-icon></button>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

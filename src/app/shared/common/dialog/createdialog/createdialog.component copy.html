@@ -1,0 +1,44 @@
+<div class="p-8 lg:w-[400px] lg:h-[60hw] flex flex-col space-y-8">
+  <span class="font-bold text-xl">Tạo Mới</span>
+  <div class="flex flex-col w-full">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tiêu Đề</mat-label>
+        <input matInput [(ngModel)]="Detail.Title" [ngModelOptions]="{standalone: true}" placeholder="Tiêu Đề" (input)="FillSlug()">
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Slug</mat-label>
+        <input matInput [(ngModel)]="Detail.Slug" [ngModelOptions]="{standalone: true}" placeholder="Slug">
+      </mat-form-field>
+      @if(data?.Parent)
+      {
+        <mat-form-field appearance="outline" class="w-full">  
+        <mat-label>Parent</mat-label>
+        <mat-select disableRipple [(ngModel)]="Detail.pid" [ngModelOptions]="{standalone: true}">
+          @for (item of data.Parent; track item.id) {
+            <mat-option [value]="item.id">{{item.Title}}</mat-option>
+          }
+          @empty {
+            <span class="p-2 text-center">There are no items.</span>
+            }
+        </mat-select>
+      </mat-form-field>
+      }
+      <mat-form-field appearance="outline" class="w-full">  
+        <mat-label>Type</mat-label>
+        <mat-select disableRipple [(ngModel)]="Detail.Type" [ngModelOptions]="{standalone: true}">
+          <mat-option value="0">Hệ Thống</mat-option>
+          <mat-option value="1">Custom</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  <div class="relative flex flex-row space-x-2 justify-center">
+      <button (click)="onSaveClick()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Đồng Ý
+      </button>
+      <button mat-dialog-close="false" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          Đóng
+      </button>
+  </div>
+  
+</div>
+  

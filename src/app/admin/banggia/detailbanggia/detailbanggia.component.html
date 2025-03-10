@@ -1,0 +1,271 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div
+       [contentEditable]="true"
+       (blur)="updateValue($event,null,DetailBanggia(), 'title','string')"
+       class="p-2 min-w-28 font-bold focus:border focus:rounded-lg focus:border-blue-600 focus:bg-slate-100 focus:outline-none"
+     >
+     {{ DetailBanggia()?.title || 'Không có dữ liệu' }}
+  </div>
+  <div class="flex flex-row space-x-2 items-center">
+    <mat-slide-toggle [(ngModel)]="DetailBanggia().isActive" [disabled]="!isEdit()">{{DetailBanggia().isActive?'Hiển Thị':'Ẩn'}}</mat-slide-toggle>
+    <button mat-icon-button color="primary" (click)="CoppyDon()">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="printContent()">
+      <mat-icon>print</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handleBanggiaAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Chi tiết Banggia -->
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+
+      <div class="w-full flex flex-row space-x-2 items-center">
+      <mat-form-field class="w-full" appearance="outline" subscriptsizing="dynamic">
+        <mat-label>Tiêu Đề</mat-label>
+        <input matInput [(ngModel)]="DetailBanggia().title" (input)="FillSlug()" [disabled]="!isEdit()" placeholder="Vui lòng nhập Tiêu Đề"/>
+      </mat-form-field>
+      
+      <mat-form-field class="w-full" appearance="outline" subscriptsizing="dynamic">
+        <mat-label>Loại</mat-label>
+        <mat-select [(ngModel)]="DetailBanggia().type" [ngModelOptions]="{ standalone: true }" [disabled]="!isEdit()">
+          <div class="w-full flex flex-col">
+            <div class="overflow-y-auto max-h-44">
+              @for (item of [{id:1,title:'Bán Sỉ',value:'bansi'},{id:2,title:'Bán Lẻ',value:'banle'}]; track item.id) {
+              <mat-option [value]="item.value">{{item.title}}</mat-option>
+              }
+            </div>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-full" appearance="outline" subscriptsizing="dynamic">
+        <mat-label>Bắt Đầu</mat-label>
+        <input matInput [matDatepicker]="pickerbatdau" [(ngModel)]="DetailBanggia().batdau" [ngModelOptions]="{ standalone: true }" [disabled]="!isEdit()">
+        <mat-datepicker-toggle matIconSuffix [for]="pickerbatdau"></mat-datepicker-toggle>
+        <mat-datepicker #pickerbatdau></mat-datepicker>
+      </mat-form-field>
+      
+      <mat-form-field class="w-full" appearance="outline" subscriptsizing="dynamic">
+        <mat-label>Kết Thúc</mat-label>
+        <input matInput  [matDatepicker]="pickerketthuc" [(ngModel)]="DetailBanggia().ketthuc" [ngModelOptions]="{ standalone: true }" [disabled]="!isEdit()">
+        <mat-datepicker-toggle matIconSuffix [for]="pickerketthuc"></mat-datepicker-toggle>
+        <mat-datepicker #pickerketthuc></mat-datepicker>
+      </mat-form-field>
+    </div> 
+    @defer () {
+      <div class="cursor-pointer w-full relative flex lg:flex-row lg:space-y-2 space-y-0 flex-col space-x-2 justify-between items-center p-2 bg-white rounded-lg">
+        <div class="flex flex-row space-x-2 items-center">            
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Tình Trạng</mat-label>
+            <mat-select [disabled]="!isEdit()" [(ngModel)]="DetailBanggia().status" [ngModelOptions]="{ standalone: true }">
+                  @for (item of ListStatus; track item) {
+                  <mat-option [value]="item.value">{{item.title}}</mat-option>
+                  }
+                  @empty {
+                  <mat-option disabled>Không có dữ liệu</mat-option>
+                  }
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" [disabled]="!isEdit()" [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger">
+            {{ListFilter.length}}  Sản Phẩm
+          </button>
+         <mat-menu  #menu="matMenu">
+                     <div (click)="$event.stopPropagation()"  class="cursor-pointer flex flex-col space-y-4 p-3">                                        
+                     <div class="relative w-full">
+                         <input type="text"
+                             placeholder="Tìm Kiếm..." (keyup)="doFilterSanpham($event)"
+                             class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                             <span class="material-symbols-outlined text-gray-500">search</span>
+                         </div>
+                     </div>
+                     <div class="flex flex-row space-x-2 items-center justify-between">
+                         <div class="flex flex-row space-x-2 items-center">
+                             <span class="text-xs text-blue-600 underline" (click)="ChosenAll(filterSanpham)">Chọn Tất Cả {{ListFilter.length}}</span>
+                             <span class="text-xs text-blue-600 underline" (click)="EmptyFiter()">Xoá</span>
+                         </div>
+
+                         <span class="text-xs text-blue-600 underline" (click)="ResetFilter()">Reset</span>
+                     </div>
+                     <div class="w-full flex flex-col space-y-2 max-h-44 overflow-auto">
+                             <div *ngFor="let item of filterSanpham; trackBy:trackByFn" (click)="ChosenItem(item)" class="flex flex-row space-x-2 items-center p-2 rounded-lg hover:bg-slate-100">
+                                <span *ngIf="CheckItem(item)" class="material-symbols-outlined text-blue-600">check</span>   
+                                {{item.title}}                      
+                             </div>
+                     </div>
+                     <div class="flex flex-row space-x-2 items-end justify-end">
+                         <button mat-flat-button color="warn" (click)="menuTrigger.closeMenu()">Đóng</button>
+                         <button mat-flat-button color="primary" (click)="ApplyFilterColum(menuTrigger)" >Áp Dụng</button>
+                     </div>
+                     </div>
+         </mat-menu>
+
+
+         <button mat-flat-button color="primary" [disabled]="!isEdit()" class="lg:flex hidden whitespace-nowrap p-2 rounded-lg bg-slate-200" [matMenuTriggerFor]="menu1" #menuTrigger1="matMenuTrigger">
+          {{CheckListKhachhang.length}} Khách Hàng
+        </button>
+           <mat-menu  #menu1="matMenu">
+               <div (click)="$event.stopPropagation()"  class="cursor-pointer flex flex-col space-y-4 p-3">                                        
+               <div class="relative w-full">
+                   <input type="text"
+                       placeholder="Tìm Kiếm..." (keyup)="doFilterKhachhang($event)"
+                       class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                       <span class="material-symbols-outlined text-gray-500">search</span>
+                   </div>
+               </div>
+               <div class="w-full flex flex-col space-y-2 max-h-44 overflow-auto">
+                       <div *ngFor="let item of ListKhachhang; trackBy:trackByFn" (click)="ChosenKhachhang(item)" class="flex flex-row space-x-2 items-center p-2 rounded-lg hover:bg-slate-100">
+                          <span *ngIf="CheckKhachhang(item)" class="material-symbols-outlined text-blue-600">check</span>                        
+                          {{item.name}}
+                       </div>
+               </div>
+               <div class="flex flex-row space-x-2 items-end justify-end">
+                   <button mat-flat-button color="warn" (click)="menuTrigger1.closeMenu()">Đóng</button>
+                   <button mat-flat-button color="primary" (click)="ApplyKhachhang(menuTrigger1)">Áp Dụng</button>
+               </div>
+               </div>
+           </mat-menu>
+
+
+
+
+
+            <button [disabled]="!isEdit()" matTooltip="Tải file excel Mẫu" (click)="ExportExcel(dataSource(),'Banggia')" color="primary" mat-icon-button>
+              <mat-icon>file_download</mat-icon>
+           </button>
+            <button [disabled]="!isEdit()" matTooltip="Tải lên file excel" (click)="uploadfile.click()" color="primary" mat-icon-button>
+              <mat-icon>file_upload</mat-icon>
+          </button>
+          <input class="hidden" (change)="ImporExcel($event)" type="file" #uploadfile>
+          <button [disabled]="!isEdit()" mat-icon-button color="warn" (click)="EmptyCart()"><mat-icon>delete</mat-icon></button>
+            <button [disabled]="!isEdit()" matTooltip="Tải dữ liệu từ drive" (click)="LoadDrive()" color="primary" mat-icon-button>
+              <mat-icon>cloud_download</mat-icon>
+          </button>
+            <!-- <span class="lg:flex hidden whitespace-nowrap p-2 rounded-lg bg-slate-200">
+                {{CountItem()}} Sản Phẩm
+            </span> -->
+
+
+        </div>
+    </div>
+      <div class="w-full overflow-auto">
+        <table  class="!border w-full cursor-pointer" mat-table [dataSource]="dataSource()" matSort>
+            @for (column of displayedColumns; track column) {
+            <ng-container [matColumnDef]="column">
+                <th class="whitespace-nowrap" mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <span class="line-clamp-4 me-4">
+                        {{ ColumnName[column] }}
+                    </span>
+                </th>
+                <td mat-cell *matCellDef="let row; let idx = index">
+                    @switch (column) {
+                    @case ('STT') {
+                    <span class="max-w-20 line-clamp-4 flex flex-row items-center">
+                       <span>{{ idx + 1 }} </span>
+                        <button [disabled]="!isEdit()" mat-icon-button color="warn" (click)="RemoveSanpham(row)"><mat-icon>delete</mat-icon></button>
+                    </span>
+                    }
+                    @case ('giaban') {
+                  <div *ngIf="isEdit()"
+                      [contentEditable]="true"
+                      (blur)="updateValue($event,idx, row, 'giaban','number')"
+                      class="p-2 min-w-28 bg-slate-200 focus:border rounded-lg focus:border-blue-600 focus:bg-slate-100 focus:outline-none"
+                    >
+                    {{ row[column]||0|number:'1.0-2' }}
+                     </div>
+                     <span *ngIf="!isEdit()" class="max-w-20 line-clamp-4">
+                      {{ row[column]|number:'1.0-2' }}
+                    </span>
+                    }
+                    @case ('giagoc') {
+                      <span class="max-w-20 line-clamp-4">
+                        {{ row[column]|number:'1.0-2' }}
+                      </span>
+                      }
+                    @default {
+                    <span class="max-w-40 line-clamp-4">
+                        {{ row[column] }}
+                    </span>
+                    }
+                    }
+                </td>
+            </ng-container>
+            }
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell p-4" colspan="4">Không tìm thấy</td>
+            </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+    }
+
+
+
+<!--       
+      <mat-form-field appearance="outline" subscriptsizing="dynamic">
+        <mat-label>Nhà Cung Cấp</mat-label>
+        <mat-select [(ngModel)]="Detail.idNCC" (selectionChange)="SelectNhacungcap($event)">
+          <mat-option *ngFor="let item of FilterNhacungcap" [value]="item.id">
+            {{ item.MaNCC }} - {{ item.Title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid grid-cols-3 gap-2">
+        <ng-container *ngFor="let item of Detail?.Banggia; let idx = index; trackBy: trackByFn">
+          <mat-form-field appearance="outline" subscriptsizing="dynamic">
+            <mat-label></mat-label>
+            <mat-select [(ngModel)]="item.idSP" (selectionChange)="SelectBanggia($event)">
+              <mat-option *ngFor="let sp of FilterBanggia" [value]="sp.id">
+                {{ sp.Title }} [Tồn: {{ sp.Soluong }}{{ sp.dvt }}]
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptsizing="dynamic">
+            <mat-label>Số Lượng</mat-label>
+            <input matInput [(ngModel)]="item.Soluong" (change)="onChangeSoluong(item, $event)" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptsizing="dynamic">
+            <mat-label>Ghi Chú</mat-label>
+            <input matInput [(ngModel)]="item.Ghichu" placeholder="Nhập ghi chú" />
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="addBanggia()">
+        <mat-icon>add</mat-icon> Thêm 
+      </button> -->
+    </ng-container>
+
+  </ng-container>
+</div>

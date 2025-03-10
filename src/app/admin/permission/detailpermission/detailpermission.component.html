@@ -1,0 +1,85 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{ DetailPermission()?.name || 'Không có dữ liệu' }}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    <button mat-icon-button color="primary" *ngIf="isEdit()" (click)="handlePermissionAction()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" *ngIf="!isEdit()" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="toggleDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  <!-- Xác nhận Xóa -->
+  <ng-container *ngIf="isDelete()">
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">Đồng Ý</button>
+        <button mat-flat-button color="warn" (click)="toggleDelete()">Huỷ Bỏ</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isDelete()">
+    <ng-container>
+      <div class="w-full flex flex-col space-y-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Quyền</mat-label>
+          <input matInput [(ngModel)]="DetailPermission().name" (input)="FillSlug()" [disabled]="!isEdit()" placeholder="Vui lòng nhập Quyền"/>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Mã Sản Phẩm</mat-label>
+          <input matInput [(ngModel)]="DetailPermission().description" [disabled]="!isEdit()" placeholder="Vui lòng nhập Mô Tả"/>
+        </mat-form-field>
+      </div>
+
+ 
+
+<!--       
+      <mat-form-field appearance="outline">
+        <mat-label>Nhà Cung Cấp</mat-label>
+        <mat-select [(ngModel)]="Detail.idNCC" (selectionChange)="SelectNhacungcap($event)">
+          <mat-option *ngFor="let item of FilterNhacungcap" [value]="item.id">
+            {{ item.MaNCC }} - {{ item.Title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid grid-cols-3 gap-2">
+        <ng-container *ngFor="let item of Detail?.Permission; let idx = index; trackBy: trackByFn">
+          <mat-form-field appearance="outline">
+            <mat-label>Sản Phẩm</mat-label>
+            <mat-select [(ngModel)]="item.idSP" (selectionChange)="SelectPermission($event)">
+              <mat-option *ngFor="let sp of FilterPermission" [value]="sp.id">
+                {{ sp.Title }} [Tồn: {{ sp.Soluong }}{{ sp.dvt }}]
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Số Lượng</mat-label>
+            <input matInput [(ngModel)]="item.Soluong" (change)="onChangeSoluong(item, $event)" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Ghi Chú</mat-label>
+            <input matInput [(ngModel)]="item.Ghichu" placeholder="Nhập ghi chú" />
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <button mat-flat-button color="primary" (click)="addPermission()">
+        <mat-icon>add</mat-icon> Thêm Sản Phẩm
+      </button> -->
+    </ng-container>
+
+  </ng-container>
+</div>

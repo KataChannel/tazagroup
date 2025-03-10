@@ -1,0 +1,41 @@
+<div class="ml-10 flex items-baseline space-x-4">
+    <!-- {{Menus|json}} -->
+    @for (topLevelItem of Menus; track topLevelItem.id; let idx = $index, e = $even, first = $first, last = $last) {
+        <div class="group">
+            @if(topLevelItem?.children && topLevelItem?.children.length > 0){
+                <button class="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
+                    {{ topLevelItem.Title }}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1 inline" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+            }
+            @if(!topLevelItem?.children || topLevelItem?.children.length === 0){
+                <a [href]="topLevelItem.Slug" class="!text-white px-3 py-2 rounded-md text-sm font-medium">{{topLevelItem.Title}}</a>
+            }
+            @if(topLevelItem?.children && topLevelItem?.children.length > 0){
+                <div class="absolute w-[80vw] left-1/2 transform -translate-x-1/2 z-10 hidden group-hover:block bg-white rounded-md shadow-lg py-1">
+                    <div class="grid grid-cols-3 gap-4 p-4">
+                        @for (childItem of topLevelItem?.children; track childItem.id; let idx = $index, e = $even, first = $first, last = $last) {
+                            <div>
+                                <a [href]="childItem.Slug+'-'+childItem.View" class="block px-4 py-2 text-sm">
+                                    <h3 class="font-medium mb-2">{{ childItem.Title }}</h3>
+                                </a>
+                                @if(!childItem?.children || childItem?.children.length === 0){
+                                    <a [href]="childItem.Slug+'-'+childItem.View" class="block ml-2 px-4 py-2 text-sm">{{childItem.Title}}</a>
+                                }
+                                @if(childItem?.children && childItem?.children.length > 0){
+                                    <div>
+                                        @for (grandChild of childItem?.children; track grandChild.id; let idx = $index, e = $even, first = $first, last = $last) {
+                                            <a [href]="grandChild.Slug+'-'+childItem.View" class="block px-4 py-2 text-sm">{{grandChild.Title}}</a> 
+                                        }     
+                                      </div>
+                                }
+                            </div> 
+                        }  
+                    </div>
+                  </div>
+            }
+          </div>
+    }
+  </div>

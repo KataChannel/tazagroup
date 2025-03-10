@@ -1,0 +1,125 @@
+<mat-drawer-container class="!w-screen !h-screen" autosize>
+  <mat-drawer #drawer class="" mode="side" position="start">
+    <div class="relative h-full flex flex-col space-y-2">
+      <div class="relative flex flex-col space-y-2 p-2">
+        <img [src]="Config.Logoimage" class="h-10 object-fill" alt="Logo">
+      </div>
+      <div class="relative h-full overflow-auto p-2">
+        <app-treemenu [ListMenu]="ListMenu"></app-treemenu>
+        <!-- <mat-tree class="cursor-pointer flex flex-col space-y-2" [dataSource]="dataSource" [treeControl]="treeControl">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <a [routerLink]="[node.node.slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-300"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button disabled></button>
+              <span>{{node.node.title}}</span>
+            </a>
+          </mat-tree-node>
+          <mat-tree-node class="flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-300"
+            routerLinkActive="bg-slate-300" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding
+            matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.title">
+            <a [routerLink]="[node.node.slug]"
+              class="w-full flex flex-row space-x-2 items-center rounded-lg hover:bg-slate-300"
+              routerLinkActive="bg-slate-300">
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.title">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              <span [routerLink]="[node.node.slug]"> {{node.node.title}} </span>
+            </a>
+          </mat-tree-node>
+        </mat-tree> -->
+      </div>
+      <div class="relative w-full justify-between flex flex-row space-x-2 items-center p-2">
+        <div class="flex flex-row space-x-2">
+          <img [src]="User?.Avatar" alt="Avatar" class="max-w-14 max-h-14 object-cover rounded-full">
+          <div class="flex flex-col">
+            <div class="font-bold">{{User?.Hoten}}</div>
+            <div class="italic text-xs">{{User?.Vitri}}</div>
+            <div class="italic text-xs">{{User?.email}}</div>    
+          </div>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <a [routerLink]="['/admin/profile']" mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Profile</span>
+          </a>
+          <a [routerLink]="['/admin/account']" mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Account</span>
+          </a>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+          <button mat-menu-item  (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-drawer>
+
+  <div class="relative flex flex-col w-full h-full primary">
+    <div class="relative flex flex-row space-x-2 justify-between items-center p-1 bg-[#57A345]">
+      <div class="flex flex-row space-x-2 items-center">
+        <button mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <button mat-icon-button><mat-icon>search</mat-icon></button>
+        <!-- <div class="relative max-w-xl flex flex-row items-center">
+          <input type="text" placeholder="Tìm Kiếm..."
+            class="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <span class="material-symbols-outlined text-gray-500">search</span>
+          </div>
+        </div> -->
+
+      </div>
+      <div class="flex flex-row space-x-2 items-center">
+        <button mat-icon-button (click)="ClearCache()">
+          <mat-icon>cached</mat-icon>
+        </button>
+        <button mat-icon-button (click)="drawer1.toggle()">
+          <mat-icon>dashboard</mat-icon>
+        </button>
+        <button mat-icon-button (click)="drawer1.toggle()">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button mat-icon-button (click)="drawer1.toggle()">
+          <mat-icon>chat</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="menu1">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #menu1="matMenu">
+          <div class="flex flex-row space-x-2 items-center p-4">
+            <img [src]="User?.Avatar" alt="Avatar" class="max-w-14 max-h-14 object-cover rounded-full">
+            <div class="flex flex-col">
+              <div class="font-bold">{{User?.Hoten}}</div>
+              <div class="italic text-xs">{{User?.Vitri}}</div>
+              <div class="italic text-xs">{{User?.email}}</div>
+            </div>
+          </div>
+          <a [href]="'/admin/profile'" mat-menu-item>Thông Tin</a>
+          <button mat-menu-item>Cài Đặt</button>
+          <button mat-menu-item (click)="logout()">Đăng Xuất</button>
+        </mat-menu>
+
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+
+
+  <mat-drawer #drawer1 class="{{isFullscreen?'!w-screen':'!w-1/3'}}" mode="over" position="end">
+    <div class="relative h-full flex flex-col space-y-2">
+      <!-- <app-conversation></app-conversation> -->
+    </div>
+  </mat-drawer>
+</mat-drawer-container>

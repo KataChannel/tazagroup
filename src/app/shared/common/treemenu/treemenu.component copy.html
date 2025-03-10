@@ -1,0 +1,22 @@
+@if(ListMenu.length>0)
+{
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node">
+          <button mat-icon-button disabled></button>
+          {{node.Title}}
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodeToggle
+                       [cdkTreeNodeTypeaheadLabel]="node.Title">
+          <button mat-icon-button matTreeNodeToggle
+                  [attr.aria-label]="'Toggle ' + node.Title">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          {{node.Title}}
+        </mat-tree-node>
+      </mat-tree>
+}
+@else {
+    <span class="p-2 text-center">Chưa Có Dữ Liệu</span>
+}

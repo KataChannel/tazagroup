@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{Bb as n,Cc as r,dc as o,ec as s}from"./chunk-BVD4RUSS.mjs";import"./chunk-KB5IWD3E.mjs";import"./chunk-RIAI3ORJ.mjs";var i=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=n({type:t,selectors:[["app-register"]],decls:2,vars:0,template:function(e,a){e&1&&(o(0,"p"),r(1,"register works!"),s())},encapsulation:2})};export{i as RegisterComponent};

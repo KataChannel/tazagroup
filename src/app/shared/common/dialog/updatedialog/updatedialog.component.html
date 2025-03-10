@@ -1,0 +1,23 @@
+<div class="p-8 lg:w-[50vw] w-[80vw] max-h-[90vh] flex flex-col space-y-8">
+  <span class="relative font-bold text-xl">Cập Nhật</span>
+  <div class="relative flex flex-col w-full p-4 overflow-auto">
+    @for (item of Forms; track item.id; let idx = $index) {
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{item.Title}}</mat-label>
+        <input matInput [(ngModel)]="Detail[item.value]" [ngModelOptions]="{standalone: true}" [placeholder]="item.Title">
+      </mat-form-field>
+    }
+    @empty {
+      <span class="p-2 text-center">There are no items.</span>
+     }
+    </div>
+  <div class="relative flex flex-row space-x-2 justify-center">
+      <button (click)="onSaveClick()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Đồng Ý
+      </button>
+      <button mat-dialog-close="false" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          Đóng
+      </button>
+  </div> 
+</div>
+  

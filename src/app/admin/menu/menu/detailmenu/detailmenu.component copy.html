@@ -1,0 +1,150 @@
+<div class="flex flex-row justify-between items-center space-x-2 p-2">
+  <button mat-icon-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="font-bold">{{Detail?.MaDH||'Không có dữ liệu'}}</div>
+  <div class="flex flex-row space-x-2 items-center">
+    @if(isEdit==true){
+      <button mat-icon-button color="primary" (click)="handleMenuAction()">
+          <mat-icon>save</mat-icon>
+      </button>
+    }
+    @else{
+      <button mat-icon-button color="primary" (click)="isEdit=true">
+          <mat-icon>edit</mat-icon>
+
+      </button>
+    }
+      <button mat-icon-button color="warn" (click)="isDelete=true">
+          <mat-icon>delete</mat-icon>
+      </button>
+  </div>
+</div>
+<div class="relative flex flex-col w-full p-4 overflow-auto">
+  @if(isDelete==true){
+    <div class="flex flex-col space-y-4 items-center justify-center">
+      <div class="font-bold text-2xl">Bạn chắc chắn muốn xoá không?</div>
+      <div class="flex flex-row space-x-2 items-center justify-center">
+        <button mat-flat-button color="primary" (click)="DeleteData()">
+          Đồng Ý
+        </button>
+        <button mat-flat-button color="warn" (click)="isDelete=false">
+          Huỷ Bỏ
+        </button>
+      </div>
+    </div>
+  }
+  @else {
+    <div *ngIf="!isEdit" class="flex flex-col space-y-2 justify-center items-center border p-4 rounded-lg">
+        <div class="font-bold p-2 rounded-lg border">{{Detail?.Nhacungcap?.Title}}</div>
+        <div>{{Detail?.CreateAt|date:'dd/MM/yyyy'}}</div>
+        <table class="min-w-full divide-y divide-gray-200 border">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                STT
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Sản Phẩm
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Số Lượng
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ghi Chú
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let item of Detail.Sanpham; let i = index">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ i + 1 }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ GetInfoSanpham(item.idSP)?.Title }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ item.Soluong }}   {{ GetInfoSanpham(item.idSP)?.dvt }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ item.Ghichu }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+    <div *ngIf="isEdit" class="flex flex-col space-y-2">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nhà Cung Cấp</mat-label>
+        <mat-select [disabled]="!isEdit" [(ngModel)]="Detail.idNCC" [ngModelOptions]="{ standalone: true }"
+          (selectionChange)="SelectNhacungcap($event)">
+          <div class="w-full flex flex-col px-4">
+            <div class="flex flex-row space-x-2 items-center">
+              <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                <input matInput (input)="DoFindNhacungcap($event)" placeholder="Tìm Kiếm" />
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="CreateNCC()">
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </div>
+            <div class="overflow-y-auto max-h-44">
+              @for (item of FilterNhacungcap; track item.id) {
+              <mat-option [value]="item.id">{{item.MaNCC}} - {{item.Title}}</mat-option>
+              }
+            </div>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <div class="grid grid-cols-3 gap-2">
+      @for (item of Detail.Sanpham; track item.id; let idx = $index) {
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Sản Phẩm</mat-label>
+          <mat-select [disabled]="!isEdit"  [(ngModel)]="Detail.Sanpham[idx].idSP" [ngModelOptions]="{ standalone: true }"
+            (selectionChange)="SelectSanpham($event)">
+            <div class="w-full flex flex-col px-4">
+              <div class="flex flex-row space-x-2 items-center">
+                <mat-form-field appearance="outline" class="w-full p-2" subscriptSizing="dynamic">
+                  <input matInput (input)="DoFindSanpham($event)" placeholder="Tìm Kiếm" />
+                </mat-form-field>
+                <button mat-icon-button color="primary">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </div>
+              <div class="overflow-y-auto max-h-44">
+                @for (item of FilterSanpham; track item.id) {
+                <mat-option [value]="item.id">{{item.Title}} [Tồn : {{item.Soluong}}{{item.dvt}}]</mat-option>
+                }
+              </div>
+            </div>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Số Lượng</mat-label>
+          <input matInput [disabled]="!isEdit" [(ngModel)]="item.Soluong" (change)="onChangeSoluong(item,$event)"  [ngModelOptions]="{ standalone: true }" placeholder="Vui lòng Nhập Số Điện Thoại" />
+      </mat-form-field> 
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Ghi Chú</mat-label>
+          <input matInput [disabled]="!isEdit" [(ngModel)]="Detail.Sanpham[idx].Ghichu"  [ngModelOptions]="{ standalone: true }" placeholder="Vui lòng Nhập Ghi Chú" />
+      </mat-form-field> 
+      }
+    </div>
+     <div>
+      <button [disabled]="!isEdit" mat-flat-button color="primary" (click)="Detail.Sanpham.push({idSP:'',Soluong:0,Ghichu:''})">
+        <span>Thêm</span>
+        <mat-icon>add</mat-icon>
+      </button>
+     </div>
+
+      </div>
+
+    <!-- @for (item of Detail?.Forms; track item.id; let idx = $index) {
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{item.Title}}</mat-label>
+        <input matInput [(ngModel)]="Detail?.Data[item.value]" [disabled]="!isEdit" [ngModelOptions]="{standalone: true}" [placeholder]="item.Title">
+      </mat-form-field>
+    }
+    @empty {
+      <span class="p-2 text-center">There are no items.</span>
+     } -->
+  }
+</div>

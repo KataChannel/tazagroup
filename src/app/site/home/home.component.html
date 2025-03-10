@@ -1,0 +1,33 @@
+<div class="flex flex-col space-y-16 justify-center text-center">
+<app-swiper class="bg-[#57A345]/50" />
+<app-keyfigures class="container mx-auto" />
+<!-- <div class="bg-[#F3E5AB] w-full">
+    <app-gioithieu class="container mx-auto" />
+</div> -->
+<!-- <app-products class="container mx-auto" /> -->
+
+<div class="container m-auto flex flex-col space-y-2 rounded-lg bg-white py-8">
+    <h2 class="text-center !text-2xl text-primary !mb-0 font-bold text-gray-800 uppercase">Sản Phẩm Nổi Bật</h2>
+    <app-swiper [Type]="'sanpham'" [Config]="SanphamNoibatConfig" [slides]="ListSanpham"/>
+</div>
+
+
+<div class="flex flex-col space-y-2 rounded-lg bg-white">
+    <h2 class="text-center !text-2xl text-primary !mb-0 font-bold text-gray-800 ">CHUYÊN GIA DA LIỄU HÀNG ĐẦU NÓI GÌ VỀ Rau Sạch Trần Gia</h2>
+    <app-swiper [Config]="ChuyenGiaConfig" [Type]="'review'" [slides]="ListReview"/>
+</div>
+<div class="w-full relative lg:!-my-16">
+    <img src="/demo/dangkydemo.png" class="opacity-50 w-full object-cover" alt="Banner">
+    <div class="max-w-md absolute top-1/2 lg:left-1/2 transform lg:-translate-x-1/2 -translate-y-1/2 text-center">
+    <h2 class="lg:block hidden text-2xl font-bold text-[#57A345]">ĐĂNG KÝ DEMO SẢN PHẨM Rau Sạch Trần Gia</h2>
+    <button class="px-6 py-2 bg-[#57A345] text-white font-bold rounded-full">GỬI TIN NHẮN NGAY</button>
+    <p class="text-[#57A345] text-sm !mt-4">* Lưu ý: Chương trình chỉ áp dụng cho đối tác chủ spa/ chuyên gia/ bác sĩ trong ngành y khoa thẩm mỹ và làm đẹp.</p>
+</div>
+
+</div>
+<div class="container m-auto flex flex-col space-y-2 rounded-lg bg-white py-8">
+    <h2 class="text-center !text-2xl text-primary !mb-0 font-bold text-gray-800 uppercase">Tin Tức Sự Kiện</h2>
+    <app-swiper [Config]="BaivietConfig" [Type]="'Baiviet'" [slides]="ListBaiviet"/>
+</div>
+<!-- <app-contactform class="container mx-auto py-4"/> -->
+</div>

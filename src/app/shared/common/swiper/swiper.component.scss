@@ -1,0 +1,26 @@
+.swiper-button-next, .swiper-button-prev {
+    /* Change color, size, background, etc. */
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  
+  .swiper-button-prev::after {
+    font-family: 'Material Icons';
+    content: 'chevron_left'; 
+  }
+  
+  .swiper-button-next::after {
+    font-family: 'Material Icons';
+    content: 'chevron_right';
+  }
+
+  .swiper-pagination {
+    /* Position, size, etc. of the overall pagination container */
+    bottom: 20px; 
+  }
+  .swiper-pagination-bullet-active {
+    opacity: var(--swiper-pagination-bullet-opacity, 1);
+    background: white !important;
+  }

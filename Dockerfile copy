@@ -1,0 +1,23 @@
+# # Sử dụng Bun image
+# FROM oven/bun:latest AS build
+
+# WORKDIR /app
+
+# # Copy project files
+# COPY . .
+
+# # Cài đặt dependencies và build Angular SSR
+# RUN bun install
+# RUN bun run build:ssr
+
+# # Production stage
+# FROM oven/bun:latest AS production
+
+# WORKDIR /app
+
+# # Copy build từ stage trước
+# COPY --from=build /app/dist /app/dist
+# COPY --from=build /app/server.ts /app/server.ts
+
+# # Chạy server SSR bằng Bun
+# CMD ["bun", "server.ts"]

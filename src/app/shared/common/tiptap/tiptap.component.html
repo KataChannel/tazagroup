@@ -1,0 +1,9 @@
+<div class="editor-container">
+    <div class="toolbar">
+      <button (click)="editor.chain().focus().toggleBold().run()" [class.active]="editor.isActive('bold')">B</button>
+      <button (click)="editor.chain().focus().toggleItalic().run()" [class.active]="editor.isActive('italic')">I</button>
+      <button (click)="editor.chain().focus().toggleUnderline().run()" [class.active]="editor.isActive('underline')">U</button>
+    </div>
+    <div class="editor" [innerHTML]="editor.getHTML()" contenteditable="true"></div>
+</div>
+  

@@ -1,0 +1,6 @@
+<span role="button" aria-pressed="false" tabindex="0" class="cursor-pointer mx-2 p-2 rounded-lg bg-white" [matMenuTriggerFor]="menu">Teamplate v1.3</span>
+<mat-menu #menu="matMenu">
+    @for (item of ListTeamplate; track item.id) {
+        <button mat-menu-item (click)="ChangeTeamplate(item)">{{item.Title}}</button>
+      }
+</mat-menu>

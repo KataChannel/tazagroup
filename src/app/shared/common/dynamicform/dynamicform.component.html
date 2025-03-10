@@ -1,0 +1,23 @@
+   <div class="w-full flex flex-col space-y-8">
+   <div [class]="CusClass.Main">
+        @for (item of Detail.Forms; track item.id; let idx = $index) {
+            <mat-form-field  [appearance]="'outline'" [subscriptSizing]="'dynamic'" class="w-full">
+              <mat-label>{{item.Title}}</mat-label>
+              <input matInput [(ngModel)]="Detail.Data[item.value]" [ngModelOptions]="{standalone: true}" [placeholder]="item.Title">
+            </mat-form-field>
+         }
+    </div>
+    <div [class]="CusClass.Footer">
+        <button mat-flat-button color="primary">
+            <mat-icon>check</mat-icon>
+            Lưu
+          </button>
+        <button mat-flat-button color="warn">
+            <mat-icon>cancel</mat-icon>
+             Huỷ
+          </button>
+     </div>
+    </div>
+
+
+

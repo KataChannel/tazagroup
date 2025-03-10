@@ -1,0 +1,83 @@
+/* ========== Global Styles ========== */
+body {
+    background-color: #FFFFFF; /* Nền chính */
+    color: #57A345; /* Văn bản chính */
+    font-family: Arial, sans-serif;
+  }
+  
+  h1, h2, h3 {
+    color: #57A345; /* Tiêu đề hoặc nút chính */
+  }
+  
+  p, span {
+    color: #3E2723; /* Phần phụ, nội dung bổ sung */
+  }
+  
+  /* ========== Buttons ========== */
+  button.primary {
+    background-color: #57A345; /* Nút chính */
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button.primary:hover {
+    background-color: #D4AF37; /* Điểm nhấn hoặc hover hiệu ứng */
+    color: #57A345;
+  }
+  
+  button.secondary {
+    background-color: #B89F94; /* Phần phụ */
+    color: #3E2723;
+    padding: 10px 20px;
+    border: 1px solid #57A345;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button.secondary:hover {
+    background-color: #F3E5AB; /* Phần làm sáng hoặc tạo điểm nhấn nhẹ */
+  }
+  
+  /* ========== Card Styles ========== */
+  .card {
+    background-color: #B89F94; /* Phần phụ */
+    color: #57A345;
+    padding: 20px;
+    border: 1px solid #D4AF37; /* Viền điểm nhấn */
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+  
+  .card-header {
+    background-color: #3E2723; /* Khối đậm */
+    color: #F3E5AB;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .card-body {
+    padding: 10px;
+    color: #57A345;
+  }
+  
+  /* ========== Links ========== */
+  a {
+    color: #57A345;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #D4AF37; /* Điểm nhấn */
+  }
+  
+  /* ========== Footer ========== */
+  footer {
+    background-color: #3E2723; /* Khối đậm */
+    color: #F3E5AB;
+    padding: 20px;
+    text-align: center;
+  }
+  

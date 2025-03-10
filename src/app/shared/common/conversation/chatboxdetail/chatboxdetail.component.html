@@ -1,0 +1,47 @@
+<div #chatContainer class="flex w-full h-full flex-col overflow-auto {{ChatDetail.length>0?'':'items-center'}} space-y-2 p-4 {{isChat?'!pb-20':''}} bg-slate-50">
+    @for (item of ChatDetail.messages; track item; let last = $last) {
+        @if(item.message!='')
+        { 
+            <!-- {{last?'!mb-20':''}} -->
+            <div class="flex flex-col space-y-1 {{item.idSender!=ChatDetail.User.id?'ml-auto bg-blue-100 ':'mr-auto bg-white'}} rounded-lg p-2 max-w-[80%]">
+              <span class="font-bold {{item.idSender!=ChatDetail.User.id?'hidden':''}}">{{ChatDetail.User.Hoten}}</span> 
+              <span class="truncate"> {{item.message}}</span>
+                <div class="flex flex-row space-x-4">
+                     @switch (item.Status) {
+                         @case (1) {
+                            <div class="flex flex-row items-center text-blue-500">
+                                <span class="material-symbols-outlined">done_all</span>
+                                <span class="italic text-xs">Đã Nhận</span>
+                            </div>
+                         }
+                         @case (2) {
+                            <div class="flex flex-row items-center text-green-500">
+                                <span class="material-symbols-outlined">check_small</span>
+                                <span class="italic text-xs">Đã Xem</span>
+                            </div>
+                         }
+                         @default {
+                            <div class="flex flex-row items-center text-orange-500">
+                                <span class="material-symbols-outlined">check_small</span>
+                                <span class="italic text-xs">Đã Gửi</span>
+                            </div>
+                         }
+                       }
+                   <span class="flex flex-row space-x-1 items-center text-xs italic"> 
+                        <span class="material-symbols-outlined text-xs">schedule</span> 
+                        <span>{{getTimeNow(item.timestamp)}}</span>
+                     </span>
+                </div>
+            </div>
+    
+        }
+    }
+    @empty {
+        <div class="w-full h-full flex flex-col space-y-2 items-center justify-center">
+            <span class="material-symbols-outlined text-8xl">
+                chat
+                </span>
+           <span> Vui lòng chọn đối tác để trò chuyện</span>
+        </div>  
+      }
+  </div>
