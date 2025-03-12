@@ -1,10 +1,10 @@
 on:
   push:
-    branches:
-      - main # Trigger deployment on push to the main branch
   schedule:
     - cron: '*/10 * * * *' # Run every 10 minutes for ISR
+
 name: Deploy Frontend V2 with ISR
+
 jobs:
   web-deploy:
     name: Deploy with ISR
@@ -13,26 +13,29 @@ jobs:
       - name: Get latest code
         uses: actions/checkout@v4
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 18 # Specify the Node.js version
+      - name: Check if dist folder exists
+        id: check-dist
+        run: |
+          if [ -d "./dist/frontend" ]; then
+            echo "Dist folder exists, skipping build"
+            echo "skip_build=true" >> $GITHUB_ENV
+          else
+            echo "Dist folder not found, running build"
+            echo "skip_build=false" >> $GITHUB_ENV
+          fi
 
-      - name: Install dependencies
+      - name: Install dependencies & Build (if needed)
+        if: env.skip_build == 'false'
         run: |
           npm install --force
           npm i @rollup/rollup-linux-x64-gnu --force
-
-      - name: Fetch and update dynamic data
-        run: |
-          node scripts/update-data.js
           npm run build -- --configuration production --prerender
 
       - name: Sync build folder only
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: tazagroup.vn
-          username: tazaspac
-          password: '@Taza#Group*2020'
-          local-dir: ./dist/elasome/ # <-- Specify the local "build" folder
-          server-dir: elasome/sandbox/  # Destination on server
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/frontend/ # Chỉ upload thư mục đã build
+          server-dir: public_html/addonwebsite/v2tazagroup/site/
