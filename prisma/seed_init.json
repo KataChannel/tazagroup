@@ -1,0 +1,392 @@
+{
+  "Banggia": [],
+  "Banggiasanpham": [],
+  "Congty": [],
+  "Dathang": [],
+  "Dathangsanpham": [],
+  "Donhang": [],
+  "Donhangsanpham": [],
+  "Khachhang": [],
+  "Kho": [],
+  "Menu": [
+    {
+      "id": "af1e7c0b-5886-4a1d-b7fd-e6ff457b4248",
+      "title": "Sản Phẩm",
+      "icon": null,
+      "slug": "/admin/sanpham",
+      "parentId": null,
+      "order": 1,
+      "isActive": true,
+      "createdAt": "2025-02-22T17:51:53.358Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "73f27006-bcf4-4de0-a9dd-fd8caa2caf83",
+      "title": "Bảng Giá",
+      "icon": null,
+      "slug": "/admin/banggia",
+      "parentId": null,
+      "order": 2,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "d6f09514-e2f3-40d6-b0a8-12baa5f18320",
+      "title": "Đơn hàng",
+      "icon": null,
+      "slug": "/admin/donhang",
+      "parentId": null,
+      "order": 4,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:07:21.788Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "9868f801-38fd-45e0-a890-ee570684ac79",
+      "title": "Nhà Cung Cấp",
+      "icon": null,
+      "slug": "/admin/nhacungcap",
+      "parentId": null,
+      "order": 5,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "0b3d3ce0-9222-4962-8771-6fd6fa35f7bc",
+      "title": "Đặt hàng",
+      "icon": null,
+      "slug": "/admin/dathang",
+      "parentId": null,
+      "order": 6,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "239a76bd-7d74-4ead-9323-bb16cc1c9460",
+      "title": "Menu",
+      "icon": null,
+      "slug": "/admin/menu",
+      "parentId": null,
+      "order": 10,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:15:00.528Z",
+      "updatedAt": "2025-02-22T19:34:38.106Z"
+    },
+    {
+      "id": "a1674f3a-1dc7-47be-bde1-72a734c5fffe",
+      "title": "Vận đơn",
+      "icon": null,
+      "slug": "/admin/vandon",
+      "parentId": "5d15c9dc-19a1-4bd2-b1be-01749d308d96",
+      "order": 7,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "5d15c9dc-19a1-4bd2-b1be-01749d308d96",
+      "title": "Kho Vận",
+      "icon": null,
+      "slug": "/admin/khovan",
+      "parentId": null,
+      "order": 12,
+      "isActive": true,
+      "createdAt": "2025-03-04T06:37:19.593Z",
+      "updatedAt": "2025-03-04T06:37:19.593Z"
+    },
+    {
+      "id": "98167258-b236-4a7d-83a4-2465345ba435",
+      "title": "Quản Lý User",
+      "icon": null,
+      "slug": "quan-ly-user",
+      "parentId": null,
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-04T12:18:43.628Z",
+      "updatedAt": "2025-03-04T12:18:43.628Z"
+    },
+    {
+      "id": "192328e2-5574-4e9f-b199-ab452350632a",
+      "title": "User",
+      "icon": null,
+      "slug": "/admin/user",
+      "parentId": "98167258-b236-4a7d-83a4-2465345ba435",
+      "order": 11,
+      "isActive": true,
+      "createdAt": "2025-03-04T06:19:57.510Z",
+      "updatedAt": "2025-03-04T06:19:57.510Z"
+    },
+    {
+      "id": "10b5960c-99c5-4978-ac42-7636f8c652b7",
+      "title": "Nhóm User",
+      "icon": null,
+      "slug": "/admin/nhomuser",
+      "parentId": "98167258-b236-4a7d-83a4-2465345ba435",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-04T12:20:10.131Z",
+      "updatedAt": "2025-03-04T12:20:10.131Z"
+    },
+    {
+      "id": "44513a5f-7d6b-4962-b98a-5af5f41498e5",
+      "title": "Phân Quyền",
+      "icon": null,
+      "slug": "/admin/permission",
+      "parentId": "98167258-b236-4a7d-83a4-2465345ba435",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-04T12:19:34.053Z",
+      "updatedAt": "2025-03-04T12:19:34.053Z"
+    },
+    {
+      "id": "25b5024e-3764-4e83-91d1-6b5550b4f1f8",
+      "title": "Quản Lý Khách Hàng",
+      "icon": null,
+      "slug": "quan-ly-khach-hang",
+      "parentId": null,
+      "order": null,
+      "isActive": false,
+      "createdAt": "2025-03-04T16:23:01.557Z",
+      "updatedAt": "2025-03-04T16:23:01.557Z"
+    },
+    {
+      "id": "360f9354-e14d-4d95-b850-c9339dfd1520",
+      "title": "Khách Hàng",
+      "icon": null,
+      "slug": "/admin/khachhang",
+      "parentId": "25b5024e-3764-4e83-91d1-6b5550b4f1f8",
+      "order": 3,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "889e6d8f-0157-4942-8964-bd1d733c665a",
+      "title": "Nhóm Khách Hàng",
+      "icon": null,
+      "slug": "/admin/nhomkhachhang",
+      "parentId": "25b5024e-3764-4e83-91d1-6b5550b4f1f8",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-04T16:23:35.916Z",
+      "updatedAt": "2025-03-04T16:23:35.916Z"
+    },
+    {
+      "id": "67837174-8f36-442c-af22-3a8e05cb8ecd",
+      "title": "Xuất Nhập Tồn",
+      "icon": null,
+      "slug": "/admin/xuatnhapton",
+      "parentId": "97d9216e-eb01-4db7-a671-640131830ac3",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-05T01:22:54.857Z",
+      "updatedAt": "2025-03-05T01:22:54.857Z"
+    },
+    {
+      "id": "d8019643-a950-4cb2-9b2e-db988d37e663",
+      "title": "Kho",
+      "icon": null,
+      "slug": "/admin/kho",
+      "parentId": "97d9216e-eb01-4db7-a671-640131830ac3",
+      "order": 9,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:34:38.106Z"
+    },
+    {
+      "id": "97d9216e-eb01-4db7-a671-640131830ac3",
+      "title": "Quản Lý Kho",
+      "icon": null,
+      "slug": "quan-ly-kho",
+      "parentId": null,
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-05T01:22:14.770Z",
+      "updatedAt": "2025-03-05T01:22:14.770Z"
+    },
+    {
+      "id": "6a0eb8f8-ba03-4f31-9504-50d126ed39dc",
+      "title": "Phiếu Kho",
+      "icon": null,
+      "slug": "/admin/phieukho",
+      "parentId": "97d9216e-eb01-4db7-a671-640131830ac3",
+      "order": 8,
+      "isActive": true,
+      "createdAt": "2025-02-22T18:13:16.660Z",
+      "updatedAt": "2025-02-22T19:33:46.417Z"
+    },
+    {
+      "id": "a8f32550-908e-4e56-a132-99f2fa2fc804",
+      "title": "Kế Toán",
+      "icon": null,
+      "slug": "ke-toan",
+      "parentId": null,
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-05T01:37:03.965Z",
+      "updatedAt": "2025-03-05T01:37:03.965Z"
+    },
+    {
+      "id": "9ec594f1-7ea4-4df6-acbf-b382ba0d791e",
+      "title": "Theo dõi CN KH",
+      "icon": null,
+      "slug": "/admin/cnkh",
+      "parentId": "a8f32550-908e-4e56-a132-99f2fa2fc804",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-06T03:25:09.605Z",
+      "updatedAt": "2025-03-06T03:25:09.605Z"
+    },
+    {
+      "id": "d651ddfb-0f22-4a9b-aba1-8fa1fe81c6d5",
+      "title": "Đối chiếu CNKH",
+      "icon": null,
+      "slug": "/admin/dccnkh",
+      "parentId": "a8f32550-908e-4e56-a132-99f2fa2fc804",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-06T03:25:54.636Z",
+      "updatedAt": "2025-03-06T03:25:54.636Z"
+    },
+    {
+      "id": "49e8a2aa-1440-451a-815c-fcbc2fe2d6c7",
+      "title": "Đối Chiếu CNNCC",
+      "icon": null,
+      "slug": "/admin/dccnncc",
+      "parentId": "a8f32550-908e-4e56-a132-99f2fa2fc804",
+      "order": null,
+      "isActive": false,
+      "createdAt": "2025-03-06T03:26:15.579Z",
+      "updatedAt": "2025-03-06T03:26:15.579Z"
+    },
+    {
+      "id": "26c1a56f-5624-4e99-ad5b-9690ac0c8a9b",
+      "title": "Phiếu Giao",
+      "icon": null,
+      "slug": "/admin/phieugiaohang",
+      "parentId": "5d15c9dc-19a1-4bd2-b1be-01749d308d96",
+      "order": null,
+      "isActive": true,
+      "createdAt": "2025-03-04T08:29:49.815Z",
+      "updatedAt": "2025-03-04T08:29:49.815Z"
+    }
+  ],
+  "Nhacungcap": [],
+  "Nhomkhachhang": [],
+  "Permission": [
+    {
+      "id": "8c39977e-2556-464e-8cb6-14bc78338d55",
+      "name": "donhang.view",
+      "description": null,
+      "createdAt": "2025-03-07T01:03:13.245Z",
+      "updatedAt": "2025-03-07T01:03:13.245Z"
+    },
+    {
+      "id": "5c7aac74-796d-4c18-a1a3-061b3c011ded",
+      "name": "donhang.edit",
+      "description": null,
+      "createdAt": "2025-03-07T01:07:00.598Z",
+      "updatedAt": "2025-03-07T01:07:00.598Z"
+    },
+    {
+      "id": "cb5f970d-dd64-4652-bf4e-26c391bb2ea1",
+      "name": "donhang.delete",
+      "description": null,
+      "createdAt": "2025-03-07T01:07:24.834Z",
+      "updatedAt": "2025-03-07T01:07:24.834Z"
+    },
+    {
+      "id": "55a32069-092c-45de-83ca-5e9a3c62c6cf",
+      "name": "user.view",
+      "description": "Xem Module Users",
+      "createdAt": "2025-03-07T02:20:20.487Z",
+      "updatedAt": "2025-03-07T02:20:20.487Z"
+    },
+    {
+      "id": "9d41b26c-2cc9-473e-a197-9c400ffe0ce1",
+      "name": "permission.view",
+      "description": "Xem Permission",
+      "createdAt": "2025-03-07T04:03:41.982Z",
+      "updatedAt": "2025-03-07T04:02:57.678Z"
+    },
+    {
+      "id": "6712fb26-0aa5-425f-9182-9a82c9c918ab",
+      "name": "nhomuser.view",
+      "description": null,
+      "createdAt": "2025-03-07T04:12:54.868Z",
+      "updatedAt": "2025-03-07T04:12:54.868Z"
+    },
+    {
+      "id": "7b4fb065-2f2a-4ddb-8923-ebb4b90a90a8",
+      "name": "sanpham.view",
+      "description": null,
+      "createdAt": "2025-03-07T06:24:24.837Z",
+      "updatedAt": "2025-03-07T06:24:24.837Z"
+    },
+    {
+      "id": "549ec602-49b9-488f-999c-2684f23939be",
+      "name": "banggia.view",
+      "description": null,
+      "createdAt": "2025-03-07T06:26:45.691Z",
+      "updatedAt": "2025-03-07T06:26:45.691Z"
+    },
+    {
+      "id": "20a631c0-837c-4121-8c84-dd6402e83f6c",
+      "name": "khachhang.view",
+      "description": null,
+      "createdAt": "2025-03-07T06:29:23.536Z",
+      "updatedAt": "2025-03-07T06:29:23.536Z"
+    },
+    {
+      "id": "057045f2-49f9-48ef-89f7-4a8dc62c53be",
+      "name": "nhacungcap.view",
+      "description": null,
+      "createdAt": "2025-03-07T06:30:02.573Z",
+      "updatedAt": "2025-03-07T06:30:02.573Z"
+    }
+  ],
+  "Profile": [],
+  "Role": [
+    {
+      "id": "90518f98-eff6-4f97-9896-ccc92a18dd33",
+      "name": "Giao Hàng",
+      "createdAt": "2025-03-05T18:48:28.349Z",
+      "updatedAt": "2025-03-05T18:48:28.349Z"
+    },
+    {
+      "id": "247dff37-334b-48f5-b36e-2f71e669e99f",
+      "name": "User",
+      "createdAt": "2025-03-04T09:54:59.479Z",
+      "updatedAt": "2025-03-07T01:20:44.017Z"
+    },
+    {
+      "id": "e89c3acb-df71-4631-a648-186d629244ec",
+      "name": "Kế Toán",
+      "createdAt": "2025-03-04T14:48:42.413Z",
+      "updatedAt": "2025-03-07T01:33:17.211Z"
+    },
+    {
+      "id": "390299a1-cef6-4540-b26e-1198ead22f33",
+      "name": "Admin",
+      "createdAt": "2025-03-04T09:54:59.457Z",
+      "updatedAt": "2025-03-12T06:12:37.667Z"
+    }
+  ],
+  "Sanpham": [],
+  "User": [
+    {
+      "id": "072cf725-5a5b-47fc-ae67-ed8ae5a219b0",
+      "email": "chikiet88@gmail.com",
+      "SDT": "0977272967",
+      "password": "$2b$10$Rng92MTiFVCGAW0gNs9OWO..3EpfgA8FD8XVSnWqopqXS2F2yjghi",
+      "provider": null,
+      "providerId": null,
+      "isActive": false,
+      "createdAt": "2025-03-12T06:00:36.468Z",
+      "updatedAt": "2025-03-12T06:10:44.121Z"
+    }
+  ]
+}

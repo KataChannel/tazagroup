@@ -10,6 +10,7 @@ npx bun prisma migrate dev --name tazagroup2.2.5
 npx prisma db push
 npx bun prisma generate
 npx ts-node prisma/exportData.ts
+npx ts-node prisma/seed.ts
 
 
 npx prisma db seed

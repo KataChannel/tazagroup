@@ -4,7 +4,7 @@ import * as fs from 'fs';
 const prisma = new PrismaClient();
 
 async function importData() {
-  const data = JSON.parse(fs.readFileSync('prisma_seed_1741331020299.json', 'utf-8'));
+  const data = JSON.parse(fs.readFileSync('prisma_seed.json', 'utf-8'));
 
   for (const [model, records] of Object.entries(data)) {
     if (Array.isArray(records) && records.length > 0) {
