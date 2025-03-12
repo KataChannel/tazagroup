@@ -32,7 +32,7 @@ COPY --from=builder /app /app
 
 # Copy only necessary files
 COPY --from=builder /app/dist /app/dist
-COPY .env .env
+# COPY .env .env
 
 # Expose the ports used by the NestJS application (e.g., 3000)
 EXPOSE 3331
