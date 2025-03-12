@@ -16,6 +16,7 @@ import { MenuService } from '../menu/menu/menu.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TreemenuComponent } from '../../shared/common/treemenu/treemenu.component';
 import { UserService } from '../user/user.service';
+import moment from 'moment';
 @Component({
   selector: 'app-adminmain',
   imports: [
@@ -41,6 +42,7 @@ export class AdminmainComponent {
   showFiller = false;
   Config:any =Config
   User:any ={}
+  version:any= moment().format('hh:mm:ss dd/mm/yyyy')
   private _transformer = (node: any, level: number) => {
     return {
       expandable: !!node?.children && node?.children.length > 0,

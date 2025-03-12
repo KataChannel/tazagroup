@@ -38,6 +38,7 @@
             <div class="font-bold">{{User?.Hoten}}</div>
             <div class="italic text-xs">{{User?.Vitri}}</div>
             <div class="italic text-xs">{{User?.email}}</div>    
+            <div class="italic text-[8px]">{{version}}</div>    
           </div>
         </div>
         <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -66,7 +67,7 @@
   </mat-drawer>
 
   <div class="relative flex flex-col w-full h-full primary">
-    <div class="relative flex flex-row space-x-2 justify-between items-center p-1 bg-[#57A345]">
+    <div class="relative flex flex-row space-x-2 justify-between items-center p-1 bg-[#3154A1]">
       <div class="flex flex-row space-x-2 items-center">
         <button mat-icon-button (click)="drawer.toggle()">
           <mat-icon>menu</mat-icon>

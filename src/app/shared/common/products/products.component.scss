@@ -1,12 +1,12 @@
 /* ========== Global Styles ========== */
 body {
     background-color: #FFFFFF; /* Nền chính */
-    color: #57A345; /* Văn bản chính */
+    color: #3154A1; /* Văn bản chính */
     font-family: Arial, sans-serif;
   }
   
   h1, h2, h3 {
-    color: #57A345; /* Tiêu đề hoặc nút chính */
+    color: #3154A1; /* Tiêu đề hoặc nút chính */
   }
   
   p, span {
@@ -15,7 +15,7 @@ body {
   
   /* ========== Buttons ========== */
   button.primary {
-    background-color: #57A345; /* Nút chính */
+    background-color: #3154A1; /* Nút chính */
     color: #FFFFFF;
     border: none;
     padding: 10px 20px;
@@ -25,14 +25,14 @@ body {
   
   button.primary:hover {
     background-color: #D4AF37; /* Điểm nhấn hoặc hover hiệu ứng */
-    color: #57A345;
+    color: #3154A1;
   }
   
   button.secondary {
     background-color: #B89F94; /* Phần phụ */
     color: #3E2723;
     padding: 10px 20px;
-    border: 1px solid #57A345;
+    border: 1px solid #3154A1;
     border-radius: 5px;
     cursor: pointer;
   }
@@ -44,7 +44,7 @@ body {
   /* ========== Card Styles ========== */
   .card {
     background-color: #B89F94; /* Phần phụ */
-    color: #57A345;
+    color: #3154A1;
     padding: 20px;
     border: 1px solid #D4AF37; /* Viền điểm nhấn */
     border-radius: 8px;
@@ -60,12 +60,12 @@ body {
   
   .card-body {
     padding: 10px;
-    color: #57A345;
+    color: #3154A1;
   }
   
   /* ========== Links ========== */
   a {
-    color: #57A345;
+    color: #3154A1;
     text-decoration: none;
   }
   

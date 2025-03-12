@@ -41,7 +41,7 @@
                             <img [src]="item.Image" class="w-full object-cover hover:scale-125 transition-transform duration-300" alt="" srcset="">
                         </div>
                         <div class="px-4 py-2 flex flex-col space-y-2">
-                            <h3 class="!m-0 line-clamp-2 h-12 text-lg font-bold hover:text-[#57A345] hover:font-extrabold">{{item.Title}}</h3>
+                            <h3 class="!m-0 line-clamp-2 h-12 text-lg font-bold hover:text-[#3154A1] hover:font-extrabold">{{item.Title}}</h3>
                             <div class="line-clamp-3 text-xs" [innerHTML]="item.Mota">
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                 @for (item of Baiviets; track item.id; let idx = $index, e = $even, first = $first, last = $last) {
                     <div (click)="DoFilterDanhmuc(item)" class="{{FilterDanhmuc.id==item.id? 'bg-[#F7E6E9]': ''}} flex flex-row space-x-4 p-2 rounded-lg hover:bg-slate-100">
                         <img [src]="item.Image" class="h-14 w-14 rounded-lg object-cover" alt="" srcset="">
-                        <span class="line-clamp-3 font-bold hover:text-[#57A345]">{{item.Title}}</span>
+                        <span class="line-clamp-3 font-bold hover:text-[#3154A1]">{{item.Title}}</span>
                     </div>
                 }
             </div>
