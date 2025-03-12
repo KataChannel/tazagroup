@@ -20,10 +20,6 @@ jobs:
         run: |
           npm install --force
           npm i @rollup/rollup-linux-x64-gnu --force
-
-      - name: Fetch and update dynamic data
-        run: |
-          node scripts/update-data.js
           npm run build -- --configuration production --prerender
 
       - name: Sync build folder only
