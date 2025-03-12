@@ -1,9 +1,7 @@
 on:
   push:
-  schedule:
-    - cron: '*/10 * * * *' # Run every 10 minutes for ISR
 
-name: Deploy Frontend V2 with ISR
+name: Deploy Frontend V2
 
 jobs:
   web-deploy:
@@ -37,5 +35,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/frontend/ # Chỉ upload thư mục đã build
+          local-dir: ./dist/frontend/
           server-dir: public_html/addonwebsite/v2tazagroup/site/
