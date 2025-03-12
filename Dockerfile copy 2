@@ -29,5 +29,5 @@ COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package.json /app/package.json
 
 # Chạy ứng dụng
-EXPOSE 4301
+EXPOSE 4303
 CMD ["node", "dist/frontend/server/main.mjs"]

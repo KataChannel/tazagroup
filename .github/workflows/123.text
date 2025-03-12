@@ -1,0 +1,29 @@
+# on: push
+# name:  Deploy Frontend HRM Tazagroup V2
+# jobs:
+#   web-deploy:
+#     name:  Deploy
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name:  Get latest code
+#         uses: actions/checkout@v4
+
+#       # - name: Use Node.js 16
+#       #   uses: actions/setup-node@v2
+#       #   with:
+#       #     node-version: '16'
+
+#       - name:  Build Project
+#         run: |
+#           npm install --force
+#           npm i @rollup/rollup-linux-x64-gnu --force
+#           npm run build
+
+#       - name:  Sync build folder only
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#         with:
+#           server: tazagroup.vn
+#           username: tazaspac
+#           password: '@Taza#Group*2020'
+#           local-dir: ./dist/elasome/ # <-- Specify the local "build" folder
+#           server-dir: elasome/sandbox/  # Destination on server

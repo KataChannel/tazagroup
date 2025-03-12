@@ -9,5 +9,5 @@ COPY ./dist/frontend /app/dist/frontend
 # COPY ./package.json /app/package.json
 
 # Chạy ứng dụng SSR
-EXPOSE 4301
+EXPOSE 4303
 CMD ["node", "dist/frontend/server/server.mjs"]

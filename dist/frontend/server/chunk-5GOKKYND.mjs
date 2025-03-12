@@ -1,2 +1,0 @@
-import './polyfills.server.mjs';
-import{Bb as i,Cc as o,dc as t,ec as n}from"./chunk-BVD4RUSS.mjs";import"./chunk-KB5IWD3E.mjs";import"./chunk-RIAI3ORJ.mjs";var s=class a{static \u0275fac=function(e){return new(e||a)};static \u0275cmp=i({type:a,selectors:[["app-dashboard"]],decls:5,vars:0,consts:[[1,"container","w-full","h-full","mx-auto","py-8","justify-center","items-center","text-center"]],template:function(e,m){e&1&&(t(0,"div",0)(1,"h1"),o(2,"Dashboard"),n(),t(3,"div"),o(4,"Coming Soon"),n()())},encapsulation:2})};export{s as DashboardComponent};

@@ -1,0 +1,36 @@
+on:
+  push:
+  schedule:
+    - cron: '*/10 * * * *' # Run every 10 minutes for ISR
+name: Deploy Frontend V2 with ISR
+jobs:
+  web-deploy:
+    name: Deploy with ISR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 18 # Specify the Node.js version
+
+      - name: Install dependencies
+        run: |
+          npm install --force
+          npm i @rollup/rollup-linux-x64-gnu --force
+
+      - name: Fetch and update dynamic data
+        run: |
+          node scripts/update-data.js
+          npm run build -- --configuration production --prerender
+
+      - name: Sync build folder only
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: tazagroup.vn
+          username: tazaspac
+          password: '@Taza#Group*2020'
+          local-dir: ./dist/frontend/ # <-- Specify the local "build" folder
+          server-dir: public_html/addonwebsite/v2tazagroup/site/  # Destination on server
