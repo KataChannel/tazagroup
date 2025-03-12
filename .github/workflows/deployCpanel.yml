@@ -30,7 +30,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: tazagroup.vn
-          username: tazaspac@tazagroup.vn
+          username: tazaspac
           password: '@Taza#Group*2020'
           local-dir: ./dist/frontend/ # <-- Specify the local "build" folder
           server-dir: public_html/addonwebsite/v2tazagroup/site/  # Destination on server
