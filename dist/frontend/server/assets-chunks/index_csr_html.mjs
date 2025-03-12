@@ -1,4 +1,4 @@
-<!doctype html>
+export default `<!doctype html>
 <html lang="en" data-beasties-container="">
 <head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <meta charset="utf-8">
@@ -19,3 +19,4 @@
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 <link rel="modulepreload" href="chunk-FL6CTN5O.js"><link rel="modulepreload" href="chunk-CZ2C3IX5.js"><link rel="modulepreload" href="chunk-HVTWWBOW.js"><link rel="modulepreload" href="chunk-CLEFQ2Q2.js"><link rel="modulepreload" href="chunk-P2TVDSXO.js"><link rel="modulepreload" href="chunk-IS4Q6JDM.js"><link rel="modulepreload" href="chunk-KQ24563A.js"><link rel="modulepreload" href="chunk-GVCEWXG2.js"><link rel="modulepreload" href="chunk-3OGRP4TA.js"><link rel="modulepreload" href="chunk-L7VABIY7.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-R3UDBU26.js" type="module"></script></body>
 </html>
+`;

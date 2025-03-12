@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{Bb as e,Cc as p,dc as t,ec as c}from"./chunk-BVD4RUSS.mjs";import"./chunk-KB5IWD3E.mjs";import"./chunk-RIAI3ORJ.mjs";var a=class o{static \u0275fac=function(n){return new(n||o)};static \u0275cmp=e({type:o,selectors:[["app-congnoncc"]],decls:2,vars:0,template:function(n,m){n&1&&(t(0,"p"),p(1,"congnoncc works!"),c())},encapsulation:2})};export{a as CongnonccComponent};
