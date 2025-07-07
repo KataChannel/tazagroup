@@ -1,48 +1,48 @@
 services:
-  # api:
-  #   build:
-  #     context: ./api
-  #     dockerfile: Dockerfile
-  #     args:
-  #       NODE_ENV: production
-  #   image: katadev/api:${API_VERSION}
-  #   container_name: katadev-api
-  #   restart: ${RESTART_POLICY}
-  #   ports:
-  #     - "${API_PORT}:3999"
-  #   environment:
-  #     NODE_ENV: production
-  #     API_PORT: 3999
-  #     DATABASE_URL: ${DATABASE_URL}
-  #     REDIS_URL: ${REDIS_URL}
-  #     JWT_SECRET: ${JWT_SECRET}
-  #     ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-  #     CORS_ORIGIN: ${CORS_ORIGIN}
-  #     LOG_LEVEL: ${LOG_LEVEL}
-  #     MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-  #     MINIO_PORT: ${MINIO_PORT}
-  #     MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-  #     MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-  #     MINIO_USE_SSL: ${MINIO_USE_SSL}
-  #   networks:
-  #     - katadev-network
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #     - minio
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:3999/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 30s
-  #   volumes:
-  #     - api_logs:/app/logs
-  #   logging:
-  #     driver: json-file
-  #     options:
-  #       max-size: 10m
-  #       max-file: "3"
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    image: katadev/api:${API_VERSION}
+    container_name: katadev-api
+    restart: ${RESTART_POLICY}
+    ports:
+      - "${API_PORT}:3001"
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      LOG_LEVEL: ${LOG_LEVEL}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+    networks:
+      - katadev-network
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - api_logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
 
   site:
     build:
