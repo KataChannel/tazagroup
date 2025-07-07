@@ -28,12 +28,11 @@ ENV NEXT_PUBLIC_API_URL=http://localhost:3001
 ENV NEXT_PUBLIC_APP_URL=http://localhost:3000
 ENV NEXT_PUBLIC_MINIO_ENDPOINT=http://localhost:9000
 # Provide a fallback DATABASE_URL for Prisma client generation during build
-ENV DATABASE_URL="file:./dev.db"
-
+ENV DATABASE_URL=postgresql://katadev:1bcfc285a@postgres:5444/katadev
 # Generate Prisma client before building
-RUN if [ -f "src/prisma/schema.prisma" ]; then \
+RUN if [ -f "prisma/schema.prisma" ]; then \
     echo "Generating Prisma client..."; \
-    bunx prisma generate --schema=src/prisma/schema.prisma || \
+    bunx prisma generate --schema=prisma/schema.prisma || \
     { echo "Prisma client generation failed"; exit 1; }; \
     fi
 
