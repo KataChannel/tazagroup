@@ -1,4 +1,4 @@
-# KataCore Production Environment Configuration Template
+# Katadev Production Environment Configuration Template
 # Copy this file to prod.conf and customize for your production environment
 # Generated on $(date)
 
@@ -10,7 +10,7 @@
 SERVER_IP="YOUR_SERVER_IP"           # e.g., "192.168.1.100" or "116.118.85.41"
 DOMAIN="YOUR_DOMAIN"                 # e.g., "app.example.com" or leave as SERVER_IP for IP-based
 SSH_USER="root"                      # SSH username for server access
-SSH_KEY_PATH="$HOME/.ssh/katacore-prod"  # Path to SSH private key
+SSH_KEY_PATH="$HOME/.ssh/katadev-prod"  # Path to SSH private key
 
 # ================================
 # DEPLOYMENT CONFIGURATION
@@ -18,7 +18,7 @@ SSH_KEY_PATH="$HOME/.ssh/katacore-prod"  # Path to SSH private key
 
 # Deployment Settings
 DEPLOY_TYPE="full"                   # Options: simple, full, cluster
-PROJECT_NAME="katacore-prod"         # Project name for Docker containers
+PROJECT_NAME="katadev-prod"         # Project name for Docker containers
 DOCKER_COMPOSE_FILE="docker-compose.yml"  # Docker Compose file to use
 
 # ================================
@@ -59,9 +59,9 @@ NGINX_MINIO="true"                   # Enable MinIO reverse proxy
 # ================================
 
 # PostgreSQL Settings
-POSTGRES_USER="katacore"
+POSTGRES_USER="katadev"
 POSTGRES_PASSWORD="$(openssl rand -base64 32)"  # Generate random password
-POSTGRES_DB="katacore"
+POSTGRES_DB="katadev"
 POSTGRES_PORT="5432"
 
 # Database Backup Settings
@@ -138,7 +138,7 @@ BACKUP_STORAGE="local"               # Options: local, s3, gcs
 # S3 Backup Configuration (if using S3)
 # AWS_ACCESS_KEY_ID="your-access-key"
 # AWS_SECRET_ACCESS_KEY="your-secret-key"
-# S3_BUCKET="katacore-backups"
+# S3_BUCKET="katadev-backups"
 # S3_REGION="us-east-1"
 
 # ================================
@@ -198,7 +198,7 @@ REDIS_MEMORY_LIMIT="256m"           # Redis container memory limit
 RESTART_POLICY="unless-stopped"     # Options: no, always, unless-stopped, on-failure
 
 # Docker Network
-DOCKER_NETWORK="katacore_network"   # Docker network name
+DOCKER_NETWORK="katadev_network"   # Docker network name
 
 # ================================
 # CUSTOM CONFIGURATION

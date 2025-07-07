@@ -1,7 +1,7 @@
-# ⚙️ KataCore System API Documentation
+# ⚙️ Katadev System API Documentation
 
 ## Overview
-The KataCore System API provides administrative and system-level functionality for managing the KataCore platform. This includes system monitoring, configuration management, user administration, and platform analytics.
+The Katadev System API provides administrative and system-level functionality for managing the Katadev platform. This includes system monitoring, configuration management, user administration, and platform analytics.
 
 ## Base URL
 ```
@@ -208,7 +208,7 @@ GET /api/system/config
   "data": {
     "config": {
       "app": {
-        "name": "KataCore",
+        "name": "Katadev",
         "version": "1.0.0",
         "environment": "production",
         "debug": false,
@@ -225,7 +225,7 @@ GET /api/system/config
       "cache": {
         "driver": "redis",
         "ttl": 3600,
-        "prefix": "katacore"
+        "prefix": "katadev"
       },
       "security": {
         "rateLimiting": {
@@ -235,14 +235,14 @@ GET /api/system/config
         },
         "cors": {
           "enabled": true,
-          "origins": ["https://app.katacore.com"]
+          "origins": ["https://app.katadev.com"]
         }
       },
       "notifications": {
         "email": {
           "enabled": true,
           "provider": "sendgrid",
-          "fromAddress": "noreply@katacore.com"
+          "fromAddress": "noreply@katadev.com"
         },
         "sms": {
           "enabled": true,
@@ -323,7 +323,7 @@ GET /api/system/users
     "users": [
       {
         "id": "user_001",
-        "email": "admin@katacore.com",
+        "email": "admin@katadev.com",
         "firstName": "Admin",
         "lastName": "User",
         "role": "admin",
@@ -365,7 +365,7 @@ GET /api/system/users/{id}
   "data": {
     "user": {
       "id": "user_001",
-      "email": "admin@katacore.com",
+      "email": "admin@katadev.com",
       "firstName": "Admin",
       "lastName": "User",
       "role": "admin",
@@ -482,8 +482,8 @@ GET /api/system/organization
   "data": {
     "organization": {
       "id": "org_001",
-      "name": "KataCore Corporation",
-      "domain": "katacore.com",
+      "name": "Katadev Corporation",
+      "domain": "katadev.com",
       "logo": "https://example.com/logo.png",
       "settings": {
         "timezone": "UTC",
@@ -1007,7 +1007,7 @@ All system operations are logged with:
 
 ### Node.js Admin SDK
 ```javascript
-const { SystemAPI } = require('@katacore/system-api');
+const { SystemAPI } = require('@katadev/system-api');
 
 const systemApi = new SystemAPI({
   baseURL: 'https://your-domain.com/api',
@@ -1033,7 +1033,7 @@ const analytics = await systemApi.getAnalytics({
 
 ### Python Admin SDK
 ```python
-from katacore_system import SystemAPI
+from katadev_system import SystemAPI
 
 system_api = SystemAPI(
     base_url='https://your-domain.com/api',
@@ -1086,10 +1086,10 @@ report = system_api.generate_report(
 ## Support
 
 For System API support:
-- 📧 Email: system-support@katacore.com
-- 📚 Documentation: https://docs.katacore.com/api/system
-- 🚨 Critical Issues: emergency@katacore.com
-- 💬 Community: https://discord.gg/katacore
+- 📧 Email: system-support@katadev.com
+- 📚 Documentation: https://docs.katadev.com/api/system
+- 🚨 Critical Issues: emergency@katadev.com
+- 💬 Community: https://discord.gg/katadev
 
 ---
 

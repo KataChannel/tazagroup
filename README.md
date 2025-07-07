@@ -1,10 +1,10 @@
-# 🚀 KataCore - Advanced Full-Stack Development Platform
+# 🚀 Katadev - Advanced Full-Stack Development Platform
 
 <div align="center">
 
-![KataCore Logo](https://via.placeholder.com/200x80/4A90E2/FFFFFF?text=KataCore)
+![Katadev Logo](https://via.placeholder.com/200x80/4A90E2/FFFFFF?text=Katadev)
 
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/your-org/KataCore)
+[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/your-org/Katadev)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://docker.com)
 [![TypeScript](https://img.shields.io/badge/typescript-5.0+-blue.svg)](https://www.typescriptlang.org/)
@@ -50,7 +50,7 @@
 
 ## 🚀 Quick Start Scripts
 
-KataCore includes powerful automation scripts to streamline your development and deployment workflow.
+Katadev includes powerful automation scripts to streamline your development and deployment workflow.
 
 ### 🔧 Main Deployment Script (`deploy-remote.sh`)
 
@@ -139,9 +139,9 @@ Before using the deployment scripts, ensure you have:
 
 ## 📋 Overview
 
-**KataCore** là nền tảng phát triển full-stack hiện đại được thiết kế để đơn giản hóa quy trình phát triển và triển khai ứng dụng web. Với hai script tự động hóa chính `deploy-remote.sh` và `autopush.sh`, KataCore giúp developers tập trung vào việc phát triển tính năng thay vì lo lắng về infrastructure.
+**Katadev** là nền tảng phát triển full-stack hiện đại được thiết kế để đơn giản hóa quy trình phát triển và triển khai ứng dụng web. Với hai script tự động hóa chính `deploy-remote.sh` và `autopush.sh`, Katadev giúp developers tập trung vào việc phát triển tính năng thay vì lo lắng về infrastructure.
 
-### 🎯 What Makes KataCore Special
+### 🎯 What Makes Katadev Special
 
 - **🏢 Complete HRM System** - Full-featured Human Resource Management with employee lifecycle, departments, and role-based access
 - **🚀 One-Command Deployment** - Deploy to any server with automated SSL, Docker orchestration, and environment setup  
@@ -155,8 +155,8 @@ Deploy your full-stack application in under 5 minutes:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/KataChannel/KataCore.git
-cd KataCore
+git clone https://github.com/KataChannel/Katadev.git
+cd Katadev
 
 # 2. Deploy to your server (replace with your details)
 chmod +x deploy-remote.sh
@@ -183,8 +183,8 @@ All services are automatically configured, secured, and monitored!
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/KataCore.git
-cd KataCore
+git clone https://github.com/your-org/Katadev.git
+cd Katadev
 
 # Cấp quyền thực thi cho scripts
 chmod +x deploy-remote.sh autopush.sh
@@ -266,7 +266,7 @@ cd api && npm run dev     # Backend: http://localhost:3001
 ### Project Structure
 
 ```
-KataCore/
+Katadev/
 ├── 📁 api/                 # NestJS backend
 │   ├── src/
 │   ├── prisma/
@@ -451,15 +451,15 @@ One-command production deployment:
 ### 🔑 Demo Credentials
 ```
 Admin User:
-- Email: admin@katacore.com
+- Email: admin@katadev.com
 - Password: Admin123!
 
 Manager User:
-- Email: manager@katacore.com
+- Email: manager@katadev.com
 - Password: Manager123!
 
 Employee User:
-- Email: employee@katacore.com
+- Email: employee@katadev.com
 - Password: Employee123!
 ```
 
@@ -469,10 +469,10 @@ Employee User:
 
 ```bash
 # Kiểm tra containers đang chạy
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose ps'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose ps'
 
 # Xem logs
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose logs'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose logs'
 
 # Kiểm tra resource usage
 ssh -i ~/.ssh/id_rsa root@SERVER_IP 'docker stats --no-stream'
@@ -482,10 +482,10 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'docker stats --no-stream'
 
 ```bash
 # Restart tất cả services
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose restart'
 
 # Restart service cụ thể
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart api'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose restart api'
 ```
 
 ### Update deployment
@@ -495,7 +495,7 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart 
 ./deploy-remote.sh --force-regen SERVER_IP DOMAIN
 
 # Update chỉ API
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose build api && docker compose up -d api'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose build api && docker compose up -d api'
 ```
 
 ## 🔐 Security
@@ -539,9 +539,9 @@ chore: maintenance tasks
 
 ### Getting Help
 - 📖 [Documentation](docs/)
-- 🐛 [Issue Tracker](https://github.com/your-org/KataCore/issues)
-- 💬 [Discussions](https://github.com/your-org/KataCore/discussions)
-- 📧 Email: support@katacore.com
+- 🐛 [Issue Tracker](https://github.com/your-org/Katadev/issues)
+- 💬 [Discussions](https://github.com/your-org/Katadev/discussions)
+- 📧 Email: support@katadev.com
 
 ## 📄 License
 
@@ -558,9 +558,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ by the KataCore Team**
+**Made with ❤️ by the Katadev Team**
 
-[⬆ Back to top](#-katacore---advanced-full-stack-development-platform)
+[⬆ Back to top](#-katadev---advanced-full-stack-development-platform)
 
 </div>
 │   ├── scripts/              # Automation scripts
@@ -585,8 +585,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### 1. 📥 Clone & Setup
 ```bash
 # Clone the repository
-git clone https://github.com/chikiet/KataCore.git
-cd KataCore
+git clone https://github.com/chikiet/Katadev.git
+cd Katadev
 
 # Install all dependencies (frontend + backend)
 bun run install:all
@@ -766,7 +766,7 @@ POST /api/seed/hrm              # Seed database with test data
 ## 🔧 Configuration
 
 ### 🌍 Environment Variables
-KataCore automatically generates secure environment variables during deployment:
+Katadev automatically generates secure environment variables during deployment:
 
 ```bash
 # Application Configuration
@@ -775,9 +775,9 @@ API_VERSION=latest
 SITE_VERSION=latest
 
 # Database Configuration  
-DATABASE_URL=postgresql://user:pass@postgres:5432/katacore
-POSTGRES_DB=katacore
-POSTGRES_USER=katacore
+DATABASE_URL=postgresql://user:pass@postgres:5432/katadev
+POSTGRES_DB=katadev
+POSTGRES_USER=katadev
 POSTGRES_PASSWORD=<auto-generated>
 
 # Authentication & Security
@@ -841,13 +841,13 @@ git pull
 ### 💾 Backup & Recovery
 ```bash
 # Database backup
-docker compose exec postgres pg_dump -U katacore katacore > backup.sql
+docker compose exec postgres pg_dump -U katadev katadev > backup.sql
 
 # Restore from backup
-docker compose exec -T postgres psql -U katacore -d katacore < backup.sql
+docker compose exec -T postgres psql -U katadev -d katadev < backup.sql
 
 # Full system backup
-tar -czf katacore-backup-$(date +%Y%m%d).tar.gz /opt/katacore/
+tar -czf katadev-backup-$(date +%Y%m%d).tar.gz /opt/katadev/
 ```
 
 ---
@@ -919,7 +919,7 @@ certbot renew --force-renewal
 
 ## 🌍 Cloud Provider Support
 
-KataCore is tested and supported on:
+Katadev is tested and supported on:
 
 - **✅ DigitalOcean** - Droplets and Kubernetes
 - **✅ AWS** - EC2, ECS, and Lambda
@@ -945,8 +945,8 @@ We welcome contributions! Here's how to get started:
 ### 🔧 Development Setup
 ```bash
 # Fork and clone
-git clone https://github.com/yourusername/KataCore.git
-cd KataCore
+git clone https://github.com/yourusername/Katadev.git
+cd Katadev
 
 # Install dependencies
 bun run install:all
@@ -994,13 +994,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### 🆘 Getting Help
 
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red.svg)](https://github.com/chikiet/KataCore/issues)
-[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-blue.svg)](https://github.com/chikiet/KataCore/discussions)
-[![Documentation](https://img.shields.io/badge/Docs-Available-green.svg)](https://docs.katacore.com)
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red.svg)](https://github.com/chikiet/Katadev/issues)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-blue.svg)](https://github.com/chikiet/Katadev/discussions)
+[![Documentation](https://img.shields.io/badge/Docs-Available-green.svg)](https://docs.katadev.com)
 
-**📧 Email**: support@katacore.com  
-**💬 Community**: [Join our Discord](https://discord.gg/katacore)  
-**📚 Documentation**: [docs.katacore.com](https://docs.katacore.com)
+**📧 Email**: support@katadev.com  
+**💬 Community**: [Join our Discord](https://discord.gg/katadev)  
+**📚 Documentation**: [docs.katadev.com](https://docs.katadev.com)
 
 </div>
 
@@ -1026,7 +1026,7 @@ curl http://localhost:3001/health   # Test API
 
 **⭐ Star us on GitHub** • **🐛 Report Issues** • **💡 Request Features**
 
-**Made with ❤️ by the KataCore Team**
+**Made with ❤️ by the Katadev Team**
 
 *Deploy once, scale everywhere!*
 

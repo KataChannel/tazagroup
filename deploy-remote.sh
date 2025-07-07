@@ -1,20 +1,21 @@
 #!/bin/bash
 
-# 🚀 KataCore Remote Deployment Helper
+# 🚀 Katadev Remote Deployment Helper
 # Quick deployment script for remote servers
 
 set -euo pipefail
 
 # Configuration - Dynamic parameters
-SERVER_IP="116.118.48.143"
-DOMAIN="kataoffical.online"
+SERVER_IP=""
+DOMAIN=""
 SSH_USER="root"
 SSH_KEY_PATH=""
 DEPLOY_TYPE="full"
 FORCE_REGEN=false
 CLEANUP_MODE=false
-PROJECT_NAME="katacore"
+PROJECT_NAME="katadev"
 DOCKER_COMPOSE_FILE="docker-compose.yml"
+INSTALL_SITE=false
 INSTALL_API=false
 INSTALL_PGADMIN=false
 INSTALL_MINIO=false
@@ -184,6 +185,7 @@ interactive_setup() {
     echo -e "\n${BLUE}🛠️ Service Configuration${NC}"
     echo "Select which services to install:"
     
+    INSTALL_SITE=$(prompt_yes_no "Install Site service?" "$([ "$INSTALL_SITE" = "true" ] && echo "y" || echo "n")")
     INSTALL_API=$(prompt_yes_no "Install API service?" "$([ "$INSTALL_API" = "true" ] && echo "y" || echo "n")")
     INSTALL_POSTGRES=$(prompt_yes_no "Install PostgreSQL database?" "$([ "$INSTALL_POSTGRES" = "true" ] && echo "y" || echo "n")")
     INSTALL_REDIS=$(prompt_yes_no "Install Redis cache?" "$([ "$INSTALL_REDIS" = "true" ] && echo "y" || echo "n")")
@@ -225,6 +227,7 @@ interactive_setup() {
     echo -e "🔄 Force Regenerate:   $FORCE_REGEN"
     echo ""
     echo -e "${CYAN}🛠️ Services to Install:${NC}"
+    [[ "$INSTALL_SITE" == "true" ]] && echo -e "  ✅ Site Service" || echo -e "  ❌ Site Service"
     [[ "$INSTALL_API" == "true" ]] && echo -e "  ✅ API Service" || echo -e "  ❌ API Service"
     [[ "$INSTALL_POSTGRES" == "true" ]] && echo -e "  ✅ PostgreSQL Database" || echo -e "  ❌ PostgreSQL Database"
     [[ "$INSTALL_REDIS" == "true" ]] && echo -e "  ✅ Redis Cache" || echo -e "  ❌ Redis Cache"
@@ -260,7 +263,7 @@ show_banner() {
     echo -e "${BLUE}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        🚀 KataCore Remote Deploy                            ║
+║                        🚀 Katadev Remote Deploy                            ║
 ║                                                                              ║
 ║    Deploy to any server with dynamic IP and domain configuration           ║
 ║    Supports both simple (IP only) and full (domain + SSL) deployments     ║
@@ -283,7 +286,7 @@ EOF
 # Show help
 show_help() {
     cat << 'EOF'
-🚀 KataCore Remote Deployment Script
+🚀 Katadev Remote Deployment Script
 
 USAGE:
     ./deploy-remote.sh [OPTIONS] [IP] [DOMAIN]
@@ -299,7 +302,7 @@ OPTIONS:
     --simple           Simple deployment (no SSL/domain config)
     --force-regen      Force regenerate environment files
     --compose FILE     Docker compose file (default: docker-compose.yml)
-    --project NAME     Project name (default: katacore)
+    --project NAME     Project name (default: katadev)
     --cleanup          Cleanup deployment on remote server
     --help             Show this help
 
@@ -383,6 +386,10 @@ parse_arguments() {
                 ;;
             --nginxminio)
                 NGINX_MINIO=true
+                shift
+                ;;
+            --install-site)
+                INSTALL_SITE=true
                 shift
                 ;;
             --install-api)
@@ -586,12 +593,12 @@ check_prerequisites() {
     if [[ -f "$DOCKER_COMPOSE_FILE" ]]; then
         # Check if api directory exists
         if [[ ! -d "api" ]]; then
-            error "API directory not found. Make sure you're in the KataCore root directory."
+            error "API directory not found. Make sure you're in the Katadev root directory."
         fi
         
         # Check if site directory exists
         if [[ ! -d "site" ]]; then
-            error "Site directory not found. Make sure you're in the KataCore root directory."
+            error "Site directory not found. Make sure you're in the Katadev root directory."
         fi
         
         # Check if Dockerfiles exist
@@ -652,15 +659,16 @@ prepare_remote_server() {
         echo "🔥 Configuring firewall..."
         ufw --force enable
         ufw allow OpenSSH
+
         ufw allow 80/tcp
         ufw allow 443/tcp
-        ufw allow 3000/tcp
-        ufw allow 3001/tcp
-        ufw allow 9000/tcp
-        ufw allow 9001/tcp
-        ufw allow 5050/tcp
-        ufw allow 5432/tcp
-        ufw allow 6379/tcp
+        ufw allow 3800/tcp
+        ufw allow 3999/tcp
+        ufw allow 9110/tcp
+        ufw allow 9111/tcp
+        ufw allow 5555/tcp
+        ufw allow 5444/tcp
+        ufw allow 6400/tcp
         
         echo "✅ Remote server preparation completed"
 EOF
@@ -730,7 +738,7 @@ generate_environment() {
             # Create .env.prod file
             cat > .env.prod << EOF
 # Generated on \$(date)
-# KataCore Production Environment Configuration
+# Katadev Production Environment Configuration
 
 # ===== Application Configuration =====
 NODE_ENV=production
@@ -739,19 +747,19 @@ SITE_VERSION=latest
 RESTART_POLICY=unless-stopped
 
 # ===== Port Configuration =====
-PORT=3000
-SITE_PORT=3000
-API_PORT=3001
+PORT=3800
+SITE_PORT=3800
+API_PORT=3999
 
 # ===== Database Configuration =====
 POSTGRES_DB=\$PROJECT_NAME
 POSTGRES_USER=\$PROJECT_NAME
 POSTGRES_PASSWORD=\$DB_PASSWORD
-DATABASE_URL=postgresql://\$PROJECT_NAME:\$DB_PASSWORD@postgres:5432/\$PROJECT_NAME
+DATABASE_URL=postgresql://\$PROJECT_NAME:\$DB_PASSWORD@postgres:5444/\$PROJECT_NAME
 
 # ===== Redis Configuration =====
 REDIS_PASSWORD=\$REDIS_PASSWORD
-REDIS_URL=redis://:\$REDIS_PASSWORD@redis:6379
+REDIS_URL=redis://:\$REDIS_PASSWORD@redis:6400
 
 # ===== Authentication & Security =====
 JWT_SECRET=\$JWT_SECRET
@@ -761,19 +769,19 @@ LOG_LEVEL=info
 # ===== MinIO Configuration =====
 MINIO_ROOT_USER=admin
 MINIO_ROOT_PASSWORD=\$MINIO_ROOT_PASSWORD
-MINIO_PORT=9000
-MINIO_CONSOLE_PORT=9001
+MINIO_PORT=9110
+MINIO_CONSOLE_PORT=9111
 MINIO_ENDPOINT=minio
 MINIO_ACCESS_KEY=admin
 MINIO_SECRET_KEY=\$MINIO_ROOT_PASSWORD
 MINIO_USE_SSL=false
 
 # ===== PgAdmin Configuration =====
-PGADMIN_PORT=5050
+PGADMIN_PORT=5555
 PGADMIN_DEFAULT_PASSWORD=\$PGADMIN_PASSWORD
 
 # ===== Internal Services =====
-INTERNAL_API_URL=http://api:3001
+INTERNAL_API_URL=http://api:3999
 
 # ===== Server Configuration =====
 SERVER_IP=\$SERVER_IP
@@ -789,17 +797,17 @@ EOF
                 cat >> .env.prod << EOF
 
 # ===== CORS Configuration =====
-CORS_ORIGIN=http://\$SERVER_IP:3000
-NEXT_PUBLIC_API_URL=http://\$SERVER_IP:3001
-NEXT_PUBLIC_APP_URL=http://\$SERVER_IP:3000
-NEXT_PUBLIC_MINIO_ENDPOINT=http://\$SERVER_IP:9000
+CORS_ORIGIN=http://\$SERVER_IP:3800
+NEXT_PUBLIC_API_URL=http://\$SERVER_IP:3999
+NEXT_PUBLIC_APP_URL=http://\$SERVER_IP:3800
+NEXT_PUBLIC_MINIO_ENDPOINT=http://\$SERVER_IP:9110
 PGADMIN_DEFAULT_EMAIL=admin@\$SERVER_IP
 EOF
             else
                 cat >> .env.prod << EOF
 
 # ===== CORS Configuration =====
-CORS_ORIGIN=https://\$DOMAIN,http://\$SERVER_IP:3000
+CORS_ORIGIN=https://\$DOMAIN,http://\$SERVER_IP:3800
 NEXT_PUBLIC_API_URL=https://api.\$DOMAIN
 NEXT_PUBLIC_APP_URL=https://\$DOMAIN
 NEXT_PUBLIC_MINIO_ENDPOINT=https://minio.\$DOMAIN
@@ -838,7 +846,7 @@ run_docker_compose() {
 
     # Determine which services to include based on install flags
     local enabled_services=()
-    enabled_services+=("site")
+    [[ "$INSTALL_SITE" == "true" ]] && enabled_services+=("site")
     [[ "$INSTALL_API" == "true" ]] && enabled_services+=("api")
     [[ "$INSTALL_PGADMIN" == "true" ]] && enabled_services+=("pgadmin")
     [[ "$INSTALL_MINIO" == "true" ]] && enabled_services+=("minio")
@@ -997,7 +1005,7 @@ server {
     client_max_body_size 50M;
 
     location / {
-        proxy_pass http://localhost:9000;
+        proxy_pass http://localhost:9110;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -1110,16 +1118,16 @@ show_deployment_summary() {
     if [[ "$DEPLOY_TYPE" == "simple" ]]; then
         echo -e "   🌐 Main App:      http://$SERVER_IP:3000"
         echo -e "   🚀 API:           http://$SERVER_IP:3001"
-        echo -e "   📦 MinIO:         http://$SERVER_IP:9000"
-        echo -e "   🗄️  MinIO Console: http://$SERVER_IP:9001"
+        echo -e "   📦 MinIO:         http://$SERVER_IP:9110"
+        echo -e "   🗄️  MinIO Console: http://$SERVER_IP:9111"
         echo -e "   🗄️  pgAdmin:      http://$SERVER_IP:5050"
         echo -e "   🗄️  Database:     $SERVER_IP:5432"
         echo -e "   🗄️  Redis:        $SERVER_IP:6379"
     else
         echo -e "   🌐 Main App:      https://$DOMAIN (IP: http://$SERVER_IP:3000)"
         echo -e "   🚀 API:           https://api.$DOMAIN (IP: http://$SERVER_IP:3001)"
-        echo -e "   📦 MinIO:         https://minio.$DOMAIN (IP: http://$SERVER_IP:9000)"
-        echo -e "   🗄️  MinIO Console: https://minio.$DOMAIN (IP: http://$SERVER_IP:9001)"
+        echo -e "   📦 MinIO:         https://minio.$DOMAIN (IP: http://$SERVER_IP:9110)"
+        echo -e "   🗄️  MinIO Console: https://minio.$DOMAIN (IP: http://$SERVER_IP:9111)"
         echo -e "   🗄️  pgAdmin:      https://pgadmin.$DOMAIN (IP: http://$SERVER_IP:5050)"
         echo -e "   🗄️  Database:     $DOMAIN:5432 (IP: $SERVER_IP:5432)"
         echo -e "   🗄️  Redis:        $DOMAIN:6379 (IP: $SERVER_IP:6379)"
@@ -1199,7 +1207,7 @@ cleanup_deployment() {
     ssh -i "$SSH_KEY_PATH" "$SSH_USER@$SERVER_IP" << EOF
         set -e
         
-        echo "🧹 Cleaning up KataCore deployment..."
+        echo "🧹 Cleaning up Katadev deployment..."
         
         # Stop and remove Docker containers
         if [[ -d "/opt/$PROJECT_NAME" ]]; then
@@ -1241,8 +1249,8 @@ cleanup_deployment() {
         echo "🔥 Removing specific firewall rules..."
         ufw delete allow 3000/tcp || true
         ufw delete allow 3001/tcp || true
-        ufw delete allow 9000/tcp || true
-        ufw delete allow 9001/tcp || true
+        ufw delete allow 9110/tcp || true
+        ufw delete allow 9111/tcp || true
         ufw delete allow 5050/tcp || true
         
         echo "✅ Cleanup completed successfully!"

@@ -1,6 +1,6 @@
-# 🚀 KataCore Deployment Guide
+# 🚀 Katadev Deployment Guide
 
-Hướng dẫn triển khai toàn diện cho dự án KataCore với các công cụ tự động hóa.
+Hướng dẫn triển khai toàn diện cho dự án Katadev với các công cụ tự động hóa.
 
 ## 📋 Mục lục
 
@@ -14,7 +14,7 @@ Hướng dẫn triển khai toàn diện cho dự án KataCore với các công 
 
 ## 🎯 Tổng quan
 
-KataCore cung cấp 2 script chính để tự động hóa quy trình phát triển và triển khai:
+Katadev cung cấp 2 script chính để tự động hóa quy trình phát triển và triển khai:
 
 - **`deploy-remote.sh`**: Triển khai dự án lên server remote với SSL và domain
 - **`autopush.sh`**: Tự động commit, push code và merge branch
@@ -40,8 +40,8 @@ KataCore cung cấp 2 script chính để tự động hóa quy trình phát tri
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/your-org/KataCore.git
-cd KataCore
+git clone https://github.com/your-org/Katadev.git
+cd Katadev
 ```
 
 ### 2. Cấp quyền thực thi
@@ -180,10 +180,10 @@ git checkout feature/new-ui
 
 ```bash
 # Kiểm tra containers đang chạy
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose ps'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose ps'
 
 # Xem logs
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose logs'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose logs'
 
 # Kiểm tra resource usage
 ssh -i ~/.ssh/id_rsa root@SERVER_IP 'docker stats --no-stream'
@@ -193,10 +193,10 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'docker stats --no-stream'
 
 ```bash
 # Restart tất cả services
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose restart'
 
 # Restart service cụ thể
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart api'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose restart api'
 ```
 
 ### Update deployment
@@ -206,7 +206,7 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose restart 
 ./deploy-remote.sh --force-regen SERVER_IP DOMAIN
 
 # Update chỉ API
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose build api && docker compose up -d api'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose build api && docker compose up -d api'
 ```
 
 ### Cleanup deployment
@@ -216,7 +216,7 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose build ap
 ./deploy-remote.sh --cleanup SERVER_IP
 
 # Xóa containers nhưng giữ data
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose down'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose down'
 ```
 
 ## 🔍 Monitoring & Logs
@@ -225,13 +225,13 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose down'
 
 ```bash
 # Tất cả services
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose logs -f'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose logs -f'
 
 # Chỉ API
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose logs -f api'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose logs -f api'
 
 # Last 100 lines
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose logs --tail=100'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose logs --tail=100'
 ```
 
 ### Health checks
@@ -262,7 +262,7 @@ ssh -i ~/.ssh/id_rsa root@SERVER_IP
 #### 2. Docker Build Failed
 ```bash
 # Xem chi tiết lỗi
-ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katacore && docker compose build --no-cache'
+ssh -i ~/.ssh/id_rsa root@SERVER_IP 'cd /opt/katadev && docker compose build --no-cache'
 
 # Clean và rebuild
 ssh -i ~/.ssh/id_rsa root@SERVER_IP 'docker system prune -af'
@@ -329,4 +329,4 @@ Nếu gặp vấn đề:
 
 ---
 
-**Made with ❤️ by KataCore Team**
+**Made with ❤️ by Katadev Team**

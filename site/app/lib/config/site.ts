@@ -1,5 +1,5 @@
 export const siteConfig = {
-    title: "KataCore - Monochrome UI",
+    title: "Katadev - Monochrome UI",
     offline: false, // Chỉ sử dụng khi website không cần kết nối internet
     maintenance: {
         enabled: false, // Bật/tắt chế độ bảo trì
@@ -43,15 +43,15 @@ export const siteConfig = {
         light: "/images/logo-light.png", // Đường dẫn đến logo sáng
         width: 150, // Chiều rộng của logo
         height: 50, // Chiều cao của logo
-        alt: "KataCore - Monochrome UI System",
+        alt: "Katadev - Monochrome UI System",
     },
     
     // SEO configuration
     seo: {
-        titleTemplate: "%s | KataCore",
+        titleTemplate: "%s | Katadev",
         titleSeparator: "|",
-        titleSuffix: "KataCore",
-        description: "KataCore - Hệ thống giao diện đơn sắc với hỗ trợ đa ngôn ngữ và chế độ tối.",
+        titleSuffix: "Katadev",
+        description: "Katadev - Hệ thống giao diện đơn sắc với hỗ trợ đa ngôn ngữ và chế độ tối.",
         keywords: [
             "monochrome ui",
             "dark mode",
@@ -61,20 +61,20 @@ export const siteConfig = {
             "tailwindcss",
             "typescript"
         ],
-        url: "https://katacore.com",
+        url: "https://katadev.com",
         image: "/images/og-image.png",
         twitterCard: "summary_large_image",
     },
     
     // Author information
     author: {
-        name: "KataCore Team",
-        email: "contact@katacore.com",
-        url: "https://katacore.com",
+        name: "Katadev Team",
+        email: "contact@katadev.com",
+        url: "https://katadev.com",
         social: {
-            twitter: "@katacore",
-            github: "katacore",
-            linkedin: "katacore"
+            twitter: "@katadev",
+            github: "katadev",
+            linkedin: "katadev"
         }
     },
     

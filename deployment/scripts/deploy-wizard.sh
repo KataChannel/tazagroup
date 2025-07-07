@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🎯 Interactive Deployment Wizard for KataCore
+# 🎯 Interactive Deployment Wizard for Katadev
 # User-friendly guided deployment process
 # Version: 1.0.0
 
@@ -99,10 +99,10 @@ show_welcome() {
     echo -e "${CYAN}"
     cat << 'EOF'
     ╔═══════════════════════════════════════════════════════════════════════╗
-    ║                    🚀 KataCore Deployment Wizard                     ║
+    ║                    🚀 Katadev Deployment Wizard                     ║
     ║                                                                       ║
     ║    Welcome to the interactive deployment wizard!                     ║
-    ║    This wizard will guide you through deploying KataCore             ║
+    ║    This wizard will guide you through deploying Katadev             ║
     ║    to your server step by step.                                      ║
     ║                                                                       ║
     ║    Estimated time: 5-15 minutes                                      ║
@@ -210,7 +210,7 @@ step_server_config() {
 step_domain_ssl() {
     print_step "Step 2: Domain and SSL Configuration"
     
-    print_info "You can deploy KataCore in two modes:"
+    print_info "You can deploy Katadev in two modes:"
     echo "  1. Simple Mode: Access via IP address only (http://$SERVER_IP)"
     echo "  2. Domain Mode: Use a custom domain with SSL certificates (https://yourdomain.com)"
     echo
@@ -390,13 +390,13 @@ step_confirmation() {
 }
 
 step_deployment() {
-    print_step "Step 6: Deploying KataCore"
+    print_step "Step 6: Deploying Katadev"
     
     # Build deployment command
     local deploy_args=(
         --key "$SSH_KEY_PATH"
         --user "$SSH_USER"
-        --project katacore
+        --project katadev
         --install-api
         --install-postgres
         --install-redis
@@ -425,7 +425,7 @@ step_deployment() {
 step_completion() {
     print_step "🎉 Deployment Complete!"
     
-    print_success "KataCore has been successfully deployed!"
+    print_success "Katadev has been successfully deployed!"
     echo
     
     print_info "Your application is now available at:"
@@ -457,7 +457,7 @@ step_completion() {
     fi
     
     echo
-    print_success "Thank you for using KataCore! 🚀"
+    print_success "Thank you for using Katadev! 🚀"
 }
 
 # ================================

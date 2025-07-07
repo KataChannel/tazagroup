@@ -1,6 +1,6 @@
 {
-  "name": "KataCore HR Management System",
-  "short_name": "KataCore HR",
+  "name": "Katadev HR Management System",
+  "short_name": "Katadev HR",
   "description": "Comprehensive HR management system with employee management, departments, attendance, payroll, and more",
   "start_url": "/hr",
   "display": "standalone",
