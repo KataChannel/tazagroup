@@ -77,13 +77,12 @@ model Role {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
-  permissions String // JSON string of permissions
+  permissions Json // JSON array of permissions
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
   users User[]
-
   @@map("roles")
 }
 

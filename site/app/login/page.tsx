@@ -72,7 +72,7 @@ export default function LoginPage() {
       }`}
     >
       <div className="w-full max-w-md">
-        <div className="flex justify-end mb-4">
+        <div className="!fixed top-10 right-10 flex justify-end mb-4">
           <button
             onClick={toggleDarkMode}
             className={`p-2 rounded-full transition-all duration-200 ${
@@ -237,7 +237,7 @@ export default function LoginPage() {
             <p className={isDarkMode ? 'text-slate-400' : 'text-gray-600'}>
               Chưa có tài khoản?{' '}
               <a
-                href="#"
+                href="/register"
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
                 Đăng ký ngay

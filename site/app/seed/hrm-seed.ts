@@ -510,9 +510,9 @@ async function seedHRMData() {
         startDate: new Date('2024-02-15'),
         endDate: new Date('2024-02-17'),
         days: 3,
-        type: 'PERSONAL',
+        type: 'PERSONAL' as const,
         reason: 'Family wedding',
-        status: 'APPROVED',
+        status: 'APPROVED' as const,
         approvedBy: itManager.id,
         approvedAt: new Date('2024-02-10')
       },
@@ -522,9 +522,9 @@ async function seedHRMData() {
         startDate: new Date('2024-03-10'),
         endDate: new Date('2024-03-12'),
         days: 3,
-        type: 'SICK',
+        type: 'SICK' as const,
         reason: 'Medical treatment',
-        status: 'APPROVED',
+        status: 'APPROVED' as const,
         approvedBy: itManager.id,
         approvedAt: new Date('2024-03-08')
       },
@@ -534,9 +534,9 @@ async function seedHRMData() {
         startDate: new Date('2024-03-20'),
         endDate: new Date('2024-03-22'),
         days: 3,
-        type: 'ANNUAL',
+        type: 'ANNUAL' as const,
         reason: 'Vacation with family',
-        status: 'PENDING'
+        status: 'PENDING' as const
       }
     ];
 

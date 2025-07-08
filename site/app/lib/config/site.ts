@@ -9,7 +9,7 @@ export const siteConfig = {
     },
     auth: {
         loginRequired: true, // Yêu cầu đăng nhập để truy cập
-        redirectAfterLogin: "/dashboard", // Trang chuyển hướng sau khi đăng nhập thành công
+        redirectAfterLogin: "/", // Trang chuyển hướng sau khi đăng nhập thành công
         redirectAfterLogout: "/login",
         publicRoutes: ["/login", "/register", "/api/auth/*", "/favicon.ico", "/_next/*", "/manifest.json"], // Routes không cần đăng nhập
         protectedRoutes: ["/dashboard", "/admin/*", "/profile"], // Routes yêu cầu đăng nhập
