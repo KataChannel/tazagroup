@@ -1,4 +1,4 @@
-# 🚀 Katadev Senior-Level Deployment Guide
+# 🚀 KataCore Senior-Level Deployment Guide
 
 ## Table of Contents
 1. [Quick Start](#quick-start)
@@ -73,7 +73,7 @@ Use existing SSH key at /home/user/.ssh/id_rsa? (y/n) [y]:
 
 #### Step 6: Project Configuration
 ```
-Project name [katadev]:
+Project name [katacore]:
 Select Docker Compose configuration:
   1) docker-compose.yml (Standard)
   2) docker-compose.startkitv1.yml (Full Stack)
@@ -105,8 +105,8 @@ Backup retention (days) [7]:
 🌍 Domain:             myapp.com
 🚀 Deployment Type:    full
 👤 SSH User:           root
-🔐 SSH Key:            /home/user/.ssh/katadev-prod
-📦 Project Name:       katadev
+🔐 SSH Key:            /home/user/.ssh/katacore-prod
+📦 Project Name:       katacore
 🐳 Docker Compose:     docker-compose.startkitv1.yml
 🔒 SSL Enabled:        true
 💾 Backup Enabled:     true
@@ -156,7 +156,7 @@ For CI/CD and automated deployments:
   --server 116.118.85.41 \
   --domain myapp.com \
   --user root \
-  --key ~/.ssh/katadev-prod \
+  --key ~/.ssh/katacore-prod \
   --type full \
   --compose docker-compose.startkitv1.yml
 ```
@@ -203,11 +203,11 @@ Each environment configuration includes:
 SERVER_IP="116.118.85.41"
 DOMAIN="myapp.com"
 SSH_USER="root"
-SSH_KEY_PATH="$HOME/.ssh/katadev-prod"
+SSH_KEY_PATH="$HOME/.ssh/katacore-prod"
 
 # Deployment Configuration
 DEPLOY_TYPE="full"
-PROJECT_NAME="katadev"
+PROJECT_NAME="katacore"
 DOCKER_COMPOSE_FILE="docker-compose.startkitv1.yml"
 
 # Feature Flags
@@ -231,13 +231,13 @@ BACKUP_RETENTION_DAYS="30"
 ### SSH Key Management
 ```bash
 # Generate SSH key for specific environment
-./scripts/setup/generate-ssh-key.sh ~/.ssh/katadev-prod
+./scripts/setup/generate-ssh-key.sh ~/.ssh/katacore-prod
 
 # Generate and deploy to server
 ./scripts/setup/generate-ssh-key.sh \
   --server 116.118.85.41 \
   --user root \
-  ~/.ssh/katadev-prod
+  ~/.ssh/katacore-prod
 ```
 
 ### Custom Docker Compose Files

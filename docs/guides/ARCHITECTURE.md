@@ -1,8 +1,8 @@
-# 🏗️ Katadev Architecture Overview
+# 🏗️ KataCore Architecture Overview
 
 ## System Architecture
 
-Katadev follows a modern microservices architecture with clear separation of concerns:
+KataCore follows a modern microservices architecture with clear separation of concerns:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -69,7 +69,7 @@ Katadev follows a modern microservices architecture with clear separation of con
 ## Project Structure
 
 ```
-Katadev/
+KataCore/
 ├── 📁 site/                      # Frontend Application
 │   ├── src/app/                   # Next.js App Router pages
 │   │   ├── (auth)/               # Authentication routes

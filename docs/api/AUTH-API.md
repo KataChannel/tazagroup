@@ -1,7 +1,7 @@
-# 🔐 Katadev Authentication API Documentation
+# 🔐 KataCore Authentication API Documentation
 
 ## Overview
-The Katadev Authentication API provides secure user authentication, authorization, and session management for the Katadev platform. It supports multiple authentication methods including JWT tokens, OAuth2, and API keys.
+The KataCore Authentication API provides secure user authentication, authorization, and session management for the KataCore platform. It supports multiple authentication methods including JWT tokens, OAuth2, and API keys.
 
 ## Base URL
 ```
@@ -853,7 +853,7 @@ X-RateLimit-RetryAfter: 60
 ```javascript
 const axios = require('axios');
 
-class KatadevAuth {
+class KataCoreAuth {
   constructor(baseURL) {
     this.baseURL = baseURL;
     this.accessToken = null;
@@ -928,7 +928,7 @@ class KatadevAuth {
 }
 
 // Usage
-const auth = new KatadevAuth('https://your-domain.com/api');
+const auth = new KataCoreAuth('https://your-domain.com/api');
 await auth.login('user@example.com', 'password123');
 const profile = await auth.getProfile();
 ```
@@ -938,7 +938,7 @@ const profile = await auth.getProfile();
 import requests
 import time
 
-class KatadevAuth:
+class KataCoreAuth:
     def __init__(self, base_url):
         self.base_url = base_url
         self.access_token = None
@@ -992,7 +992,7 @@ class KatadevAuth:
             raise Exception('Session expired. Please login again.')
 
 # Usage
-auth = KatadevAuth('https://your-domain.com/api')
+auth = KataCoreAuth('https://your-domain.com/api')
 auth.login('user@example.com', 'password123')
 profile = auth.get_profile()
 ```
@@ -1001,26 +1001,26 @@ profile = auth.get_profile()
 
 ### Demo Credentials
 ```
-Email: demo@katadev.com
+Email: demo@katacore.com
 Password: Demo123456!
 ```
 
 ### Test Endpoints
 ```bash
 # Login
-curl -X POST "https://demo.katadev.com/api/auth/login" \
+curl -X POST "https://demo.katacore.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "demo@katadev.com",
+    "email": "demo@katacore.com",
     "password": "Demo123456!"
   }'
 
 # Get profile
-curl -X GET "https://demo.katadev.com/api/auth/me" \
+curl -X GET "https://demo.katacore.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Register new user
-curl -X POST "https://demo.katadev.com/api/auth/register" \
+curl -X POST "https://demo.katacore.com/api/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Test",
@@ -1065,10 +1065,10 @@ The system can send webhook notifications for authentication events:
 ## Support
 
 For authentication API support:
-- 📧 Email: auth-support@katadev.com
-- 📚 Documentation: https://docs.katadev.com/api/auth
-- 🔒 Security Issues: security@katadev.com
-- 💬 Community: https://discord.gg/katadev
+- 📧 Email: auth-support@katacore.com
+- 📚 Documentation: https://docs.katacore.com/api/auth
+- 🔒 Security Issues: security@katacore.com
+- 💬 Community: https://discord.gg/katacore
 
 ---
 
