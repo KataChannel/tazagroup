@@ -2,7 +2,7 @@
 
 # Set variables
 SSH_USER="root"
-SERVER_IP=""
+SERVER_IP="116.118.49.243"
 PROJECT_NAME="taza"
 TEMP_DIR="/tmp/deploy_$(date +%s)"
 
@@ -57,6 +57,7 @@ show_menu() {
     echo -e "  ${GREEN}3)${NC} 🔄 Deploy only (skip git operations)"
     echo -e "  ${GREEN}4)${NC} 🧹 Server cleanup only"
     echo -e "  ${GREEN}5)${NC} 📊 Check server status"
+    echo -e "  ${GREEN}6)${NC} 🔧 Fresh deploy (clean env + copy env.local)"
     echo -e "  ${RED}q)${NC} 👋 Quit"
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
 }
@@ -152,6 +153,64 @@ deploy_to_server() {
     
     progress "🔧 Configuring environment on remote server..."
     ssh "$SSH_USER@$SERVER_IP" "cd /opt/$PROJECT_NAME/ && if [ -f .env.prod ]; then mv .env.prod .env && echo 'Environment file configured'; else echo 'No .env.prod found'; fi" || error "Failed to configure environment"
+    
+    # Cleanup temp directory
+    rm -rf "$TEMP_DIR"
+    success "Local cleanup completed"
+
+    server_cleanup
+    deploy_application
+}
+
+# Function for fresh deployment with env cleanup
+fresh_deploy_to_server() {
+    progress "Initializing fresh deployment process..."
+    
+    # Check if env.local exists locally
+    if [ ! -f ".env.local" ]; then
+        error ".env.local file not found in current directory"
+    fi
+    
+    # Create temp directory
+    mkdir -p "$TEMP_DIR" || error "Failed to create temp directory"
+    success "Temporary directory created: $TEMP_DIR"
+
+    progress "📤 Preparing project files for fresh deployment..."
+    # Show what will be excluded
+    info "Excluding: .git, node_modules, *.log, .env*, *.md, *.sh"
+    
+    # Copy all project files to temp directory (excluding all env files)
+    rsync -av --exclude='.git' --exclude='node_modules' --exclude='*.log' --exclude='.env*' --exclude='*.md' --exclude='*.sh' . "$TEMP_DIR/" || error "Failed to copy files to temp directory"
+    
+    # Copy env.local to temp directory as .env
+    cp .env.local "$TEMP_DIR/.env" || error "Failed to copy .env.local file"
+    success "Environment file prepared from .env.local"
+    
+    # Show transfer size
+    size=$(du -sh "$TEMP_DIR" | cut -f1)
+    info "Transfer size: $size"
+
+    progress "🗑️ Cleaning old environment files on server..."
+    ssh "$SSH_USER@$SERVER_IP" "
+        cd /opt/$PROJECT_NAME/ 2>/dev/null || true
+        rm -f .env .env.* 2>/dev/null || true
+        echo 'Old environment files removed'
+    " || warning "Could not clean old environment files (directory may not exist)"
+
+    progress "🌐 Transferring files to remote server..."
+    rsync -avz --progress "$TEMP_DIR/" "$SSH_USER@$SERVER_IP:/opt/$PROJECT_NAME/" || error "Failed to transfer files to remote server"
+    
+    progress "🔧 Verifying new environment configuration..."
+    ssh "$SSH_USER@$SERVER_IP" "
+        cd /opt/$PROJECT_NAME/
+        if [ -f .env ]; then
+            echo '✅ New environment file is in place'
+            echo 'Environment variables count:' \$(grep -c '=' .env 2>/dev/null || echo '0')
+        else
+            echo '❌ Environment file missing after transfer'
+            exit 1
+        fi
+    " || error "Failed to verify environment configuration"
     
     # Cleanup temp directory
     rm -rf "$TEMP_DIR"
@@ -274,6 +333,20 @@ while true; do
         5)
             log "Option 5 selected: Check server status"
             check_server_status
+            echo ""
+            info "Press any key to return to menu..."
+            read -n 1
+            ;;
+        6)
+            log "Option 6 selected: Fresh deploy with new environment"
+            warning "This will remove all old .env files and use .env.local as new environment"
+            echo -e "${YELLOW}Are you sure you want to proceed? (y/N):${NC}"
+            read -p "❓ " confirm
+            if [[ $confirm =~ ^[Yy]$ ]]; then
+                fresh_deploy_to_server
+            else
+                warning "Fresh deployment cancelled"
+            fi
             echo ""
             info "Press any key to return to menu..."
             read -n 1
