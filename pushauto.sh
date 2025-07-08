@@ -2,8 +2,8 @@
 
 # Set variables
 SSH_USER="root"
-SERVER_IP="116.118.48.143"
-PROJECT_NAME="katacore"
+SERVER_IP=""
+PROJECT_NAME="taza"
 TEMP_DIR="/tmp/deploy_$(date +%s)"
 
 # Colors for better display
