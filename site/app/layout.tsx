@@ -2,11 +2,12 @@ import './globals.css';
 import { inter } from './ui/fonts';
 import { Metadata } from 'next';
 import { siteConfig } from './lib/config/site';
-import { MaintenanceGuard } from './components/auth';
+import { MaintenanceGuard, AuthGuard } from './components/auth';
+import { AuthProvider } from './hooks/useAuth';
 
 export const metadata: Metadata = {
   title: siteConfig.title,
-  description: siteConfig.description,
+  description: siteConfig.seo.description,
   manifest: '/manifest.json',
   themeColor: '#4f46e5',
   appleWebApp: {
@@ -71,9 +72,13 @@ export default function RootLayout({
         <meta property="og:image" content="https://tazav1.hr/icons/icon-192x192.png" />
       </head>
       <body className={`${inter.className} antialiased`}>
-        <MaintenanceGuard>
-          {children}
-        </MaintenanceGuard>
+        <AuthProvider>
+          <MaintenanceGuard>
+            <AuthGuard>
+              {children}
+            </AuthGuard>
+          </MaintenanceGuard>
+        </AuthProvider>
       </body>
     </html>
   );

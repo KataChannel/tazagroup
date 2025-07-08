@@ -1036,3 +1036,7 @@ curl http://localhost:3001/health   # Test API
 
 
 Phong cách Website monochrome IU có darkmode,reponsive
+
+docker exec -it 5b4931f4b544 bash
+psql -U tazav1
+ALTER USER tazav1 WITH PASSWORD '70iTTwsQ';

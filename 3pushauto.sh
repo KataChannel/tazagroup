@@ -41,6 +41,59 @@ progress() {
     echo -e "${PURPLE}🔄 $(date '+%Y-%m-%d %H:%M:%S') - $1${NC}"
 }
 
+# Function to select services
+select_services() {
+    clear
+    echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}                   🛠️  Service Selection Menu${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
+    echo -e "${YELLOW}Select services to deploy (space-separated numbers or 'all'):${NC}"
+    echo -e "${CYAN}──────────────────────────────────────────────────────────────${NC}"
+    echo -e "  ${GREEN}1)${NC} 🔧 API Service"
+    echo -e "  ${GREEN}2)${NC} 🌐 Site Service"
+    echo -e "  ${GREEN}3)${NC} 🐘 PostgreSQL Database"
+    echo -e "  ${GREEN}4)${NC} 🔴 Redis Cache"
+    echo -e "  ${GREEN}5)${NC} 📦 MinIO Object Storage"
+    echo -e "  ${GREEN}6)${NC} 🛠️  pgAdmin Database Admin"
+    echo -e "${CYAN}──────────────────────────────────────────────────────────────${NC}"
+    echo -e "${BLUE}Examples:${NC}"
+    echo -e "  • ${YELLOW}all${NC} - Deploy all services"
+    echo -e "  • ${YELLOW}1 2 3${NC} - Deploy API, Site, and PostgreSQL"
+    echo -e "  • ${YELLOW}3 4 5${NC} - Deploy Database stack only"
+    echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
+    
+    echo -ne "${YELLOW}Enter your selection: ${NC}"
+    read service_selection
+    
+    # Parse service selection
+    SELECTED_SERVICES=""
+    if [[ "$service_selection" == "all" ]]; then
+        SELECTED_SERVICES="api site postgres redis minio pgadmin"
+    else
+        for num in $service_selection; do
+            case $num in
+                1) SELECTED_SERVICES="$SELECTED_SERVICES api" ;;
+                2) SELECTED_SERVICES="$SELECTED_SERVICES site" ;;
+                3) SELECTED_SERVICES="$SELECTED_SERVICES postgres" ;;
+                4) SELECTED_SERVICES="$SELECTED_SERVICES redis" ;;
+                5) SELECTED_SERVICES="$SELECTED_SERVICES minio" ;;
+                6) SELECTED_SERVICES="$SELECTED_SERVICES pgadmin" ;;
+                *) warning "Invalid service number: $num" ;;
+            esac
+        done
+    fi
+    
+    # Remove leading/trailing spaces and deduplicate
+    SELECTED_SERVICES=$(echo $SELECTED_SERVICES | tr ' ' '\n' | sort -u | tr '\n' ' ' | sed 's/^ *//;s/ *$//')
+    
+    if [ -z "$SELECTED_SERVICES" ]; then
+        error "No valid services selected"
+    fi
+    
+    success "Selected services: $SELECTED_SERVICES"
+    return 0
+}
+
 # Function to show enhanced menu
 show_menu() {
     clear
@@ -58,6 +111,7 @@ show_menu() {
     echo -e "  ${GREEN}4)${NC} 🧹 Server cleanup only"
     echo -e "  ${GREEN}5)${NC} 📊 Check server status"
     echo -e "  ${GREEN}6)${NC} 🔧 Fresh deploy (clean env + copy env.local)"
+    echo -e "  ${GREEN}7)${NC} 🛠️  Deploy specific services"
     echo -e "  ${RED}q)${NC} 👋 Quit"
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
 }
@@ -167,8 +221,8 @@ fresh_deploy_to_server() {
     progress "Initializing fresh deployment process..."
     
     # Check if env.local exists locally
-    if [ ! -f ".env.local" ]; then
-        error ".env.local file not found in current directory"
+    if [ ! -f ".env.prod" ]; then
+        error ".env.prod file not found in current directory"
     fi
     
     # Create temp directory
@@ -183,8 +237,8 @@ fresh_deploy_to_server() {
     rsync -av --exclude='.git' --exclude='node_modules' --exclude='*.log' --exclude='.env*' --exclude='*.md' --exclude='*.sh' . "$TEMP_DIR/" || error "Failed to copy files to temp directory"
     
     # Copy env.local to temp directory as .env
-    cp .env.local "$TEMP_DIR/.env" || error "Failed to copy .env.local file"
-    success "Environment file prepared from .env.local"
+    cp .env.prod "$TEMP_DIR/.env" || error "Failed to copy .env.prod file"
+    success "Environment file prepared from .env.prod"
     
     # Show transfer size
     size=$(du -sh "$TEMP_DIR" | cut -f1)
@@ -215,6 +269,9 @@ fresh_deploy_to_server() {
     # Cleanup temp directory
     rm -rf "$TEMP_DIR"
     success "Local cleanup completed"
+
+    # server_cleanup
+    # deploy_application
 }
 
 # Enhanced server cleanup function
@@ -257,7 +314,7 @@ server_cleanup() {
     success "Server cleanup completed successfully"
 }
 
-# Enhanced deployment function
+# Enhanced deployment function with service selection
 deploy_application() {
     progress "🚀 Deploying application..."
     
@@ -287,6 +344,48 @@ deploy_application() {
 
     success "🎉 Deployment completed successfully!"
     info "Your application should now be running on the server"
+}
+
+# Function to deploy specific services
+deploy_selected_services() {
+    select_services
+    
+    if [ -z "$SELECTED_SERVICES" ]; then
+        error "No services selected"
+    fi
+    
+    progress "🚀 Deploying selected services: $SELECTED_SERVICES"
+    
+    ssh "$SSH_USER@$SERVER_IP" "
+        cd /opt/$PROJECT_NAME/
+        echo '📋 Current directory: \$(pwd)'
+        
+        if [ -f 'docker-compose.yml' ]; then
+            echo '🛑 Stopping existing containers...'
+            docker compose down --remove-orphans
+            
+            echo '🐳 Starting selected services: $SELECTED_SERVICES'
+            docker compose up -d --build $SELECTED_SERVICES
+            
+            echo '⏳ Waiting for containers to start...'
+            sleep 10
+            
+            echo '📊 Container status:'
+            docker compose ps
+            
+            echo '📋 Container logs for selected services:'
+            for service in $SELECTED_SERVICES; do
+                echo '--- Logs for \$service ---'
+                docker compose logs --tail=10 \$service 2>/dev/null || echo 'No logs available for \$service'
+            done
+        else
+            echo '❌ docker-compose.yml not found!'
+            exit 1
+        fi
+    " || error "Failed to deploy selected services"
+
+    success "🎉 Selected services deployment completed!"
+    info "Selected services ($SELECTED_SERVICES) are now running on the server"
 }
 
 # Main script with enhanced menu handling
@@ -336,7 +435,7 @@ while true; do
             ;;
         6)
             log "Option 6 selected: Fresh deploy with new environment"
-            warning "This will remove all old .env files and use .env.local as new environment"
+            warning "This will remove all old .env files and use .env.prod as new environment"
             echo -e "${YELLOW}Are you sure you want to proceed? (y/N):${NC}"
             read -p "❓ " confirm
             if [[ $confirm =~ ^[Yy]$ ]]; then
@@ -344,6 +443,13 @@ while true; do
             else
                 warning "Fresh deployment cancelled"
             fi
+            echo ""
+            info "Press any key to return to menu..."
+            read -n 1
+            ;;
+        7)
+            log "Option 7 selected: Deploy specific services"
+            deploy_selected_services
             echo ""
             info "Press any key to return to menu..."
             read -n 1

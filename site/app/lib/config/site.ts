@@ -8,9 +8,11 @@ export const siteConfig = {
         estimatedTime: "8/7/2025"
     },
     auth: {
-        loginRequired: false, // Yêu cầu đăng nhập để truy cập
+        loginRequired: true, // Yêu cầu đăng nhập để truy cập
         redirectAfterLogin: "/dashboard", // Trang chuyển hướng sau khi đăng nhập thành công
-        redirectAfterLogout: "/login"
+        redirectAfterLogout: "/login",
+        publicRoutes: ["/login", "/register", "/api/auth/*", "/favicon.ico", "/_next/*", "/manifest.json"], // Routes không cần đăng nhập
+        protectedRoutes: ["/dashboard", "/admin/*", "/profile"], // Routes yêu cầu đăng nhập
     },
     
     // Enhanced theme configuration

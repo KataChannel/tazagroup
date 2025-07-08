@@ -2,17 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../hooks/useAuth';
+import { siteConfig } from '../lib/config/site';
 
 export default function LoginPage() {
+  const { login, loading, user } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false,
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    // Nếu user đã đăng nhập, chuyển hướng về dashboard
+    if (user?.isAuthenticated) {
+      router.push(siteConfig.auth.redirectAfterLogin);
+    }
+  }, [user, router]);
 
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -38,33 +47,19 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          rememberMe: formData.rememberMe,
-        }),
+      const success = await login({
+        email: formData.email,
+        password: formData.password,
       });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Đăng nhập thất bại');
+      
+      if (success) {
+        router.push(siteConfig.auth.redirectAfterLogin);
       }
-      if (formData.rememberMe) {
-        localStorage.setItem('token', data.token);
-      } else {
-        sessionStorage.setItem('token', data.token);
-      }
-      router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra');
-    } finally {
-      setIsLoading(false);
+      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi đăng nhập');
     }
   };
 
@@ -187,10 +182,10 @@ export default function LoginPage() {
             </div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </button>
           </form>
           <div className="relative my-8">
