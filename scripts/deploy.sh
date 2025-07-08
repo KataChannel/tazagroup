@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# KataCore Master Deployment Script
+# Tazav1 Master Deployment Script
 # This script provides a unified interface for all deployment operations
-# Author: KataCore Team
+# Author: Tazav1 Team
 # Version: 1.0.0
 # Last Updated: January 2024
 
@@ -64,7 +64,7 @@ show_help() {
     cat << EOF
 ${CYAN}
 ╔═══════════════════════════════════════════════════════════╗
-║                    KataCore Deployment                    ║
+║                    Tazav1 Deployment                    ║
 ║                     Master Script                        ║
 ╚═══════════════════════════════════════════════════════════╝
 ${NC}
@@ -125,9 +125,9 @@ ${BLUE}EXAMPLES:${NC}
     $0 maintenance enable --message "Scheduled maintenance"
 
 ${BLUE}SUPPORT:${NC}
-    📧 Email: deploy-support@katacore.com
-    📚 Docs:  https://docs.katacore.com/deployment
-    💬 Chat:  https://discord.gg/katacore
+    📧 Email: deploy-support@tazav1.com
+    📚 Docs:  https://docs.tazav1.com/deployment
+    💬 Chat:  https://discord.gg/tazav1
 
 EOF
 }
@@ -262,9 +262,9 @@ load_config() {
 
 # Interactive setup wizard
 setup_wizard() {
-    log_header "🚀 KataCore Setup Wizard"
+    log_header "🚀 Tazav1 Setup Wizard"
     
-    echo -e "${BLUE}Welcome to KataCore deployment setup!${NC}"
+    echo -e "${BLUE}Welcome to Tazav1 deployment setup!${NC}"
     echo -e "${BLUE}This wizard will guide you through the initial setup process.${NC}"
     echo -e "${YELLOW}Press Enter to use default values shown in brackets${NC}"
     echo
@@ -402,7 +402,7 @@ deploy_application() {
     local force=${FORCE:-false}
     local verbose=${VERBOSE:-false}
     
-    log_header "🚀 Deploying KataCore Application"
+    log_header "🚀 Deploying Tazav1 Application"
     
     # Display deployment configuration
     echo -e "${BLUE}Deployment Configuration:${NC}"
@@ -618,7 +618,7 @@ create_backup() {
     
     local timestamp
     timestamp=$(date +%Y%m%d_%H%M%S)
-    local backup_name="katacore_backup_${env}_${timestamp}"
+    local backup_name="tazav1_backup_${env}_${timestamp}"
     
     echo -e "${BLUE}Backup Configuration:${NC}"
     echo -e "  Environment: ${YELLOW}${env}${NC}"
@@ -631,7 +631,7 @@ create_backup() {
         "database")
             log_info "Creating database backup..."
             ssh "$user@$server" "
-                docker-compose exec -T postgres pg_dump -U postgres katacore | gzip > ${backup_name}.sql.gz
+                docker-compose exec -T postgres pg_dump -U postgres tazav1 | gzip > ${backup_name}.sql.gz
                 echo 'Database backup created: ${backup_name}.sql.gz'
             "
             ;;
@@ -645,7 +645,7 @@ create_backup() {
         "full")
             log_info "Creating full backup..."
             ssh "$user@$server" "
-                docker-compose exec -T postgres pg_dump -U postgres katacore | gzip > ${backup_name}_db.sql.gz
+                docker-compose exec -T postgres pg_dump -U postgres tazav1 | gzip > ${backup_name}_db.sql.gz
                 tar -czf ${backup_name}_files.tar.gz docker-compose.yml .env uploads/
                 echo 'Full backup created: ${backup_name}_db.sql.gz and ${backup_name}_files.tar.gz'
             "
@@ -699,7 +699,7 @@ health_check() {
         curl -s http://localhost:3000/api/health | jq '.' 2>/dev/null || echo 'Health endpoint not available'
         echo
         echo 'Database Connection:'
-        docker-compose exec -T postgres psql -U postgres -d katacore -c 'SELECT 1;' > /dev/null 2>&1 && echo 'Database: OK' || echo 'Database: ERROR'
+        docker-compose exec -T postgres psql -U postgres -d tazav1 -c 'SELECT 1;' > /dev/null 2>&1 && echo 'Database: OK' || echo 'Database: ERROR'
         echo 'Redis Connection:'
         docker-compose exec -T redis redis-cli ping 2>/dev/null || echo 'Redis: ERROR'
         echo

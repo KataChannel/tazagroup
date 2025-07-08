@@ -1,8 +1,8 @@
-# 🏗️ KataCore Architecture Overview
+# 🏗️ Tazav1 Architecture Overview
 
 ## System Architecture
 
-KataCore follows a modern microservices architecture with clear separation of concerns:
+Tazav1 follows a modern microservices architecture with clear separation of concerns:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -69,7 +69,7 @@ KataCore follows a modern microservices architecture with clear separation of co
 ## Project Structure
 
 ```
-KataCore/
+Tazav1/
 ├── 📁 site/                      # Frontend Application
 │   ├── src/app/                   # Next.js App Router pages
 │   │   ├── (auth)/               # Authentication routes

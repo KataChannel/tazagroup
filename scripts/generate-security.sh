@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🔐 KataCore Auto-Generated Security Script
+# 🔐 Tazav1 Auto-Generated Security Script
 # Tạo các mật khẩu và secrets bảo mật tự động
 
 set -euo pipefail
@@ -11,7 +11,7 @@ readonly BLUE='\033[0;34m'
 readonly YELLOW='\033[1;33m'
 readonly NC='\033[0m'
 
-echo -e "${BLUE}🔐 Đang tạo auto-generated security cho KataCore...${NC}"
+echo -e "${BLUE}🔐 Đang tạo auto-generated security cho Tazav1...${NC}"
 
 # Tạo các password và secrets bảo mật
 DB_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
@@ -24,7 +24,7 @@ GRAFANA_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
 
 # Tạo file .env.local với auto-generated passwords
 cat > .env.local << EOF
-# 🔐 KataCore Auto-Generated Security Configuration
+# 🔐 Tazav1 Auto-Generated Security Configuration
 # Generated on $(date)
 # DO NOT COMMIT THIS FILE TO VERSION CONTROL
 
@@ -42,9 +42,9 @@ JWT_SECRET=$JWT_SECRET
 ENCRYPTION_KEY=$ENCRYPTION_KEY
 
 # ===== DATABASE CONFIGURATION =====
-POSTGRES_DB=katacore
-POSTGRES_USER=katacore
-DATABASE_URL=postgresql://katacore:$DB_PASSWORD@localhost:5432/katacore
+POSTGRES_DB=tazav1
+POSTGRES_USER=tazav1
+DATABASE_URL=postgresql://tazav1:$DB_PASSWORD@localhost:5432/tazav1
 
 # ===== REDIS CONFIGURATION =====
 REDIS_URL=redis://:$REDIS_PASSWORD@localhost:6379

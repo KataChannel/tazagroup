@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🔑 KataCore SSH Key Generation & Setup Script
+# 🔑 Tazav1 SSH Key Generation & Setup Script
 # Automated SSH key generation and configuration for remote deployment
 
 set -euo pipefail
@@ -36,7 +36,7 @@ show_banner() {
     echo -e "${BLUE}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                     🔑 KataCore SSH Key Setup                               ║
+║                     🔑 Tazav1 SSH Key Setup                               ║
 ║                                                                              ║
 ║    Generate and configure SSH keys for secure remote deployment            ║
 ║    Supports ED25519 and RSA key types with automated configuration         ║
@@ -184,7 +184,7 @@ test_passwordless_ssh() {
 # Show help
 show_help() {
     cat << 'EOF'
-🔑 KataCore SSH Key Generation & Setup Script
+🔑 Tazav1 SSH Key Generation & Setup Script
 
 USAGE:
     ./ssh-keygen-setup.sh [OPTIONS]
@@ -362,7 +362,7 @@ create_ssh_config() {
     log "📝 Creating SSH config entry..."
     
     local config_entry="
-# KataCore Deployment Server - Generated $(date)
+# Tazav1 Deployment Server - Generated $(date)
 Host ${SSH_KEY_NAME}-${SERVER_IP}
     HostName ${SERVER_IP}
     User ${SSH_USER:-$DEFAULT_USER}
@@ -455,7 +455,7 @@ show_usage_instructions() {
     echo "   ssh ${SSH_KEY_NAME}-${SERVER_IP}"
     echo
     
-    echo -e "${YELLOW}Use with KataCore deployment:${NC}"
+    echo -e "${YELLOW}Use with Tazav1 deployment:${NC}"
     echo "   ./deploy-remote.sh --key $private_key --user ${SSH_USER} ${SERVER_IP} ${DOMAIN}"
     echo
 }
@@ -467,7 +467,7 @@ create_deployment_helper() {
     cat > "$helper_script" << EOF
 #!/bin/bash
 
-# 🚀 KataCore Deployment Helper with Generated SSH Key
+# 🚀 Tazav1 Deployment Helper with Generated SSH Key
 # Auto-generated helper script for deployment with key: $SSH_KEY_NAME
 
 SSH_KEY="$SSH_KEY_PATH/$SSH_KEY_NAME"
@@ -547,7 +547,7 @@ main() {
     show_usage_instructions
     
     success "🎉 SSH key setup completed successfully!"
-    info "Use the generated key for secure remote deployment with KataCore"
+    info "Use the generated key for secure remote deployment with Tazav1"
 }
 
 # Run main function

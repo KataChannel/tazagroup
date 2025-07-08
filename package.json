@@ -1,7 +1,7 @@
 {
-  "name": "katacore-enterprise",
+  "name": "tazav1-enterprise",
   "version": "2.0.0",
-  "description": "KataCore Enterprise Platform - Production-ready full-stack platform with automated deployment & Human Resource Management",
+  "description": "Tazav1 Enterprise Platform - Production-ready full-stack platform with automated deployment & Human Resource Management",
   "private": true,
   "workspaces": [
     "site",
@@ -38,7 +38,7 @@
     "docker:restart": "docker-compose -f configs/docker/docker-compose.yml restart"
   },
   "keywords": [
-    "katacore",
+    "tazav1",
     "enterprise",
     "hrm",
     "human-resource-management",
@@ -60,15 +60,15 @@
     "prisma",
     "automated-deployment"
   ],
-  "author": "KataCore Team",
+  "author": "Tazav1 Team",
   "license": "MIT",
-  "homepage": "https://github.com/chikiet/KataCore",
+  "homepage": "https://github.com/chikiet/Tazav1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chikiet/KataCore.git"
+    "url": "https://github.com/chikiet/Tazav1.git"
   },
   "bugs": {
-    "url": "https://github.com/chikiet/KataCore/issues"
+    "url": "https://github.com/chikiet/Tazav1/issues"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

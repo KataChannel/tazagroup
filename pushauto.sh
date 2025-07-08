@@ -45,7 +45,7 @@ progress() {
 show_menu() {
     clear
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}                    🚀 KataCore Deployment Tool${NC}"
+    echo -e "${GREEN}                    🚀 Tazav1 Deployment Tool${NC}"
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
     echo -e "${YELLOW}Project:${NC} $PROJECT_NAME"
     echo -e "${YELLOW}Server:${NC} $SSH_USER@$SERVER_IP"
@@ -215,9 +215,6 @@ fresh_deploy_to_server() {
     # Cleanup temp directory
     rm -rf "$TEMP_DIR"
     success "Local cleanup completed"
-
-    server_cleanup
-    deploy_application
 }
 
 # Enhanced server cleanup function
@@ -352,7 +349,7 @@ while true; do
             read -n 1
             ;;
         q|Q)
-            echo -e "${GREEN}👋 Thank you for using KataCore Deployment Tool!${NC}"
+            echo -e "${GREEN}👋 Thank you for using Tazav1 Deployment Tool!${NC}"
             echo -e "${CYAN}Goodbye!${NC}"
             exit 0
             ;;

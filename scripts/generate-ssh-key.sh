@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # 🔑 SSH Key Generation and Management Script
-# Part of KataCore Senior-Level Deployment System
+# Part of Tazav1 Senior-Level Deployment System
 
 set -euo pipefail
 
 # Default configuration
-SSH_KEY_NAME="katacore-deploy"
+SSH_KEY_NAME="tazav1-deploy"
 SSH_KEY_PATH=""
 SERVER_IP=""
 SSH_USER="root"
@@ -71,7 +71,7 @@ generate_ssh_key() {
     fi
     
     # Generate the key
-    ssh-keygen -t ed25519 -C "katacore-deploy-$(date +%Y%m%d)" -f "$private_key" -N ""
+    ssh-keygen -t ed25519 -C "tazav1-deploy-$(date +%Y%m%d)" -f "$private_key" -N ""
     
     # Set proper permissions
     chmod 600 "$private_key"
@@ -116,7 +116,7 @@ create_ssh_config() {
     log "📝 Creating SSH config entry..."
     
     local config_file="$HOME/.ssh/config"
-    local alias="katacore-$(echo "$server" | tr '.' '-')"
+    local alias="tazav1-$(echo "$server" | tr '.' '-')"
     
     # Create SSH config if it doesn't exist
     if [[ ! -f "$config_file" ]]; then
@@ -133,7 +133,7 @@ create_ssh_config() {
     # Add config entry
     cat >> "$config_file" << EOF
 
-# KataCore deployment server
+# Tazav1 deployment server
 Host $alias
     HostName $server
     User $user
@@ -164,13 +164,13 @@ OPTIONS:
 
 EXAMPLES:
     # Generate key only
-    ./generate-ssh-key.sh ~/.ssh/katacore-deploy
+    ./generate-ssh-key.sh ~/.ssh/tazav1-deploy
 
     # Generate and deploy to server
-    ./generate-ssh-key.sh --server 116.118.85.41 --user ubuntu ~/.ssh/katacore-deploy
+    ./generate-ssh-key.sh --server 116.118.85.41 --user ubuntu ~/.ssh/tazav1-deploy
 
     # Force overwrite existing key
-    ./generate-ssh-key.sh --force ~/.ssh/katacore-deploy
+    ./generate-ssh-key.sh --force ~/.ssh/tazav1-deploy
 
 EOF
 }

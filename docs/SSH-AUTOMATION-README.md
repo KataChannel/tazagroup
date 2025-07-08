@@ -1,6 +1,6 @@
-# 🚀 KataCore Automated SSH Deployment System
+# 🚀 Tazav1 Automated SSH Deployment System
 
-The KataCore project now includes a fully automated SSH deployment system that eliminates the need for manual SSH key management and password prompts during deployment.
+The Tazav1 project now includes a fully automated SSH deployment system that eliminates the need for manual SSH key management and password prompts during deployment.
 
 ## 🎯 Quick Start (One Command Deploy)
 
@@ -20,13 +20,13 @@ For the fastest deployment experience:
 **That's it!** The system will:
 1. ✅ Generate SSH keys automatically
 2. 🔑 Deploy keys to server (one password prompt)
-3. 🚀 Deploy complete KataCore stack
+3. 🚀 Deploy complete Tazav1 stack
 4. 🎉 Show access URLs
 
 ## 📋 Available Scripts
 
 ### 1. `quick-deploy.sh` - One-Command Deployment
-The fastest way to deploy KataCore to any server.
+The fastest way to deploy Tazav1 to any server.
 
 ```bash
 ./quick-deploy.sh [OPTIONS] SERVER_IP [DOMAIN]
@@ -180,8 +180,8 @@ After running the automated scripts, you'll have:
 
 ```
 ~/.ssh/
-├── katacore-deploy           # Private key
-├── katacore-deploy.pub       # Public key
+├── tazav1-deploy           # Private key
+├── tazav1-deploy.pub       # Public key
 ├── config                    # SSH config with server aliases
 └── known_hosts               # Server fingerprints
 
@@ -224,7 +224,7 @@ Project Directory:
 
 # Results in:
 # ✅ SSH key generated and deployed
-# ✅ KataCore deployed with SSL
+# ✅ Tazav1 deployed with SSL
 # ✅ Ready for production use
 ```
 
@@ -297,9 +297,9 @@ If you encounter issues:
 
 After successful deployment, you should see:
 - ✅ SSH connection works without password
-- ✅ KataCore services are running
+- ✅ Tazav1 services are running
 - ✅ Web interface accessible
 - ✅ API endpoints responding
 - ✅ Database connections working
 
-This automated system makes KataCore deployment as simple as running a single command!
+This automated system makes Tazav1 deployment as simple as running a single command!

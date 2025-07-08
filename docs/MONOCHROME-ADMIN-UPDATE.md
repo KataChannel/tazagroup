@@ -1,8 +1,8 @@
-# KataCore Admin - Monochrome UI System
+# Tazav1 Admin - Monochrome UI System
 
 ## 🎨 Phong cách thiết kế đã cập nhật
 
-Hệ thống admin KataCore đã được cập nhật với **phong cách monochrome UI hiện đại** với các tính năng sau:
+Hệ thống admin Tazav1 đã được cập nhật với **phong cách monochrome UI hiện đại** với các tính năng sau:
 
 ### ✨ Tính năng chính
 

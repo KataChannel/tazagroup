@@ -1,5 +1,5 @@
 export const siteConfig = {
-    title: "KataCore - Monochrome UI",
+    title: "Tazav1 - Monochrome UI",
     offline: false, // Chỉ sử dụng khi website không cần kết nối internet
     maintenance: {
         enabled: false, // Bật/tắt chế độ bảo trì
@@ -43,15 +43,15 @@ export const siteConfig = {
         light: "/images/logo-light.png", // Đường dẫn đến logo sáng
         width: 150, // Chiều rộng của logo
         height: 50, // Chiều cao của logo
-        alt: "KataCore - Monochrome UI System",
+        alt: "Tazav1 - Monochrome UI System",
     },
     
     // SEO configuration
     seo: {
-        titleTemplate: "%s | KataCore",
+        titleTemplate: "%s | Tazav1",
         titleSeparator: "|",
-        titleSuffix: "KataCore",
-        description: "KataCore - Hệ thống giao diện đơn sắc với hỗ trợ đa ngôn ngữ và chế độ tối.",
+        titleSuffix: "Tazav1",
+        description: "Tazav1 - Hệ thống giao diện đơn sắc với hỗ trợ đa ngôn ngữ và chế độ tối.",
         keywords: [
             "monochrome ui",
             "dark mode",
@@ -61,20 +61,20 @@ export const siteConfig = {
             "tailwindcss",
             "typescript"
         ],
-        url: "https://katacore.com",
+        url: "https://tazav1.com",
         image: "/images/og-image.png",
         twitterCard: "summary_large_image",
     },
     
     // Author information
     author: {
-        name: "KataCore Team",
-        email: "contact@katacore.com",
-        url: "https://katacore.com",
+        name: "Tazav1 Team",
+        email: "contact@tazav1.com",
+        url: "https://tazav1.com",
         social: {
-            twitter: "@katacore",
-            github: "katacore",
-            linkedin: "katacore"
+            twitter: "@tazav1",
+            github: "tazav1",
+            linkedin: "tazav1"
         }
     },
     

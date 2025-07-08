@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🔧 KataCore Quick Deploy - Enhanced Version
+# 🔧 Tazav1 Quick Deploy - Enhanced Version
 # One-command deployment for experienced users
 # Version: 2.0.0
 
@@ -22,7 +22,7 @@ readonly ICON_INFO="ℹ️"
 readonly ICON_ROCKET="🚀"
 readonly ICON_GEAR="⚙️"
 
-echo -e "${CYAN}${ICON_ROCKET} KataCore Quick Deploy - Enhanced Version${NC}"
+echo -e "${CYAN}${ICON_ROCKET} Tazav1 Quick Deploy - Enhanced Version${NC}"
 echo "============================================="
 
 # Function to print colored output
@@ -33,7 +33,7 @@ info() { echo -e "${BLUE}${ICON_INFO} $1${NC}"; }
 
 # Check if we're in the right directory
 if [[ ! -f "deploy-remote-fixed.sh" ]]; then
-    error "Please run this script from the KataCore root directory"
+    error "Please run this script from the Tazav1 root directory"
     error "Required file not found: deploy-remote-fixed.sh"
     exit 1
 fi

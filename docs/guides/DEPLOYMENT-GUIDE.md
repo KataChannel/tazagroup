@@ -1,4 +1,4 @@
-# 🚀 KataCore Senior-Level Deployment Guide
+# 🚀 Tazav1 Senior-Level Deployment Guide
 
 ## Table of Contents
 1. [Quick Start](#quick-start)
@@ -73,7 +73,7 @@ Use existing SSH key at /home/user/.ssh/id_rsa? (y/n) [y]:
 
 #### Step 6: Project Configuration
 ```
-Project name [katacore]:
+Project name [tazav1]:
 Select Docker Compose configuration:
   1) docker-compose.yml (Standard)
   2) docker-compose.startkitv1.yml (Full Stack)
@@ -105,8 +105,8 @@ Backup retention (days) [7]:
 🌍 Domain:             myapp.com
 🚀 Deployment Type:    full
 👤 SSH User:           root
-🔐 SSH Key:            /home/user/.ssh/katacore-prod
-📦 Project Name:       katacore
+🔐 SSH Key:            /home/user/.ssh/tazav1-prod
+📦 Project Name:       tazav1
 🐳 Docker Compose:     docker-compose.startkitv1.yml
 🔒 SSL Enabled:        true
 💾 Backup Enabled:     true
@@ -156,7 +156,7 @@ For CI/CD and automated deployments:
   --server 116.118.85.41 \
   --domain myapp.com \
   --user root \
-  --key ~/.ssh/katacore-prod \
+  --key ~/.ssh/tazav1-prod \
   --type full \
   --compose docker-compose.startkitv1.yml
 ```
@@ -203,11 +203,11 @@ Each environment configuration includes:
 SERVER_IP="116.118.85.41"
 DOMAIN="myapp.com"
 SSH_USER="root"
-SSH_KEY_PATH="$HOME/.ssh/katacore-prod"
+SSH_KEY_PATH="$HOME/.ssh/tazav1-prod"
 
 # Deployment Configuration
 DEPLOY_TYPE="full"
-PROJECT_NAME="katacore"
+PROJECT_NAME="tazav1"
 DOCKER_COMPOSE_FILE="docker-compose.startkitv1.yml"
 
 # Feature Flags
@@ -231,13 +231,13 @@ BACKUP_RETENTION_DAYS="30"
 ### SSH Key Management
 ```bash
 # Generate SSH key for specific environment
-./scripts/setup/generate-ssh-key.sh ~/.ssh/katacore-prod
+./scripts/setup/generate-ssh-key.sh ~/.ssh/tazav1-prod
 
 # Generate and deploy to server
 ./scripts/setup/generate-ssh-key.sh \
   --server 116.118.85.41 \
   --user root \
-  ~/.ssh/katacore-prod
+  ~/.ssh/tazav1-prod
 ```
 
 ### Custom Docker Compose Files

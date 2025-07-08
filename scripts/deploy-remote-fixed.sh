@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🚀 KataCore Remote Deployment Helper
+# 🚀 Tazav1 Remote Deployment Helper
 # Quick deployment script for remote servers
 
 set -euo pipefail
@@ -13,7 +13,7 @@ SSH_KEY_PATH=""
 DEPLOY_TYPE="full"
 FORCE_REGEN=false
 CLEANUP_MODE=false
-PROJECT_NAME="katacore"
+PROJECT_NAME="tazav1"
 DOCKER_COMPOSE_FILE="docker-compose.yml"
 INSTALL_API=false
 INSTALL_PGADMIN=false
@@ -261,7 +261,7 @@ show_banner() {
     echo -e "${BLUE}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        🚀 KataCore Remote Deploy                            ║
+║                        🚀 Tazav1 Remote Deploy                            ║
 ║                                                                              ║
 ║    Deploy to any server with dynamic IP and domain configuration           ║
 ║    Supports both simple (IP only) and full (domain + SSL) deployments     ║
@@ -284,7 +284,7 @@ EOF
 # Show help
 show_help() {
     cat << 'EOF'
-🚀 KataCore Remote Deployment Script
+🚀 Tazav1 Remote Deployment Script
 
 USAGE:
     ./deploy-remote.sh [OPTIONS] [IP] [DOMAIN]
@@ -300,7 +300,7 @@ OPTIONS:
     --simple           Simple deployment (no SSL/domain config)
     --force-regen      Force regenerate environment files
     --compose FILE     Docker compose file (default: docker-compose.yml)
-    --project NAME     Project name (default: katacore)
+    --project NAME     Project name (default: tazav1)
     --cleanup          Cleanup deployment on remote server
     --help             Show this help
 
@@ -587,12 +587,12 @@ check_prerequisites() {
     if [[ -f "$DOCKER_COMPOSE_FILE" ]]; then
         # Check if api directory exists
         if [[ ! -d "api" ]]; then
-            error "API directory not found. Make sure you're in the KataCore root directory."
+            error "API directory not found. Make sure you're in the Tazav1 root directory."
         fi
         
         # Check if site directory exists
         if [[ ! -d "site" ]]; then
-            error "Site directory not found. Make sure you're in the KataCore root directory."
+            error "Site directory not found. Make sure you're in the Tazav1 root directory."
         fi
         
         # Check if Dockerfiles exist
@@ -731,7 +731,7 @@ generate_environment() {
             # Create .env.prod file
             cat > .env.prod << EOF
 # Generated on \$(date)
-# KataCore Production Environment Configuration
+# Tazav1 Production Environment Configuration
 
 # ===== Application Configuration =====
 NODE_ENV=production
@@ -1206,7 +1206,7 @@ fix_site_build() {
         echo "🗑️ Removing site container and images..."
         docker compose -f $DOCKER_COMPOSE_FILE -p $PROJECT_NAME --env-file .env.prod rm -f site || true
         docker rmi \$(docker images --filter=reference="*site*" -q) || true
-        docker rmi \$(docker images --filter=reference="*katacore*" -q) || true
+        docker rmi \$(docker images --filter=reference="*tazav1*" -q) || true
         
         echo "🧹 Cleaning up Docker system..."
         docker system prune -af || true
@@ -1384,7 +1384,7 @@ cleanup_deployment() {
     ssh -i "$SSH_KEY_PATH" "$SSH_USER@$SERVER_IP" << EOF
         set -e
         
-        echo "🧹 Cleaning up KataCore deployment..."
+        echo "🧹 Cleaning up Tazav1 deployment..."
         
         # Stop and remove Docker containers
         if [[ -d "/opt/$PROJECT_NAME" ]]; then

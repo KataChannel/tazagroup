@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🧹 KataCore Project Cleanup Script
+# 🧹 Tazav1 Project Cleanup Script
 # Removes duplicate and unnecessary files to keep the project clean
 
 set -euo pipefail
@@ -24,7 +24,7 @@ show_banner() {
     echo -e "${BLUE}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        🧹 KataCore Project Cleanup                          ║
+║                        🧹 Tazav1 Project Cleanup                          ║
 ║                                                                              ║
 ║    Removing duplicate files and organizing project structure                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝

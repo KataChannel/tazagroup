@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# 🚀 KataCore Production Deployment Script
+# 🚀 Tazav1 Production Deployment Script
 # Professional deployment workflow for production environments
 # Version: 2.0.0
-# Author: KataCore Team
+# Author: Tazav1 Team
 
 set -euo pipefail
 
@@ -12,7 +12,7 @@ set -euo pipefail
 # ================================
 
 readonly SCRIPT_VERSION="2.0.0"
-readonly PROJECT_NAME="katacore"
+readonly PROJECT_NAME="tazav1"
 readonly REQUIRED_DOCKER_VERSION="20.10.0"
 readonly REQUIRED_COMPOSE_VERSION="2.0.0"
 
@@ -109,7 +109,7 @@ show_banner() {
     echo -e "${CYAN}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        🚀 KataCore Production Deploy                        ║
+║                        🚀 Tazav1 Production Deploy                        ║
 ║                                                                              ║
 ║    Professional-grade deployment system for enterprise applications         ║
 ║    Version: 2.0.0                                                           ║
@@ -121,7 +121,7 @@ EOF
 # Help display
 show_help() {
     cat << 'EOF'
-🚀 KataCore Production Deployment Script
+🚀 Tazav1 Production Deployment Script
 
 USAGE:
     ./deploy-production.sh [OPTIONS] <SERVER_IP> [DOMAIN]
@@ -168,7 +168,7 @@ EOF
 
 # Version information
 show_version() {
-    echo "KataCore Production Deployment Script"
+    echo "Tazav1 Production Deployment Script"
     echo "Version: $SCRIPT_VERSION"
     echo "Docker required: >= $REQUIRED_DOCKER_VERSION"
     echo "Docker Compose required: >= $REQUIRED_COMPOSE_VERSION"
@@ -457,7 +457,7 @@ main() {
     fi
     
     # Start the actual deployment
-    log "Starting KataCore deployment..."
+    log "Starting Tazav1 deployment..."
     
     # Use the existing deploy-remote-fixed.sh script with our parameters
     local deploy_args=(

@@ -1,6 +1,6 @@
-# 📚 KataCore Documentation Index
+# 📚 Tazav1 Documentation Index
 
-Welcome to the KataCore documentation! This guide will help you navigate through all available documentation.
+Welcome to the Tazav1 documentation! This guide will help you navigate through all available documentation.
 
 ## 🚀 Getting Started
 
@@ -36,7 +36,7 @@ Welcome to the KataCore documentation! This guide will help you navigate through
 
 ## 🎯 Quick Navigation
 
-### 👋 I'm new to KataCore
+### 👋 I'm new to Tazav1
 1. Start with **[Main README](README.md)** for project overview
 2. Follow **[Quick Start Guide](GETTING-STARTED.md)** to get running
 3. Read **[Development Guide](docs/guides/DEVELOPMENT.md)** for coding
@@ -70,7 +70,7 @@ Welcome to the KataCore documentation! This guide will help you navigate through
 
 ## 🔗 External Resources
 
-- **GitHub Repository**: [KataCore on GitHub](https://github.com/KataChannel/KataCore)
+- **GitHub Repository**: [Tazav1 on GitHub](https://github.com/KataChannel/Tazav1)
 - **Live Demo**: [http://116.118.48.143:3000](http://116.118.48.143:3000)
 - **API Demo**: [http://116.118.48.143:3001](http://116.118.48.143:3001)
 - **Database Admin**: [http://116.118.48.143:5050](http://116.118.48.143:5050)
@@ -80,8 +80,8 @@ Welcome to the KataCore documentation! This guide will help you navigate through
 1. **Quick Issues**: Check [Troubleshooting Guide](docs/troubleshooting/TROUBLESHOOTING.md)
 2. **Deployment Problems**: Review [Deployment Guide](DEPLOYMENT-README.md)
 3. **Development Questions**: See [Development Guide](docs/guides/DEVELOPMENT.md)
-4. **Bug Reports**: [Create GitHub Issue](https://github.com/KataChannel/KataCore/issues)
-5. **Feature Requests**: [GitHub Discussions](https://github.com/KataChannel/KataCore/discussions)
+4. **Bug Reports**: [Create GitHub Issue](https://github.com/KataChannel/Tazav1/issues)
+5. **Feature Requests**: [GitHub Discussions](https://github.com/KataChannel/Tazav1/discussions)
 
 ---
 

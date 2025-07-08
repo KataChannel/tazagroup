@@ -1,6 +1,6 @@
 {
-  "name": "KataCore HR Management System",
-  "short_name": "KataCore HR",
+  "name": "Tazav1 HR Management System",
+  "short_name": "Tazav1 HR",
   "description": "Comprehensive HR management system with employee management, departments, attendance, payroll, and more",
   "start_url": "/hr",
   "display": "standalone",

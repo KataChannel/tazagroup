@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 🔐 KataCore Auto-Generated Security Script
+# 🔐 Tazav1 Auto-Generated Security Script
 # Tạo các mật khẩu và secrets bảo mật tự động
 
 set -euo pipefail
@@ -96,7 +96,7 @@ show_interactive_menu() {
     echo -e "${BLUE}"
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                     🔐 KATACORE SECURITY GENERATOR                          ║
+║                     🔐 TAZAV1 SECURITY GENERATOR                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 EOF
     echo -e "${NC}"
@@ -151,8 +151,8 @@ get_ssh_params() {
     
     # Key name
     echo -e "${YELLOW}Tên key (Enter để sử dụng mặc định):${NC}"
-    read -p "Tên key [katacore_$(date +%Y%m%d)]: " key_name
-    key_name=${key_name:-"katacore_$(date +%Y%m%d)"}
+    read -p "Tên key [tazav1_$(date +%Y%m%d)]: " key_name
+    key_name=${key_name:-"tazav1_$(date +%Y%m%d)"}
     
     # Key type
     echo
@@ -184,8 +184,8 @@ get_ssh_params() {
     # Comment
     echo
     echo -e "${YELLOW}Comment cho key (Enter để sử dụng mặc định):${NC}"
-    read -p "Comment [katacore@$(hostname)-$(date +%Y%m%d)]: " comment
-    comment=${comment:-"katacore@$(hostname)-$(date +%Y%m%d)"}
+    read -p "Comment [tazav1@$(hostname)-$(date +%Y%m%d)]: " comment
+    comment=${comment:-"tazav1@$(hostname)-$(date +%Y%m%d)"}
     
     # Passphrase
     echo
@@ -305,13 +305,13 @@ create_env_file() {
     
     # Create .env.local file
     cat > .env.local << EOF
-# 🔐 KataCore Auto-Generated Security Configuration
+# 🔐 Tazav1 Auto-Generated Security Configuration
 # Generated on: $(date '+%Y-%m-%d %H:%M:%S %Z')
 # ===== DATABASE =====
 POSTGRES_PASSWORD=$DB_PASSWORD
-POSTGRES_DB=katacore
-POSTGRES_USER=katacore
-DATABASE_URL=postgresql://katacore:$DB_PASSWORD@localhost:5432/katacore
+POSTGRES_DB=tazav1
+POSTGRES_USER=tazav1
+DATABASE_URL=postgresql://tazav1:$DB_PASSWORD@localhost:5432/tazav1
 
 # ===== REDIS =====
 REDIS_PASSWORD=$REDIS_PASSWORD
@@ -328,7 +328,7 @@ JWT_SECRET=$JWT_SECRET
 ENCRYPTION_KEY=$ENCRYPTION_KEY
 
 # ===== ADMIN TOOLS =====
-PGADMIN_DEFAULT_EMAIL=admin@katacore.local
+PGADMIN_DEFAULT_EMAIL=admin@tazav1.local
 PGADMIN_DEFAULT_PASSWORD=$PGADMIN_PASSWORD
 GRAFANA_ADMIN_PASSWORD=$GRAFANA_PASSWORD
 
@@ -350,7 +350,7 @@ EOF
 show_results() {
     echo
     echo -e "${GREEN}${CHECK} ═══════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}${CHECK} HOÀN TẤT TẠO CẤU HÌNH KATACORE${NC}"
+    echo -e "${GREEN}${CHECK} HOÀN TẤT TẠO CẤU HÌNH TAZAV1${NC}"
     echo -e "${GREEN}${CHECK} ═══════════════════════════════════════════════════════════════════════════════${NC}"
     echo
     

@@ -1,7 +1,7 @@
-# 🔐 KataCore Authentication API Documentation
+# 🔐 Tazav1 Authentication API Documentation
 
 ## Overview
-The KataCore Authentication API provides secure user authentication, authorization, and session management for the KataCore platform. It supports multiple authentication methods including JWT tokens, OAuth2, and API keys.
+The Tazav1 Authentication API provides secure user authentication, authorization, and session management for the Tazav1 platform. It supports multiple authentication methods including JWT tokens, OAuth2, and API keys.
 
 ## Base URL
 ```
@@ -853,7 +853,7 @@ X-RateLimit-RetryAfter: 60
 ```javascript
 const axios = require('axios');
 
-class KataCoreAuth {
+class Tazav1Auth {
   constructor(baseURL) {
     this.baseURL = baseURL;
     this.accessToken = null;
@@ -928,7 +928,7 @@ class KataCoreAuth {
 }
 
 // Usage
-const auth = new KataCoreAuth('https://your-domain.com/api');
+const auth = new Tazav1Auth('https://your-domain.com/api');
 await auth.login('user@example.com', 'password123');
 const profile = await auth.getProfile();
 ```
@@ -938,7 +938,7 @@ const profile = await auth.getProfile();
 import requests
 import time
 
-class KataCoreAuth:
+class Tazav1Auth:
     def __init__(self, base_url):
         self.base_url = base_url
         self.access_token = None
@@ -992,7 +992,7 @@ class KataCoreAuth:
             raise Exception('Session expired. Please login again.')
 
 # Usage
-auth = KataCoreAuth('https://your-domain.com/api')
+auth = Tazav1Auth('https://your-domain.com/api')
 auth.login('user@example.com', 'password123')
 profile = auth.get_profile()
 ```
@@ -1001,26 +1001,26 @@ profile = auth.get_profile()
 
 ### Demo Credentials
 ```
-Email: demo@katacore.com
+Email: demo@tazav1.com
 Password: Demo123456!
 ```
 
 ### Test Endpoints
 ```bash
 # Login
-curl -X POST "https://demo.katacore.com/api/auth/login" \
+curl -X POST "https://demo.tazav1.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "demo@katacore.com",
+    "email": "demo@tazav1.com",
     "password": "Demo123456!"
   }'
 
 # Get profile
-curl -X GET "https://demo.katacore.com/api/auth/me" \
+curl -X GET "https://demo.tazav1.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
 # Register new user
-curl -X POST "https://demo.katacore.com/api/auth/register" \
+curl -X POST "https://demo.tazav1.com/api/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Test",
@@ -1065,10 +1065,10 @@ The system can send webhook notifications for authentication events:
 ## Support
 
 For authentication API support:
-- 📧 Email: auth-support@katacore.com
-- 📚 Documentation: https://docs.katacore.com/api/auth
-- 🔒 Security Issues: security@katacore.com
-- 💬 Community: https://discord.gg/katacore
+- 📧 Email: auth-support@tazav1.com
+- 📚 Documentation: https://docs.tazav1.com/api/auth
+- 🔒 Security Issues: security@tazav1.com
+- 💬 Community: https://discord.gg/tazav1
 
 ---
 
