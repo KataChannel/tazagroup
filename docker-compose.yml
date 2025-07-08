@@ -83,7 +83,7 @@ services:
     container_name: tazav1-postgres
     restart: ${RESTART_POLICY:-unless-stopped}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -110,7 +110,7 @@ services:
     container_name: tazav1-redis
     restart: ${RESTART_POLICY:-unless-stopped}
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     networks:
       - tazav1-network
