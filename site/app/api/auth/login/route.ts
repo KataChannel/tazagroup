@@ -43,7 +43,8 @@ export async function POST(request: NextRequest) {
       },
       accessToken: result.tokens.accessToken,
     });
-
+    console.log("Login successful:", response);
+    
     response.cookies.set('refreshToken', result.tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

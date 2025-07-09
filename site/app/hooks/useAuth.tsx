@@ -132,6 +132,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Login response:", data);
+        
         setAccessToken(data.accessToken);
         setUser({
           ...data.user,
