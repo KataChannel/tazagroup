@@ -47,6 +47,8 @@ model User {
   role          UserRole  @default(PUBLISHER)
   isActive      Boolean   @default(true)
   isVerified    Boolean   @default(false)
+  resetToken    String?
+  resetTokenExpiry DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
