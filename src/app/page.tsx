@@ -5,21 +5,21 @@ import { RecentActivity } from "@/components/recent-activity";
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8">
       {/* Hero Section */}
-      <section className="text-center py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
+      <section className="text-center py-8 sm:py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl sm:rounded-2xl">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-3 sm:mb-4 px-4">
           Kiếm tiền online với <br />
           <span className="text-yellow-300">AccessTrade</span>
         </h1>
-        <p className="text-xl md:text-2xl mb-8 opacity-90">
+        <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 opacity-90 px-4">
           Nền tảng affiliate marketing hàng đầu Việt Nam
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 max-w-md sm:max-w-none mx-auto">
+          <button className="bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
             Đăng ký ngay
           </button>
-          <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+          <button className="border-2 border-white text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
             Tìm hiểu thêm
           </button>
         </div>
@@ -27,12 +27,12 @@ export default function Home() {
 
       {/* Dashboard Stats */}
       <section>
-        <h2 className="text-2xl font-bold mb-6">Tổng quan hiệu suất</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 px-2 sm:px-0">Tổng quan hiệu suất</h2>
         <DashboardStats />
       </section>
 
       {/* Charts and Activity */}
-      <section className="grid gap-8 lg:grid-cols-3">
+      <section className="grid gap-6 sm:gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <RevenueChart />
         </div>
@@ -47,7 +47,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16">
+      <section className="py-12 sm:py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
           Tại sao chọn AccessTrade?
         </h2>

@@ -1,0 +1,250 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(PUBLISHER)
+  isActive      Boolean   @default(true)
+  isVerified    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  profile       UserProfile?
+  campaigns     CampaignUser[]
+  clicks        Click[]
+  conversions   Conversion[]
+  payments      Payment[]
+  activities    Activity[]
+}
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  firstName   String?
+  lastName    String?
+  phone       String?
+  address     String?
+  city        String?
+  country     String   @default("VN")
+  bankName    String?
+  bankAccount String?
+  bankOwner   String?
+  taxCode     String?
+  website     String?
+  company     String?
+  bio         String?
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Campaign {
+  id          String         @id @default(cuid())
+  name        String
+  description String
+  image       String?
+  category    String
+  commission  Float
+  currency    String         @default("VND")
+  status      CampaignStatus @default(ACTIVE)
+  startDate   DateTime
+  endDate     DateTime?
+  url         String
+  rules       String?
+  isPrivate   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  users       CampaignUser[]
+  clicks      Click[]
+  conversions Conversion[]
+}
+
+model CampaignUser {
+  id         String                @id @default(cuid())
+  userId     String
+  campaignId String
+  status     CampaignUserStatus    @default(PENDING)
+  appliedAt  DateTime              @default(now())
+  approvedAt DateTime?
+  rejectedAt DateTime?
+  reason     String?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, campaignId])
+}
+
+model Click {
+  id         String   @id @default(cuid())
+  userId     String
+  campaignId String
+  ip         String
+  userAgent  String?
+  referer    String?
+  country    String?
+  device     String?
+  browser    String?
+  os         String?
+  clickedAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+}
+
+model Conversion {
+  id         String   @id @default(cuid())
+  userId     String
+  campaignId String
+  orderId    String?
+  amount     Float
+  commission Float
+  currency   String   @default("VND")
+  ip         String
+  userAgent  String?
+  status     ConversionStatus @default(PENDING)
+  convertedAt DateTime @default(now())
+  approvedAt  DateTime?
+
+  user     User     @relation(fields: [userId], references: [id])
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  userId      String
+  amount      Float
+  currency    String        @default("VND")
+  method      PaymentMethod
+  status      PaymentStatus @default(PENDING)
+  reference   String?
+  description String?
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Activity {
+  id          String       @id @default(cuid())
+  userId      String
+  type        ActivityType
+  title       String
+  description String
+  metadata    String?      // JSON string
+  createdAt   DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  PUBLISHER
+  ADVERTISER
+}
+
+enum CampaignStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  REJECTED
+}
+
+enum CampaignUserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ConversionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  PAYPAL
+  STRIPE
+  MOMO
+  ZALOPAY
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ActivityType {
+  LOGIN
+  LOGOUT
+  REGISTER
+  CAMPAIGN_APPLY
+  CAMPAIGN_APPROVE
+  CAMPAIGN_REJECT
+  CLICK
+  CONVERSION
+  PAYMENT
+  PROFILE_UPDATE
+}
