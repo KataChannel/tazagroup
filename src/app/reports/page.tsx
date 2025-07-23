@@ -7,6 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import DataExport from "@/components/data-export"
 import DateRangeAnalytics from "@/components/date-range-analytics"
+import { PerformanceComparison } from "@/components/performance-comparison"
+import { CommissionReports } from "@/components/commission-reports"
+import { PayoutSchedule } from "@/components/payout-schedule"
+import { AdvancedFiltering } from "@/components/advanced-filtering"
 import { 
   LineChart, 
   Line, 
@@ -29,7 +33,9 @@ import {
   DollarSign, 
   MousePointer, 
   Eye,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Clock,
+  Filter
 } from "lucide-react"
 
 // Sample data for charts
@@ -253,6 +259,16 @@ export default function ReportsPage() {
           <TabsList>
             <TabsTrigger value="performance">Hiệu suất</TabsTrigger>
             <TabsTrigger value="campaigns">Chiến dịch</TabsTrigger>
+            <TabsTrigger value="comparison">So sánh</TabsTrigger>
+            <TabsTrigger value="commission">Hoa hồng</TabsTrigger>
+            <TabsTrigger value="payout" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Lịch thanh toán
+            </TabsTrigger>
+            <TabsTrigger value="filtering" className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Lọc nâng cao
+            </TabsTrigger>
             <TabsTrigger value="daterange">Phân tích theo thời gian</TabsTrigger>
             <TabsTrigger value="transactions">Giao dịch</TabsTrigger>
             <TabsTrigger value="export" className="flex items-center gap-2">
@@ -364,6 +380,22 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="comparison">
+            <PerformanceComparison />
+          </TabsContent>
+
+          <TabsContent value="commission">
+            <CommissionReports />
+          </TabsContent>
+
+          <TabsContent value="payout">
+            <PayoutSchedule />
+          </TabsContent>
+
+          <TabsContent value="filtering">
+            <AdvancedFiltering />
           </TabsContent>
 
           <TabsContent value="daterange">

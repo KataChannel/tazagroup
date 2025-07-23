@@ -39,31 +39,34 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          UserRole  @default(PUBLISHER)
-  isActive      Boolean   @default(true)
-  isVerified    Boolean   @default(false)
-  resetToken    String?
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  password         String?
+  role             UserRole  @default(PUBLISHER)
+  isActive         Boolean   @default(true)
+  isVerified       Boolean   @default(false)
+  resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   // Relations
-  accounts         Account[]
-  sessions         Session[]
-  profile          UserProfile?
-  campaigns        CampaignUser[]
-  clicks           Click[]
-  conversions      Conversion[]
-  payments         Payment[]
-  activities       Activity[]
+  accounts          Account[]
+  sessions          Session[]
+  profile           UserProfile?
+  campaigns         CampaignUser[]
+  clicks            Click[]
+  conversions       Conversion[]
+  payments          Payment[]
+  activities        Activity[]
   favoriteCampaigns FavoriteCampaign[]
-  notifications    Notification[]
+  notifications     Notification[]
+  affiliateLinks    AffiliateLink[]
+  payoutSchedule    PayoutSchedule?
+  scheduledPayouts  ScheduledPayout[]
 }
 
 model UserProfile {
@@ -115,18 +118,20 @@ model Campaign {
   updatedAt   DateTime       @updatedAt
 
   // Relations
-  users       CampaignUser[]
-  clicks      Click[]
-  conversions Conversion[]
-  favorites   FavoriteCampaign[]
+  users          CampaignUser[]
+  clicks         Click[]
+  conversions    Conversion[]
+  favorites      FavoriteCampaign[]
+  notifications  Notification[]
+  affiliateLinks AffiliateLink[]
 }
 
 model CampaignUser {
-  id         String                @id @default(cuid())
+  id         String             @id @default(cuid())
   userId     String
   campaignId String
-  status     CampaignUserStatus    @default(PENDING)
-  appliedAt  DateTime              @default(now())
+  status     CampaignUserStatus @default(PENDING)
+  appliedAt  DateTime           @default(now())
   approvedAt DateTime?
   rejectedAt DateTime?
   reason     String?
@@ -155,17 +160,17 @@ model Click {
 }
 
 model Conversion {
-  id         String   @id @default(cuid())
-  userId     String
-  campaignId String
-  orderId    String?
-  amount     Float
-  commission Float
-  currency   String   @default("VND")
-  ip         String
-  userAgent  String?
-  status     ConversionStatus @default(PENDING)
-  convertedAt DateTime @default(now())
+  id          String           @id @default(cuid())
+  userId      String
+  campaignId  String
+  orderId     String?
+  amount      Float
+  commission  Float
+  currency    String           @default("VND")
+  ip          String
+  userAgent   String?
+  status      ConversionStatus @default(PENDING)
+  convertedAt DateTime         @default(now())
   approvedAt  DateTime?
 
   user     User     @relation(fields: [userId], references: [id])
@@ -194,7 +199,7 @@ model Activity {
   type        ActivityType
   title       String
   description String
-  metadata    String?      // JSON string
+  metadata    String? // JSON string
   createdAt   DateTime     @default(now())
 
   user User @relation(fields: [userId], references: [id])
@@ -228,6 +233,150 @@ model Notification {
   campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 
   @@map("notifications")
+}
+
+model AffiliateLink {
+  id          String    @id @default(cuid())
+  userId      String
+  campaignId  String
+  originalUrl String
+  shortCode   String    @unique
+  customAlias String?
+  title       String?
+  description String?
+  tags        String[]  @default([])
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Analytics data
+  totalClicks      Int       @default(0)
+  totalConversions Int       @default(0)
+  totalRevenue     Float     @default(0)
+  lastClickAt      DateTime?
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign    Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  clicks      LinkClick[]
+  conversions LinkConversion[]
+  analytics   LinkAnalytics[]
+
+  @@map("affiliate_links")
+}
+
+model LinkClick {
+  id        String   @id @default(cuid())
+  linkId    String
+  ip        String
+  userAgent String?
+  referer   String?
+  country   String?
+  region    String?
+  city      String?
+  device    String?
+  browser   String?
+  os        String?
+  screen    String?
+  language  String?
+  timezone  String?
+  clickedAt DateTime @default(now())
+
+  link AffiliateLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@map("link_clicks")
+}
+
+model LinkConversion {
+  id          String   @id @default(cuid())
+  linkId      String
+  clickId     String?
+  orderId     String?
+  amount      Float
+  commission  Float
+  currency    String   @default("VND")
+  ip          String
+  userAgent   String?
+  country     String?
+  device      String?
+  browser     String?
+  convertedAt DateTime @default(now())
+
+  link AffiliateLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@map("link_conversions")
+}
+
+model LinkAnalytics {
+  id             String   @id @default(cuid())
+  linkId         String
+  date           DateTime
+  clicks         Int      @default(0)
+  conversions    Int      @default(0)
+  revenue        Float    @default(0)
+  ctr            Float    @default(0) // Click-through rate
+  conversionRate Float    @default(0)
+  avgRevenue     Float    @default(0)
+
+  // Geographic data
+  topCountries Json?
+  topCities    Json?
+
+  // Device data  
+  deviceTypes      Json?
+  browsers         Json?
+  operatingSystems Json?
+
+  // Traffic sources
+  referrers Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  link AffiliateLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@unique([linkId, date])
+  @@map("link_analytics")
+}
+
+model PayoutSchedule {
+  id             String             @id @default(cuid())
+  userId         String
+  frequency      PayoutFrequency    @default(MONTHLY)
+  dayOfMonth     Int?               // For monthly (1-31)
+  dayOfWeek      Int?               // For weekly (0-6)
+  minimumAmount  Float              @default(100000) // Default 100,000 VND
+  isActive       Boolean            @default(true)
+  nextPayoutDate DateTime?
+  lastPayoutDate DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payouts ScheduledPayout[]
+
+  @@unique([userId])
+  @@map("payout_schedules")
+}
+
+model ScheduledPayout {
+  id               String              @id @default(cuid())
+  userId           String
+  scheduleId       String
+  amount           Float
+  currency         String              @default("VND")
+  status           ScheduledPayoutStatus @default(PENDING)
+  scheduledDate    DateTime
+  processedDate    DateTime?
+  paymentId        String?             // Reference to Payment when processed
+  reason           String?             // For failed/cancelled payouts
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedule PayoutSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@map("scheduled_payouts")
 }
 
 // Enums
@@ -296,4 +445,18 @@ enum NotificationType {
   SYSTEM_UPDATE
   ACHIEVEMENT
   REMINDER
+}
+
+enum PayoutFrequency {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+}
+
+enum ScheduledPayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

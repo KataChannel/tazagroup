@@ -52,6 +52,9 @@ export function Header() {
               <Link href="/campaigns" className="text-sm font-medium hover:text-primary">
                 Chiến dịch
               </Link>
+              <Link href="/links" className="text-sm font-medium hover:text-primary">
+                Link Analytics
+              </Link>
               <Link href="/favorites" className="text-sm font-medium hover:text-primary">
                 Yêu thích
               </Link>
@@ -63,6 +66,9 @@ export function Header() {
               </Link>
               <Link href="/training" className="text-sm font-medium hover:text-primary">
                 Đào tạo
+              </Link>
+              <Link href="/api-docs" className="text-sm font-medium hover:text-primary">
+                API Docs
               </Link>
               <Link href="/support" className="text-sm font-medium hover:text-primary">
                 Hỗ trợ
@@ -171,6 +177,13 @@ export function Header() {
                   Chiến dịch
                 </Link>
                 <Link 
+                  href="/links" 
+                  className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Link Analytics
+                </Link>
+                <Link 
                   href="/favorites" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
@@ -197,6 +210,13 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Đào tạo
+                </Link>
+                <Link 
+                  href="/api-docs" 
+                  className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  API Docs
                 </Link>
                 <Link 
                   href="/support" 
