@@ -11,6 +11,9 @@ import { PerformanceComparison } from "@/components/performance-comparison"
 import { CommissionReports } from "@/components/commission-reports"
 import { PayoutSchedule } from "@/components/payout-schedule"
 import { AdvancedFiltering } from "@/components/advanced-filtering"
+import { TaxReports } from "@/components/tax-reports"
+import { MinimumPayoutSettings } from "@/components/minimum-payout-settings"
+import { PayoutReports } from "@/components/payout-reports"
 import { 
   LineChart, 
   Line, 
@@ -35,7 +38,10 @@ import {
   Eye,
   FileSpreadsheet,
   Clock,
-  Filter
+  Filter,
+  Receipt,
+  Settings,
+  CreditCard
 } from "lucide-react"
 
 // Sample data for charts
@@ -269,6 +275,18 @@ export default function ReportsPage() {
               <Filter className="h-4 w-4" />
               Lọc nâng cao
             </TabsTrigger>
+            <TabsTrigger value="tax" className="flex items-center gap-2">
+              <Receipt className="h-4 w-4" />
+              Báo cáo thuế
+            </TabsTrigger>
+            <TabsTrigger value="payout-settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Cài đặt thanh toán
+            </TabsTrigger>
+            <TabsTrigger value="payout-reports" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              Báo cáo thanh toán
+            </TabsTrigger>
             <TabsTrigger value="daterange">Phân tích theo thời gian</TabsTrigger>
             <TabsTrigger value="transactions">Giao dịch</TabsTrigger>
             <TabsTrigger value="export" className="flex items-center gap-2">
@@ -396,6 +414,18 @@ export default function ReportsPage() {
 
           <TabsContent value="filtering">
             <AdvancedFiltering />
+          </TabsContent>
+
+          <TabsContent value="tax">
+            <TaxReports />
+          </TabsContent>
+
+          <TabsContent value="payout-settings">
+            <MinimumPayoutSettings />
+          </TabsContent>
+
+          <TabsContent value="payout-reports">
+            <PayoutReports />
           </TabsContent>
 
           <TabsContent value="daterange">

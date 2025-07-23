@@ -52,6 +52,17 @@ model User {
   resetTokenExpiry DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  lastActivityAt   DateTime?
+
+  // Payout Settings
+  minimumPayout         Float?   @default(100000)
+  autoPayoutEnabled     Boolean  @default(false)
+  payoutThreshold       Float?   @default(500000)
+  holdPayouts           Boolean  @default(false)
+  preferredPayoutMethod String?  @default("BANK_TRANSFER")
+  payoutDay             Int?     @default(1)
+  taxWithholding        Float?   @default(0)
+  payoutCurrency        String?  @default("VND")
 
   // Relations
   accounts          Account[]
@@ -67,6 +78,7 @@ model User {
   affiliateLinks    AffiliateLink[]
   payoutSchedule    PayoutSchedule?
   scheduledPayouts  ScheduledPayout[]
+  taxReports        TaxReport[]
 }
 
 model UserProfile {
@@ -379,6 +391,29 @@ model ScheduledPayout {
   @@map("scheduled_payouts")
 }
 
+model TaxReport {
+  id              String        @id @default(cuid())
+  userId          String
+  year            Int
+  quarter         Int?          // Optional for quarterly reports
+  totalIncome     Float
+  totalCommission Float
+  taxableIncome   Float
+  taxAmount       Float
+  taxRate         Float
+  taxType         TaxType       @default(PERSONAL)
+  status          TaxReportStatus @default(DRAFT)
+  dueDate         DateTime
+  submittedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, year, quarter])
+  @@map("tax_reports")
+}
+
 // Enums
 enum UserRole {
   ADMIN
@@ -459,4 +494,16 @@ enum ScheduledPayoutStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum TaxType {
+  PERSONAL
+  BUSINESS
+}
+
+enum TaxReportStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
 }
