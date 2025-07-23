@@ -9,12 +9,30 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuCommandItem,
 } from '@/components/ui/dropdown-menu';
-import { Globe, Check } from 'lucide-react';
+import { Globe, Check, Languages, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 
 const languages = [
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { 
+    code: 'vi', 
+    name: 'Tiếng Việt', 
+    flag: '🇻🇳',
+    region: 'Vietnam',
+    progress: 100,
+    isDefault: true
+  },
+  { 
+    code: 'en', 
+    name: 'English', 
+    flag: '🇺🇸',
+    region: 'United States',
+    progress: 100,
+    isDefault: false
+  },
 ];
 
 export function LanguageSwitcher() {
@@ -25,8 +43,11 @@ export function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
 
   const handleLanguageChange = (newLocale: string) => {
+    const targetLanguage = languages.find(lang => lang.code === newLocale);
+    
     startTransition(() => {
       router.replace(pathname, { locale: newLocale });
+      toast.success(`Switched to ${targetLanguage?.name || newLocale}`);
     });
   };
 
@@ -38,10 +59,10 @@ export function LanguageSwitcher() {
         <Button 
           variant="outline" 
           size="sm" 
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 transition-all hover:scale-105"
           disabled={isPending}
         >
-          <Globe className="h-4 w-4" />
+          <Globe className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
           <span className="hidden sm:inline">
             {currentLanguage?.flag} {currentLanguage?.name}
           </span>
@@ -50,26 +71,40 @@ export function LanguageSwitcher() {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[160px]">
-        <div className="px-2 py-1.5 text-sm font-medium text-gray-900 border-b">
-          {t('selectLanguage')}
-        </div>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Languages className="h-4 w-4" />
+          Language Settings
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        
         {languages.map((language) => (
-          <DropdownMenuItem
+          <DropdownMenuCommandItem
             key={language.code}
+            icon={<span className="text-base">{language.flag}</span>}
+            shortcut={language.isDefault ? 'Default' : undefined}
+            description={`${language.region} • ${language.progress}% complete`}
             onClick={() => handleLanguageChange(language.code)}
-            className="flex items-center justify-between cursor-pointer"
-            disabled={isPending}
+            className={locale === language.code ? 'bg-accent' : ''}
           >
-            <div className="flex items-center gap-2">
-              <span>{language.flag}</span>
-              <span>{language.name}</span>
+            <div className="flex items-center justify-between w-full">
+              <span className="font-medium">{language.name}</span>
+              {locale === language.code && (
+                <Check className="h-4 w-4 text-primary" />
+              )}
             </div>
-            {locale === language.code && (
-              <Check className="h-4 w-4 text-green-600" />
-            )}
-          </DropdownMenuItem>
+          </DropdownMenuCommandItem>
         ))}
+        
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem 
+          className="text-muted-foreground text-xs cursor-default"
+          disabled
+        >
+          <Sparkles className="h-3 w-3 mr-2" />
+          More languages coming soon
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -112,4 +147,9 @@ export function LocaleSwitcher() {
 export function useCurrentLanguage() {
   const locale = useLocale();
   return languages.find(lang => lang.code === locale) || languages[0];
+}
+
+// Get available languages
+export function getAvailableLanguages() {
+  return languages;
 }
