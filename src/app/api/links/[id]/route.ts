@@ -3,12 +3,13 @@ import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
 
 interface RouteParams {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 // Get link details with analytics
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id: linkId } = await params
     const token = request.cookies.get('token')?.value
     
     if (!token) {
@@ -39,11 +40,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const startDate = getDateRange(period)
 
     // Get link details
-    const link = await prisma.affiliateLink.findFirst({
-      where: {
-        id: params.id,
-        userId: decoded.userId
-      },
+    const link = await prisma.affiliateLink.findUnique({
+        where: {
+          id: linkId,
+          userId: decoded.userId
+        },
       include: {
         campaign: {
           select: {
@@ -73,10 +74,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     ] = await Promise.all([
       // Total stats
       Promise.all([
-        prisma.linkClick.count({ where: { linkId: params.id } }),
-        prisma.linkConversion.count({ where: { linkId: params.id } }),
+        prisma.linkClick.count({ where: { linkId: linkId } }),
+        prisma.linkConversion.count({ where: { linkId: linkId } }),
         prisma.linkConversion.aggregate({
-          where: { linkId: params.id },
+          where: { linkId: linkId },
           _sum: { commission: true }
         })
       ]),
@@ -85,19 +86,19 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       Promise.all([
         prisma.linkClick.count({ 
           where: { 
-            linkId: params.id, 
+            linkId: linkId, 
             clickedAt: { gte: startDate } 
           } 
         }),
         prisma.linkConversion.count({ 
           where: { 
-            linkId: params.id, 
+            linkId: linkId, 
             convertedAt: { gte: startDate } 
           } 
         }),
         prisma.linkConversion.aggregate({
           where: { 
-            linkId: params.id, 
+            linkId: linkId, 
             convertedAt: { gte: startDate } 
           },
           _sum: { commission: true }
@@ -110,7 +111,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           DATE_TRUNC(${timeframe}, clicked_at) as date,
           COUNT(*) as clicks
         FROM link_clicks 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND clicked_at >= ${startDate}
         GROUP BY DATE_TRUNC(${timeframe}, clicked_at)
         ORDER BY date
@@ -123,7 +124,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           COUNT(*) as conversions,
           SUM(commission) as revenue
         FROM link_conversions 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND converted_at >= ${startDate}
         GROUP BY DATE_TRUNC(${timeframe}, converted_at)
         ORDER BY date
@@ -136,7 +137,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           COUNT(*) as clicks,
           ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
         FROM link_clicks 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND clicked_at >= ${startDate}
         AND country IS NOT NULL
         GROUP BY country
@@ -151,7 +152,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           COUNT(*) as clicks,
           ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
         FROM link_clicks 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND clicked_at >= ${startDate}
         AND device IS NOT NULL
         GROUP BY device
@@ -166,7 +167,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           COUNT(*) as clicks,
           ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
         FROM link_clicks 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND clicked_at >= ${startDate}
         AND browser IS NOT NULL
         GROUP BY browser
@@ -184,7 +185,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           COUNT(*) as clicks,
           ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
         FROM link_clicks 
-        WHERE link_id = ${params.id} 
+        WHERE link_id = ${linkId} 
         AND clicked_at >= ${startDate}
         GROUP BY source
         ORDER BY clicks DESC
@@ -247,6 +248,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // Update link
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id: linkId } = await params
     const token = request.cookies.get('token')?.value
     
     if (!token) {
@@ -264,7 +266,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Update link
     const updatedLink = await prisma.affiliateLink.update({
       where: {
-        id: params.id,
+        id: linkId,
         userId: decoded.userId
       },
       data: {
@@ -303,6 +305,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 // Delete link
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    const { id: linkId } = await params
     const token = request.cookies.get('token')?.value
     
     if (!token) {
@@ -317,7 +320,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Delete link (this will cascade delete related data)
     await prisma.affiliateLink.delete({
       where: {
-        id: params.id,
+        id: linkId,
         userId: decoded.userId
       }
     })

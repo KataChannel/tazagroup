@@ -64,7 +64,7 @@ export function PWAFeaturesShowcase() {
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold mb-4">App-like Experience</h2>
         <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-          AccessTrade hiện đã hỗ trợ PWA với khả năng offline, push notifications và cài đặt như ứng dụng native
+          Timona hiện đã hỗ trợ PWA với khả năng offline, push notifications và cài đặt như ứng dụng native
         </p>
       </div>
 
@@ -74,7 +74,7 @@ export function PWAFeaturesShowcase() {
             <Smartphone className="h-6 w-6 text-indigo-600" />
           </div>
           <h3 className="font-semibold text-lg mb-2">App Installation</h3>
-          <p className="text-gray-600 text-sm mb-3">Cài đặt AccessTrade như ứng dụng native trên điện thoại và máy tính</p>
+          <p className="text-gray-600 text-sm mb-3">Cài đặt Timona như ứng dụng native trên điện thoại và máy tính</p>
           <div className="text-xs text-indigo-600 font-medium">
             {isInstallable ? '✓ Ready to Install' : '✓ PWA Enabled'}
           </div>

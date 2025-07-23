@@ -367,7 +367,9 @@ const createQuickActions = (
     description: 'Get help from our support team',
     icon: <MessageSquare className="h-4 w-4" />,
     category: 'external',
-    action: () => window.open('mailto:support@timona.vn', '_blank'),
+    action: () => {
+      window.open('mailto:support@timona.vn', '_blank')
+    },
     isExternal: true,
     url: 'mailto:support@timona.vn',
     keywords: ['support', 'help', 'contact', 'assistance', 'email']
@@ -388,7 +390,9 @@ const createQuickActions = (
     description: 'Latest affiliate marketing tips',
     icon: <Globe className="h-4 w-4" />,
     category: 'external',
-    action: () => window.open('https://blog.timona.vn', '_blank'),
+    action: () => {
+      window.open('https://blog.timona.vn', '_blank')
+    },
     isExternal: true,
     url: 'https://blog.timona.vn',
     keywords: ['blog', 'tips', 'news', 'marketing', 'articles']

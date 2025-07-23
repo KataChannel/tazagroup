@@ -7,9 +7,10 @@ let securityAlerts: any[] = []
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: alertId } = await params
     const token = request.cookies.get('auth-token')?.value
     
     if (!token) {
@@ -22,7 +23,6 @@ export async function PATCH(
     }
 
     const { action } = await request.json()
-    const alertId = params.id
 
     // Find the alert
     const alertIndex = securityAlerts.findIndex(alert => alert.id === alertId)
@@ -75,9 +75,10 @@ export async function PATCH(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: alertId } = await params
     const token = request.cookies.get('auth-token')?.value
     
     if (!token) {
@@ -89,7 +90,6 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
-    const alertId = params.id
     const alert = securityAlerts.find(alert => alert.id === alertId)
     
     if (!alert) {

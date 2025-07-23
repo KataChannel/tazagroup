@@ -10,7 +10,7 @@ export default function Home() {
       <section className="text-center py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
           Kiếm tiền online với <br />
-          <span className="text-yellow-300">AccessTrade</span>
+          <span className="text-yellow-300">Timona</span>
         </h1>
         <p className="text-xl md:text-2xl mb-8 opacity-90">
           Nền tảng affiliate marketing hàng đầu Việt Nam
@@ -49,7 +49,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
-          Tại sao chọn AccessTrade?
+          Tại sao chọn Timona?
         </h2>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="text-center p-6">

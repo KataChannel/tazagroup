@@ -39,8 +39,8 @@ interface Ticket {
 const faqs: FAQ[] = [
   {
     id: "1",
-    question: "Làm sao để bắt đầu với AccessTrade?",
-    answer: "Để bắt đầu với AccessTrade, bạn cần đăng ký tài khoản, xác thực thông tin, sau đó có thể tham gia các chiến dịch affiliate phù hợp.",
+    question: "Làm sao để bắt đầu với Timona?",
+    answer: "Để bắt đầu với Timona, bạn cần đăng ký tài khoản, xác thực thông tin, sau đó có thể tham gia các chiến dịch affiliate phù hợp.",
     category: "getting-started"
   },
   {
@@ -220,7 +220,7 @@ export default function SupportPage() {
               <Mail className="h-8 w-8 mx-auto text-purple-600 mb-3" />
               <h3 className="font-semibold mb-2">Email</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Gửi email: support@accesstrade.vn
+                Gửi email: support@timona.vn
               </p>
               <Button className="w-full" variant="outline">Gửi email</Button>
             </CardContent>
@@ -317,7 +317,7 @@ export default function SupportPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Các bước cơ bản để bắt đầu với AccessTrade
+                    Các bước cơ bản để bắt đầu với Timona
                   </p>
                   <Button variant="outline" className="w-full">
                     Xem hướng dẫn

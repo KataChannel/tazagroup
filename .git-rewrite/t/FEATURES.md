@@ -1,7 +1,7 @@
-# AccessTrade Affiliate Platform - Feature Development Plan
+# Timona Affiliate Platform - Feature Development Plan
 
 ## 📋 Tổng quan dự án
-Nền tảng affiliate marketing AccessTrade - Hệ thống quản lý và theo dõi hiệu suất affiliate marketing với đầy đủ tính năng cho publisher và advertiser.
+Nền tảng affiliate marketing Timona - Hệ thống quản lý và theo dõi hiệu suất affiliate marketing với đầy đủ tính năng cho publisher và advertiser.
 
 ---
 
@@ -298,5 +298,5 @@ Nền tảng affiliate marketing AccessTrade - Hệ thống quản lý và theo 
 ---
 
 *Last updated: July 22, 2025*
-*Project: AccessTrade Affiliate Platform*
+*Project: Timona Affiliate Platform*
 *Branch: tazaaffiliate_dev*

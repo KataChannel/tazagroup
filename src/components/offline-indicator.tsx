@@ -131,7 +131,7 @@ export function PWAInstallPrompt() {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-medium text-gray-900">
-              Install AccessTrade App
+              Install Timona App
             </h3>
             <p className="text-sm text-gray-500 mt-1">
               Install our app for a better experience with offline access and push notifications.

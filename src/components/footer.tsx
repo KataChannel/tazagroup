@@ -10,7 +10,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded bg-gradient-to-r from-blue-600 to-purple-600"></div>
-              <span className="font-bold text-xl">AccessTrade</span>
+              <span className="font-bold text-xl">Timona</span>
             </div>
             <p className="text-gray-300 text-sm">
               Nền tảng affiliate marketing hàng đầu Việt Nam, kết nối nhà quảng cáo và publisher một cách hiệu quả.
@@ -65,7 +65,7 @@ export function Footer() {
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-gray-400" />
                 <span className="text-gray-300 text-sm">
-                  support@accesstrade.vn
+                  support@timona.vn
                 </span>
               </div>
             </div>
@@ -75,7 +75,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 AccessTrade Vietnam. Tất cả quyền được bảo lưu.
+              © 2024 Timona Vietnam. Tất cả quyền được bảo lưu.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/terms" className="text-gray-400 hover:text-white text-sm">

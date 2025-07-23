@@ -90,7 +90,7 @@ export default function Dashboard() {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <h1 className="text-3xl font-bold mb-4">Chào mừng đến với AccessTrade</h1>
+        <h1 className="text-3xl font-bold mb-4">Chào mừng đến với Timona</h1>
         <p className="text-gray-600 mb-8">Vui lòng đăng nhập để truy cập dashboard</p>
         <Button>Đăng nhập</Button>
       </div>

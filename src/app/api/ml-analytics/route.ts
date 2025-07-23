@@ -324,13 +324,11 @@ export async function GET(request: NextRequest) {
         include: {
           users: {
             where: { userId: user.id },
-            include: {
-              _count: {
-                select: {
-                  clicks: true,
-                  conversions: true
-                }
-              }
+          },
+          _count: {
+            select: {
+              clicks: true,
+              conversions: true
             }
           }
         },
@@ -339,8 +337,8 @@ export async function GET(request: NextRequest) {
 
       const campaignPredictions = campaigns.map(campaign => {
         const userCampaign = campaign.users[0];
-        const clickCount = userCampaign?._count?.clicks || 0;
-        const conversionCount = userCampaign?._count?.conversions || 0;
+        const clickCount = campaign._count?.clicks || 0;
+        const conversionCount = campaign._count?.conversions || 0;
         
         // Simple prediction based on commission and performance
         const baseRevenue = campaign.commission * conversionCount;
@@ -381,7 +379,13 @@ export async function GET(request: NextRequest) {
     if (type === 'forecast') {
       // Generate 30-day forecast
       const revenuePredictions = PredictiveAnalytics.predictFuture(revenueData, 30);
-      const forecastData = [];
+      const forecastData: Array<{
+        date: string;
+        actual: number | null;
+        predicted: number | null;
+        confidence_upper: number | null;
+        confidence_lower: number | null;
+      }> = [];
       
       // Add historical data
       dates.slice(-7).forEach((date, index) => {

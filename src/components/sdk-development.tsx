@@ -36,7 +36,7 @@ import {
   AlertCircle, 
   FileText, 
   Github, 
-  Npm,
+  Package2 as Npm,
   Play,
   Eye,
   Edit,
@@ -263,11 +263,11 @@ at.attributeRevenue({
     language: 'python',
     category: 'core',
     status: 'stable',
-    downloadUrl: 'https://pypi.org/project/accesstrade/',
-    documentationUrl: 'https://docs.accesstrade.vn/sdk/python',
-    repositoryUrl: 'https://github.com/accesstrade-vn/accesstrade-python',
+    downloadUrl: 'https://pypi.org/project/timona/',
+    documentationUrl: 'https://docs.timona.vn/sdk/python',
+    repositoryUrl: 'https://github.com/timona-vn/timona-python',
     packageManager: 'pip',
-    installCommand: 'pip install accesstrade',
+    installCommand: 'pip install timona',
     size: '125 KB',
     lastUpdated: new Date('2024-01-10'),
     downloads: 8950,
@@ -288,10 +288,10 @@ at.attributeRevenue({
         description: 'Initialize client and fetch campaigns',
         language: 'python',
         category: 'quickstart',
-        code: `import accesstrade
+        code: `import timona
 
 # Initialize client
-client = accesstrade.Client(
+client = timona.Client(
     api_key='your-api-key',
     secret_key='your-secret-key',
     environment='production'
@@ -342,24 +342,24 @@ client.analytics.export_csv(
       }
     ],
     isOfficial: true,
-    maintainer: 'AccessTrade Team',
+    maintainer: 'Timona Team',
     license: 'MIT'
   },
   {
-    id: 'accesstrade-react',
-    name: 'accesstrade-react',
-    displayName: 'AccessTrade React Components',
-    description: 'Pre-built React components for quick integration of AccessTrade features into your React applications.',
+    id: 'timona-react',
+    name: 'timona-react',
+    displayName: 'Timona React Components',
+    description: 'Pre-built React components for quick integration of Timona features into your React applications.',
     version: '1.2.0',
     platform: 'web',
     language: 'typescript',
     category: 'ui',
     status: 'stable',
-    downloadUrl: 'https://www.npmjs.com/package/accesstrade-react',
-    documentationUrl: 'https://docs.accesstrade.vn/sdk/react',
-    repositoryUrl: 'https://github.com/accesstrade-vn/accesstrade-react',
+    downloadUrl: 'https://www.npmjs.com/package/timona-react',
+    documentationUrl: 'https://docs.timona.vn/sdk/react',
+    repositoryUrl: 'https://github.com/timona-vn/timona-react',
     packageManager: 'npm',
-    installCommand: 'npm install accesstrade-react',
+    installCommand: 'npm install timona-react',
     size: '78.5 KB',
     lastUpdated: new Date('2024-01-08'),
     downloads: 3240,
@@ -377,19 +377,19 @@ client.analytics.export_csv(
       {
         id: 'react-components',
         title: 'React Components',
-        description: 'Using pre-built AccessTrade components',
+        description: 'Using pre-built Timona components',
         language: 'typescript',
         category: 'quickstart',
         code: `import { 
-  AccessTradeProvider, 
+  TimonaProvider, 
   CampaignGrid, 
   RevenueChart, 
   LinkGenerator 
-} from 'accesstrade-react';
+} from 'timona-react';
 
 function App() {
   return (
-    <AccessTradeProvider apiKey="your-api-key">
+    <TimonaProvider apiKey="your-api-key">
       <div className="container">
         <RevenueChart 
           dateRange="30d" 
@@ -406,7 +406,7 @@ function App() {
           onLinkGenerated={handleLinkGenerated}
         />
       </div>
-    </AccessTradeProvider>
+    </TimonaProvider>
   );
 }`
       }
@@ -424,24 +424,24 @@ function App() {
       }
     ],
     isOfficial: true,
-    maintainer: 'AccessTrade Team',
+    maintainer: 'Timona Team',
     license: 'MIT'
   },
   {
-    id: 'accesstrade-php',
-    name: 'accesstrade-php',
-    displayName: 'AccessTrade PHP SDK',
-    description: 'PHP SDK for integrating AccessTrade affiliate functionality into WordPress plugins and PHP applications.',
+    id: 'timona-php',
+    name: 'timona-php',
+    displayName: 'Timona PHP SDK',
+    description: 'PHP SDK for integrating Timona affiliate functionality into WordPress plugins and PHP applications.',
     version: '2.0.1',
     platform: 'server',
     language: 'php',
     category: 'core',
     status: 'stable',
-    downloadUrl: 'https://packagist.org/packages/accesstrade/php-sdk',
-    documentationUrl: 'https://docs.accesstrade.vn/sdk/php',
-    repositoryUrl: 'https://github.com/accesstrade-vn/accesstrade-php',
+    downloadUrl: 'https://packagist.org/packages/timona/php-sdk',
+    documentationUrl: 'https://docs.timona.vn/sdk/php',
+    repositoryUrl: 'https://github.com/timona-vn/timona-php',
     packageManager: 'composer',
-    installCommand: 'composer require accesstrade/php-sdk',
+    installCommand: 'composer require timona/php-sdk',
     size: '95 KB',
     lastUpdated: new Date('2024-01-05'),
     downloads: 5670,
@@ -465,7 +465,7 @@ function App() {
         code: `<?php
 require_once 'vendor/autoload.php';
 
-use AccessTrade\\Client;
+use Timona\\Client;
 
 $client = new Client([
     'api_key' => 'your-api-key',
@@ -498,24 +498,24 @@ foreach ($campaigns as $campaign) {
       }
     ],
     isOfficial: true,
-    maintainer: 'AccessTrade Team',
+    maintainer: 'Timona Team',
     license: 'MIT'
   },
   {
-    id: 'accesstrade-flutter',
-    name: 'accesstrade_flutter',
-    displayName: 'AccessTrade Flutter Plugin',
-    description: 'Flutter plugin for mobile app integration with AccessTrade affiliate tracking and monetization features.',
+    id: 'timona-flutter',
+    name: 'timona_flutter',
+    displayName: 'Timona Flutter Plugin',
+    description: 'Flutter plugin for mobile app integration with Timona affiliate tracking and monetization features.',
     version: '0.5.2',
     platform: 'mobile',
     language: 'dart',
     category: 'core',
     status: 'beta',
-    downloadUrl: 'https://pub.dev/packages/accesstrade_flutter',
-    documentationUrl: 'https://docs.accesstrade.vn/sdk/flutter',
-    repositoryUrl: 'https://github.com/accesstrade-vn/accesstrade-flutter',
+    downloadUrl: 'https://pub.dev/packages/timona_flutter',
+    documentationUrl: 'https://docs.timona.vn/sdk/flutter',
+    repositoryUrl: 'https://github.com/timona-vn/timona-flutter',
     packageManager: 'pub',
-    installCommand: 'flutter pub add accesstrade_flutter',
+    installCommand: 'flutter pub add timona_flutter',
     size: '156 KB',
     lastUpdated: new Date('2024-01-03'),
     downloads: 1250,
@@ -536,22 +536,22 @@ foreach ($campaigns as $campaign) {
         description: 'Initialize plugin and track events',
         language: 'dart',
         category: 'quickstart',
-        code: `import 'package:accesstrade_flutter/accesstrade_flutter.dart';
+        code: `import 'package:timona_flutter/timona_flutter.dart';
 
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
     
-    // Initialize AccessTrade
-    AccessTradeFlutter.initialize(
+    // Initialize Timona
+    TimonaFlutter.initialize(
       apiKey: 'your-api-key',
       environment: Environment.production,
     );
   }
 
   void trackPurchase() async {
-    await AccessTradeFlutter.trackConversion(
+    await TimonaFlutter.trackConversion(
       orderId: 'order-123',
       revenue: 29.99,
       currency: 'USD',
@@ -581,7 +581,7 @@ class _MyAppState extends State<MyApp> {
       }
     ],
     isOfficial: true,
-    maintainer: 'AccessTrade Team',
+    maintainer: 'Timona Team',
     license: 'MIT'
   }
 ]
@@ -745,7 +745,7 @@ export function SDKDevelopment({ className }: SDKDevelopmentProps) {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">SDK Development</h2>
           <p className="text-muted-foreground">
-            Official SDKs and tools for AccessTrade integration
+            Official SDKs and tools for Timona integration
           </p>
         </div>
 

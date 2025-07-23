@@ -541,7 +541,7 @@ export default function ApiDocsPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">API Documentation</h1>
-              <p className="text-gray-600">Complete reference for AccessTrade Affiliate Platform API</p>
+              <p className="text-gray-600">Complete reference for Timona Affiliate Platform API</p>
             </div>
           </div>
 
@@ -594,7 +594,7 @@ export default function ApiDocsPage() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Base URL</p>
-                    <p className="text-sm font-mono">api.accesstrade.com</p>
+                    <p className="text-sm font-mono">api.timona.com</p>
                   </div>
                 </div>
               </CardContent>

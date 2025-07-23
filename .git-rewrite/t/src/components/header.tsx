@@ -16,7 +16,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded bg-gradient-to-r from-blue-600 to-purple-600"></div>
-            <span className="font-bold text-xl">AccessTrade</span>
+            <span className="font-bold text-xl">Timona</span>
           </Link>
 
           {/* Navigation */}

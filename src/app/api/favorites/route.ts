@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyToken } from '@/lib/auth'
+import { getUserFromRequest, getUserId } from '@/lib/auth-helpers'
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const user = await getUserFromRequest(request)
+    const userId = getUserId(user)
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const decoded = await verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     const { campaignId } = await request.json()
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     const existingFavorite = await prisma.favoriteCampaign.findUnique({
       where: {
         userId_campaignId: {
-          userId: decoded.userId,
+          userId: userId,
           campaignId
         }
       }
@@ -46,7 +43,7 @@ export async function POST(request: NextRequest) {
     // Add to favorites
     const favorite = await prisma.favoriteCampaign.create({
       data: {
-        userId: decoded.userId,
+        userId: userId,
         campaignId
       }
     })
@@ -66,14 +63,11 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const user = await getUserFromRequest(request)
+    const userId = getUserId(user)
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const decoded = await verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -87,7 +81,7 @@ export async function DELETE(request: NextRequest) {
     const deleted = await prisma.favoriteCampaign.delete({
       where: {
         userId_campaignId: {
-          userId: decoded.userId,
+          userId: userId,
           campaignId
         }
       }
@@ -108,20 +102,17 @@ export async function DELETE(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth-token')?.value
-    if (!token) {
+    const user = await getUserFromRequest(request)
+    const userId = getUserId(user)
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const decoded = await verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Get user's favorite campaigns
     const favorites = await prisma.favoriteCampaign.findMany({
       where: {
-        userId: decoded.userId
+        userId: userId
       },
       include: {
         campaign: true

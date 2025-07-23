@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AccessTrade - Nền tảng Affiliate Marketing #1 Việt Nam",
-  description: "Tham gia AccessTrade để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
+  title: "Timona - Nền tảng Affiliate Marketing #1 Việt Nam",
+  description: "Tham gia Timona để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
 };
 
 export default function RootLayout({

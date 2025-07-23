@@ -81,15 +81,15 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
   const validateForm = (data: Record<string, unknown>, isLogin: boolean): ValidationErrors => {
     const errors: ValidationErrors = {}
     
-    if (!isLogin && (!data.name || data.name.trim().length < 2)) {
+    if (!isLogin && (!data.name || typeof data.name !== 'string' || data.name.trim().length < 2)) {
       errors.name = 'Tên phải có ít nhất 2 ký tự'
     }
     
-    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    if (!data.email || typeof data.email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       errors.email = 'Vui lòng nhập email hợp lệ'
     }
     
-    if (!data.password || (isLogin ? data.password.length === 0 : data.password.length < 6)) {
+    if (!data.password || typeof data.password !== 'string' || (isLogin ? data.password.length === 0 : data.password.length < 6)) {
       errors.password = isLogin ? 'Vui lòng nhập mật khẩu' : 'Mật khẩu phải có ít nhất 6 ký tự'
     }
     
@@ -290,7 +290,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
             </h2>
             <p className="text-gray-600 text-sm">
               {activeTab === 'login' 
-                ? 'Chào mừng bạn trở lại với AccessTrade' 
+                ? 'Chào mừng bạn trở lại với Timona' 
                 : activeTab === 'register' 
                 ? 'Bắt đầu hành trình affiliate marketing của bạn'
                 : activeTab === 'forgot-password'
@@ -688,7 +688,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
               <a href="#" className="text-blue-600 hover:underline font-medium">
                 Chính sách bảo mật
               </a>{' '}
-              của AccessTrade
+              của Timona
             </div>
           )}
         </div>

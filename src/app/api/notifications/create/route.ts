@@ -244,7 +244,7 @@ export async function PUT(request: NextRequest) {
           userId,
           title,
           message,
-          type: notificationType,
+          type: notificationType as import('@prisma/client').NotificationType,
           campaignId,
           actionUrl,
           isRead: false

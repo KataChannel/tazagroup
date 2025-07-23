@@ -4,12 +4,12 @@ import { verifyToken } from '@/lib/auth'
 import { CampaignNotificationService } from '@/lib/campaign-notifications'
 
 interface RouteParams {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const campaignId = params.id
+    const { id: campaignId } = await params
     
     // Get user if authenticated
     const token = request.cookies.get('auth-token')?.value
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    const campaignId = params.id
+    const { id: campaignId } = await params
     
     // Get token from cookie
     const token = request.cookies.get('auth-token')?.value

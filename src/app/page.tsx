@@ -1,3 +1,5 @@
+'use client';
+
 import { DashboardStats } from "@/components/dashboard-stats";
 import { CampaignGrid } from "@/components/campaign-grid";
 import { RevenueChart } from "@/components/revenue-chart";
@@ -5,13 +7,14 @@ import { RecentActivity } from "@/components/recent-activity";
 import { PWAFeaturesShowcase } from "@/components/pwa-features-showcase";
 
 export default function Home() {
+
   return (
     <div className="container mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8">
       {/* Hero Section */}
       <section className="text-center py-8 sm:py-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl sm:rounded-2xl">
         <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-3 sm:mb-4 px-4">
           Kiếm tiền online với <br />
-          <span className="text-yellow-300">AccessTrade</span>
+          <span className="text-yellow-300">Timona</span>
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 opacity-90 px-4">
           Nền tảng affiliate marketing hàng đầu Việt Nam
@@ -50,7 +53,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-12 sm:py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
-          Tại sao chọn AccessTrade?
+          Tại sao chọn Timona?
         </h2>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="text-center p-6">

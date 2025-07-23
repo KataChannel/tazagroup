@@ -82,7 +82,11 @@ export async function POST() {
     // Create the payments
     for (const payment of samplePayments) {
       await prisma.payment.create({
-        data: payment
+        data: {
+          ...payment,
+          method: payment.method as import('@prisma/client').PaymentMethod,
+          status: payment.status as import('@prisma/client').PaymentStatus
+        }
       })
     }
 

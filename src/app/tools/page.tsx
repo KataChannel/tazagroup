@@ -166,7 +166,7 @@ export default function ToolsPage() {
 
   const generateAffiliateLink = () => {
     if (!linkUrl) return
-    const baseUrl = "https://accesstrade.vn/redirect"
+    const baseUrl = "https://timona.vn/redirect"
     const params = new URLSearchParams({
       url: linkUrl,
       campaign_id: "12345",

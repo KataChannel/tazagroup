@@ -7,11 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { AuthModal } from "@/components/auth-modal"
 import { NotificationCenter } from "@/components/notification-center"
-import { LanguageSwitcher } from "@/components/language-switcher"
 import { useAuth } from "@/lib/auth-context"
 import { useNotifications } from "@/hooks/use-notifications"
-import { Link } from '@/i18n/routing'
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,7 +18,6 @@ export function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { user, logout, isLoading } = useAuth()
   const { unreadCount, refreshNotifications } = useNotifications()
-  const t = useTranslations('header')
 
   // Refresh notifications when user logs in
   useEffect(() => {
@@ -47,37 +44,37 @@ export function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded bg-gradient-to-r from-blue-600 to-purple-600"></div>
-              <span className="font-bold text-xl">AccessTrade</span>
+              <span className="font-bold text-xl">Timona</span>
             </Link>
 
             {/* Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/campaigns" className="text-sm font-medium hover:text-primary">
-                {t('nav.campaigns')}
+                Chiến dịch
               </Link>
               <Link href="/links" className="text-sm font-medium hover:text-primary">
-                {t('nav.linkAnalytics')}
+                Phân tích Link
               </Link>
               <Link href="/favorites" className="text-sm font-medium hover:text-primary">
-                {t('nav.favorites')}
+                Yêu thích
               </Link>
               <Link href="/tools" className="text-sm font-medium hover:text-primary">
-                {t('nav.tools')}
+                Công cụ
               </Link>
               <Link href="/reports" className="text-sm font-medium hover:text-primary">
-                {t('nav.reports')}
+                Báo cáo
               </Link>
               <Link href="/training" className="text-sm font-medium hover:text-primary">
-                {t('nav.training')}
+                Đào tạo
               </Link>
               <Link href="/api-docs" className="text-sm font-medium hover:text-primary">
-                {t('nav.apiDocs')}
+                API Docs
               </Link>
               <Link href="/support" className="text-sm font-medium hover:text-primary">
-                {t('nav.support')}
+                Hỗ trợ
               </Link>
               <Link href="/security" className="text-sm font-medium hover:text-primary">
-                {t('nav.security')}
+                Bảo mật
               </Link>
             </nav>
 
@@ -87,12 +84,10 @@ export function Header() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder={t('search.placeholder')}
+                  placeholder="Tìm kiếm..."
                   className="w-48 lg:w-64 pl-8"
                 />
               </div>
-
-              <LanguageSwitcher />
 
               {!isLoading && (
                 <>
@@ -122,7 +117,7 @@ export function Header() {
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <Settings className="h-4 w-4 mr-2" />
-                              {t('userMenu.profile')}
+                              Hồ sơ cá nhân
                             </Link>
                             <Link 
                               href="/dashboard" 
@@ -130,14 +125,14 @@ export function Header() {
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <User className="h-4 w-4 mr-2" />
-                              {t('userMenu.dashboard')}
+                              Dashboard
                             </Link>
                             <button
                               onClick={handleLogout}
                               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
                               <LogOut className="h-4 w-4 mr-2" />
-                              {t('userMenu.logout')}
+                              Đăng xuất
                             </button>
                           </div>
                         )}
@@ -148,12 +143,12 @@ export function Header() {
                         variant="ghost" 
                         onClick={() => openAuthModal('login')}
                       >
-                        {t('auth.login')}
+                        Đăng nhập
                       </Button>
                       <Button
                         onClick={() => openAuthModal('register')}
                       >
-                        {t('auth.register')}
+                        Đăng ký
                       </Button>
                     </div>
                   )}

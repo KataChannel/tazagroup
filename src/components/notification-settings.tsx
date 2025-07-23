@@ -216,7 +216,7 @@ export default function NotificationSettings() {
     // Show test notification
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(`Test Notification - ${type}`, {
-        body: 'Đây là thông báo thử nghiệm từ AccessTrade',
+        body: 'Đây là thông báo thử nghiệm từ Timona',
         icon: '/icons/icon-192x192.png'
       })
     }
@@ -281,7 +281,7 @@ export default function NotificationSettings() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Notification Settings</h1>
-          <p className="text-gray-600">Tùy chỉnh cách bạn nhận thông báo từ AccessTrade</p>
+          <p className="text-gray-600">Tùy chỉnh cách bạn nhận thông báo từ Timona</p>
         </div>
       </div>
 

@@ -4,7 +4,7 @@
 Nền tảng affiliate marketing Timona - Hệ thống quản lý và theo dõi hiệu suất affiliate marketing với đầy đủ tính năng cho publisher và advertiser.cessTrade Affiliate Platform - Feature Development Plan
 
 ## 📋 Tổng quan dự án
-Nền tảng affiliate marketing AccessTrade - Hệ thống quản lý và theo dõi hiệu suất affiliate marketing với đầy đủ tính năng cho publisher và advertiser.
+Nền tảng affiliate marketing Timona - Hệ thống quản lý và theo dõi hiệu suất affiliate marketing với đầy đủ tính năng cho publisher và advertiser.
 
 ---
 
