@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Menu, X, User, Bell, Search, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,8 +7,11 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { AuthModal } from "@/components/auth-modal"
 import { NotificationCenter } from "@/components/notification-center"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import { useAuth } from "@/lib/auth-context"
 import { useNotifications } from "@/hooks/use-notifications"
+import { Link } from '@/i18n/routing'
+import { useTranslations } from 'next-intl'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -18,6 +20,7 @@ export function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { user, logout, isLoading } = useAuth()
   const { unreadCount, refreshNotifications } = useNotifications()
+  const t = useTranslations('header')
 
   // Refresh notifications when user logs in
   useEffect(() => {
@@ -50,28 +53,31 @@ export function Header() {
             {/* Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/campaigns" className="text-sm font-medium hover:text-primary">
-                Chiến dịch
+                {t('nav.campaigns')}
               </Link>
               <Link href="/links" className="text-sm font-medium hover:text-primary">
-                Link Analytics
+                {t('nav.linkAnalytics')}
               </Link>
               <Link href="/favorites" className="text-sm font-medium hover:text-primary">
-                Yêu thích
+                {t('nav.favorites')}
               </Link>
               <Link href="/tools" className="text-sm font-medium hover:text-primary">
-                Công cụ
+                {t('nav.tools')}
               </Link>
               <Link href="/reports" className="text-sm font-medium hover:text-primary">
-                Báo cáo
+                {t('nav.reports')}
               </Link>
               <Link href="/training" className="text-sm font-medium hover:text-primary">
-                Đào tạo
+                {t('nav.training')}
               </Link>
               <Link href="/api-docs" className="text-sm font-medium hover:text-primary">
-                API Docs
+                {t('nav.apiDocs')}
               </Link>
               <Link href="/support" className="text-sm font-medium hover:text-primary">
-                Hỗ trợ
+                {t('nav.support')}
+              </Link>
+              <Link href="/security" className="text-sm font-medium hover:text-primary">
+                {t('nav.security')}
               </Link>
             </nav>
 
@@ -81,10 +87,12 @@ export function Header() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Tìm kiếm..."
+                  placeholder={t('search.placeholder')}
                   className="w-48 lg:w-64 pl-8"
                 />
               </div>
+
+              <LanguageSwitcher />
 
               {!isLoading && (
                 <>
@@ -114,7 +122,7 @@ export function Header() {
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <Settings className="h-4 w-4 mr-2" />
-                              Hồ sơ cá nhân
+                              {t('userMenu.profile')}
                             </Link>
                             <Link 
                               href="/dashboard" 
@@ -122,31 +130,30 @@ export function Header() {
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <User className="h-4 w-4 mr-2" />
-                              Dashboard
+                              {t('userMenu.dashboard')}
                             </Link>
                             <button
                               onClick={handleLogout}
                               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
                               <LogOut className="h-4 w-4 mr-2" />
-                              Đăng xuất
+                              {t('userMenu.logout')}
                             </button>
                           </div>
                         )}
                       </div>
-                    </>
-                  ) : (
+                    </>                  ) : (
                     <div className="flex items-center space-x-2">
                       <Button 
                         variant="ghost" 
                         onClick={() => openAuthModal('login')}
                       >
-                        Đăng nhập
+                        {t('auth.login')}
                       </Button>
-                      <Button 
+                      <Button
                         onClick={() => openAuthModal('register')}
                       >
-                        Đăng ký
+                        {t('auth.register')}
                       </Button>
                     </div>
                   )}
@@ -174,64 +181,76 @@ export function Header() {
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Chiến dịch
+                  {t('nav.campaigns')}
                 </Link>
                 <Link 
                   href="/links" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Link Analytics
+                  {t('nav.linkAnalytics')}
                 </Link>
                 <Link 
                   href="/favorites" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Yêu thích
+                  {t('nav.favorites')}
                 </Link>
                 <Link 
                   href="/tools" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Công cụ
+                  {t('nav.tools')}
                 </Link>
                 <Link 
                   href="/reports" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Báo cáo
+                  {t('nav.reports')}
                 </Link>
                 <Link 
                   href="/training" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Đào tạo
+                  {t('nav.training')}
                 </Link>
                 <Link 
                   href="/api-docs" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  API Docs
+                  {t('nav.apiDocs')}
                 </Link>
                 <Link 
                   href="/support" 
                   className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Hỗ trợ
+                  {t('nav.support')}
                 </Link>
+                <Link 
+                  href="/security" 
+                  className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('nav.security')}
+                </Link>
+                
+                {/* Mobile Language Switcher */}
+                <div className="pt-2">
+                  <LanguageSwitcher />
+                </div>
                 
                 {/* Mobile search */}
                 <div className="relative pt-2">
                   <Search className="absolute left-3 top-4.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder="Tìm kiếm..."
+                    placeholder={t('search.placeholder')}
                     className="pl-8"
                   />
                 </div>
@@ -247,7 +266,7 @@ export function Header() {
                         setIsMenuOpen(false)
                       }}
                     >
-                      Đăng nhập
+                      {t('auth.login')}
                     </Button>
                     <Button 
                       className="justify-start w-full"
@@ -256,7 +275,7 @@ export function Header() {
                         setIsMenuOpen(false)
                       }}
                     >
-                      Đăng ký
+                      {t('auth.register')}
                     </Button>
                   </div>
                 )}
@@ -272,14 +291,14 @@ export function Header() {
                       className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      📊 Dashboard
+                      📊 {t('userMenu.dashboard')}
                     </Link>
                     <Link 
                       href="/profile" 
                       className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      👤 Hồ sơ cá nhân
+                      👤 {t('userMenu.profile')}
                     </Link>
                     <button
                       onClick={() => {
@@ -288,7 +307,7 @@ export function Header() {
                       }}
                       className="text-sm font-medium text-red-600 hover:text-red-700 text-left py-2 px-2 rounded-md hover:bg-red-50 transition-colors"
                     >
-                      🚪 Đăng xuất
+                      🚪 {t('userMenu.logout')}
                     </button>
                   </div>
                 )}

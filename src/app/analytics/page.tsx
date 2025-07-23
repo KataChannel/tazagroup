@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import DateRangePicker from '@/components/date-range-picker'
-import { TrendingUp, TrendingDown, DollarSign, MousePointer, Target, Percent } from 'lucide-react'
+import { PredictiveAnalytics } from '@/components/predictive-analytics'
+import { TrendingUp, TrendingDown, DollarSign, MousePointer, Target, Percent, Brain, BarChart3 } from 'lucide-react'
 
 interface AnalyticsData {
   period: {
