@@ -1,14 +1,14 @@
-# 📚 AccessTrade Affiliate Platform - Hướng Dẫn Sử Dụng
+# 📚 Timona Affiliate Platform - Hướng Dẫn Sử Dụng
 
 ## 🎯 Tổng Quan
-AccessTrade là nền tảng affiliate marketing toàn diện, giúp bạn kiếm tiền thông qua việc quảng bá sản phẩm và dịch vụ. Hướng dẫn này sẽ giúp bạn khai thác tối đa các tính năng của nền tảng.
+Timona là nền tảng affiliate marketing toàn diện, giúp bạn kiếm tiền thông qua việc quảng bá sản phẩm và dịch vụ. Hướng dẫn này sẽ giúp bạn khai thác tối đa các tính năng của nền tảng.
 
 ---
 
 ## 🚀 Bắt Đầu Nhanh
 
 ### 1. Đăng Ký Tài Khoản
-1. Truy cập trang chủ AccessTrade
+1. Truy cập trang chủ Timona
 2. Click **"Đăng Ký"** ở góc phải màn hình
 3. Điền thông tin:
    - Email hợp lệ
@@ -18,7 +18,7 @@ AccessTrade là nền tảng affiliate marketing toàn diện, giúp bạn kiế
 5. Kiểm tra email để xác thực tài khoản
 
 ### 2. Xác Thực Email
-1. Mở email từ AccessTrade
+1. Mở email từ Timona
 2. Click link xác thực trong email
 3. Tài khoản sẽ được kích hoạt và bạn có thể đăng nhập
 
@@ -406,7 +406,7 @@ Theo dõi các hoạt động mới nhất:
 ## 🆘 Hỗ Trợ & Giải Đáp
 
 ### Liên Hệ Support
-- **Email**: support@accesstrade.vn
+- **Email**: support@timona.vn
 - **Live Chat**: Góc phải dưới màn hình
 - **Phone**: 1900-xxx-xxx (giờ hành chính)
 - **FAQ**: Câu hỏi thường gặp
@@ -423,7 +423,7 @@ Theo dõi các hoạt động mới nhất:
 
 **Không nhận được email xác thực**:
 - Kiểm tra spam folder
-- Whitelist domain accesstrade.vn
+- Whitelist domain timona.vn
 - Thử email khác
 
 **Link không tracking**:
@@ -548,7 +548,7 @@ Theo dõi các hoạt động mới nhất:
 
 ---
 
-**🎉 Chúc bạn thành công với AccessTrade Affiliate Platform!**
+**🎉 Chúc bạn thành công với Timona Affiliate Platform!**
 
 *Nền tảng hiện đã sẵn sàng cho Enterprise với đầy đủ tính năng Phase 1-4!*
 

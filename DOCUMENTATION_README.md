@@ -1,8 +1,8 @@
-# AccessTrade Affiliate Platform - Documentation
+# Timona Affiliate Platform - Documentation
 
 ## 📚 User Documentation Overview
 
-This repository contains comprehensive user documentation for the AccessTrade Affiliate Platform, covering all features from basic functionality to enterprise-level capabilities.
+This repository contains comprehensive user documentation for the Timona Affiliate Platform, covering all features from basic functionality to enterprise-level capabilities.
 
 ## 📖 Available Documentation
 
@@ -119,7 +119,7 @@ Both user guides are organized into the following major sections:
 - **Feedback**: User feedback helps improve documentation quality
 
 ### Platform Support
-- **Email**: support@accesstrade.vn
+- **Email**: support@timona.vn
 - **Live Chat**: Available in the platform interface
 - **Community**: Join the affiliate community forum
 
@@ -144,4 +144,4 @@ Both user guides are organized into the following major sections:
 
 ---
 
-*This documentation represents the complete user guide for the AccessTrade Affiliate Platform with full Phase 1-4 feature coverage. The platform is now enterprise-ready with comprehensive documentation for all user levels.*
+*This documentation represents the complete user guide for the Timona Affiliate Platform with full Phase 1-4 feature coverage. The platform is now enterprise-ready with comprehensive documentation for all user levels.*

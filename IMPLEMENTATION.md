@@ -1,4 +1,4 @@
-# AccessTrade - Affiliate Marketing Platform
+# Timona - Affiliate Marketing Platform
 
 ## Phase 1 MVP Implementation Status ✅
 

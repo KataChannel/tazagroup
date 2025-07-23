@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# AccessTrade Phase 2 Feature Testing Script
+# Timona Phase 2 Feature Testing Script
 # This script helps test all the newly implemented Phase 2 features
 
-echo "🎉 AccessTrade Phase 2 Feature Testing"
+echo "🎉 Timona Phase 2 Feature Testing"
 echo "======================================"
 echo ""
 

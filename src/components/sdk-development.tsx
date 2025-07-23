@@ -142,20 +142,20 @@ export interface APIKey {
 // Sample SDK data
 const SAMPLE_SDKS: SDKPackage[] = [
   {
-    id: 'accesstrade-js',
-    name: 'accesstrade-js',
-    displayName: 'AccessTrade JavaScript SDK',
-    description: 'Official JavaScript SDK for AccessTrade affiliate platform with comprehensive tracking and analytics capabilities.',
+    id: 'timona-js',
+    name: 'timona-js',
+    displayName: 'Timona JavaScript SDK',
+    description: 'Official JavaScript SDK for Timona affiliate platform with comprehensive tracking and analytics capabilities.',
     version: '2.1.4',
     platform: 'web',
     language: 'javascript',
     category: 'core',
     status: 'stable',
-    downloadUrl: 'https://cdn.jsdelivr.net/npm/accesstrade-js@latest/dist/accesstrade.min.js',
-    documentationUrl: 'https://docs.accesstrade.vn/sdk/javascript',
-    repositoryUrl: 'https://github.com/accesstrade-vn/accesstrade-js',
+    downloadUrl: 'https://cdn.jsdelivr.net/npm/timona-js@latest/dist/timona.min.js',
+    documentationUrl: 'https://docs.timona.vn/sdk/javascript',
+    repositoryUrl: 'https://github.com/timona-vn/timona-js',
     packageManager: 'npm',
-    installCommand: 'npm install accesstrade-js',
+    installCommand: 'npm install timona-js',
     size: '45.2 KB',
     lastUpdated: new Date('2024-01-15'),
     downloads: 15420,
@@ -176,10 +176,10 @@ const SAMPLE_SDKS: SDKPackage[] = [
         description: 'Basic initialization and link tracking',
         language: 'javascript',
         category: 'quickstart',
-        code: `// Initialize AccessTrade SDK
-import AccessTrade from 'accesstrade-js';
+        code: `// Initialize Timona SDK
+import Timona from 'timona-js';
 
-const at = new AccessTrade({
+const timona = new Timona({
   apiKey: 'your-api-key',
   environment: 'production'
 });
@@ -250,14 +250,14 @@ at.attributeRevenue({
       }
     ],
     isOfficial: true,
-    maintainer: 'AccessTrade Team',
+    maintainer: 'Timona Team',
     license: 'MIT'
   },
   {
-    id: 'accesstrade-python',
-    name: 'accesstrade-python',
-    displayName: 'AccessTrade Python SDK',
-    description: 'Python SDK for server-side integration with AccessTrade APIs, perfect for data analysis and backend automation.',
+    id: 'timona-python',
+    name: 'timona-python',
+    displayName: 'Timona Python SDK',
+    description: 'Python SDK for server-side integration with Timona APIs, perfect for data analysis and backend automation.',
     version: '1.3.2',
     platform: 'server',
     language: 'python',

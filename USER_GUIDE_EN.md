@@ -1,14 +1,14 @@
-# 📚 AccessTrade Affiliate Platform - Complete User Guide
+# 📚 Timona Affiliate Platform - Complete User Guide
 
 ## 🎯 Platform Overview
-AccessTrade is a comprehensive affiliate marketing platform that helps you earn money by promoting products and services. This guide will help you maximize all platform features and capabilities.
+Timona is a comprehensive affiliate marketing platform that helps you earn money by promoting products and services. This guide will help you maximize all platform features and capabilities.
 
 ---
 
 ## 🚀 Quick Start Guide
 
 ### 1. Account Registration
-1. Visit the AccessTrade homepage
+1. Visit the Timona homepage
 2. Click **"Sign Up"** in the top right corner
 3. Fill in your information:
    - Valid email address
@@ -18,7 +18,7 @@ AccessTrade is a comprehensive affiliate marketing platform that helps you earn 
 5. Check your email for account verification
 
 ### 2. Email Verification
-1. Open the email from AccessTrade
+1. Open the email from Timona
 2. Click the verification link in the email
 3. Your account will be activated and you can log in
 
@@ -402,7 +402,7 @@ Track your latest activities:
 ## 🆘 Support & FAQ
 
 ### Contact Support
-- **Email**: support@accesstrade.vn
+- **Email**: support@timona.vn
 - **Live Chat**: Bottom right corner of screen
 - **Phone**: 1900-xxx-xxx (business hours)
 - **FAQ**: Frequently asked questions
@@ -551,7 +551,7 @@ Track your latest activities:
 
 ---
 
-**🎉 Success with AccessTrade Affiliate Platform!**
+**🎉 Success with Timona Affiliate Platform!**
 
 *Need additional support? Contact our 24/7 support team!*
 

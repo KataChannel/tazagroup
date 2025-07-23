@@ -22,14 +22,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AccessTrade - Nền tảng Affiliate Marketing #1 Việt Nam",
-  description: "Tham gia AccessTrade để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
+  title: "Timona - Nền tảng Affiliate Marketing #1 Việt Nam",
+  description: "Tham gia Timona để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
   manifest: "/manifest.json",
   themeColor: "#2563eb",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "AccessTrade",
+    title: "Timona",
     startupImage: [
       "/icons/apple-splash-2048-2732.jpg",
       "/icons/apple-splash-1668-2224.jpg",
@@ -45,14 +45,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "AccessTrade",
-    title: "AccessTrade - Nền tảng Affiliate Marketing #1 Việt Nam",
-    description: "Tham gia AccessTrade để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
+    siteName: "Timona",
+    title: "Timona - Nền tảng Affiliate Marketing #1 Việt Nam",
+    description: "Tham gia Timona để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
   },
   twitter: {
     card: "summary",
-    title: "AccessTrade - Nền tảng Affiliate Marketing #1 Việt Nam",
-    description: "Tham gia AccessTrade để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
+    title: "Timona - Nền tảng Affiliate Marketing #1 Việt Nam",
+    description: "Tham gia Timona để kiếm tiền online với affiliate marketing. Hoa hồng cao, thanh toán nhanh, hỗ trợ 24/7.",
   },
 };
 

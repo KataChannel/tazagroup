@@ -1,4 +1,4 @@
-# AccessTrade Affiliate Platform - Complete MVP 🚀
+# Timona Affiliate Platform - Complete MVP 🚀
 
 ## 🎉 Phase 1 MVP - 100% COMPLETE!
 
