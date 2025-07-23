@@ -33,7 +33,6 @@ import {
   Minus,
   RefreshCw
 } from 'lucide-react'
-import { DateRangePicker } from '@/components/date-range-picker'
 
 interface ComparisonPeriod {
   label: string

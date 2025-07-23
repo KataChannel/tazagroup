@@ -64,6 +64,9 @@ model User {
   taxWithholding        Float?   @default(0)
   payoutCurrency        String?  @default("VND")
 
+  // PWA Settings
+  pushSubscription      String?
+
   // Relations
   accounts          Account[]
   sessions          Session[]

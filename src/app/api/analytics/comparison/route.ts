@@ -14,6 +14,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
+    const user = await prisma.user.findUnique({
+      where: { email: decoded.email as string },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
     const { searchParams } = new URL(request.url)
     const currentStart = searchParams.get('currentStart')
     const currentEnd = searchParams.get('currentEnd')
@@ -27,7 +36,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const userId = decoded.userId as string
+    const userId = user.id
 
     // Parse dates
     const currentStartDate = new Date(currentStart)

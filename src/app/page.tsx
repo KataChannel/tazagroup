@@ -2,6 +2,7 @@ import { DashboardStats } from "@/components/dashboard-stats";
 import { CampaignGrid } from "@/components/campaign-grid";
 import { RevenueChart } from "@/components/revenue-chart";
 import { RecentActivity } from "@/components/recent-activity";
+import { PWAFeaturesShowcase } from "@/components/pwa-features-showcase";
 
 export default function Home() {
   return (
@@ -93,6 +94,106 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Phase 2 Features Showcase */}
+      <section className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 sm:p-8">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+            Phase 2 Complete - 100%
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Enterprise Financial Management</h2>
+          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            Nền tảng giờ đây đã được trang bị đầy đủ các tính năng quản lý tài chính doanh nghiệp với khả năng tự động hóa và tuân thủ thuế Việt Nam
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Tax Reports</h3>
+            <p className="text-gray-600 text-sm mb-3">Hệ thống báo cáo thuế tự động với tính toán theo bậc thuế Việt Nam, hỗ trợ cả cá nhân và doanh nghiệp</p>
+            <div className="text-xs text-blue-600 font-medium">✓ Vietnam Tax Compliance</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-4a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Advanced Filtering</h3>
+            <p className="text-gray-600 text-sm mb-3">Lọc dữ liệu đa tiêu chí với khả năng xuất báo cáo và preset nhanh cho phân tích chuyên sâu</p>
+            <div className="text-xs text-purple-600 font-medium">✓ Multi-Criteria & Export</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Payout Schedule</h3>
+            <p className="text-gray-600 text-sm mb-3">Lập lịch thanh toán tự động theo tuần/tháng/quý với kiểm soát ngưỡng tối thiểu và xác thực số dư</p>
+            <div className="text-xs text-green-600 font-medium">✓ Automated & Configurable</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Payout Settings</h3>
+            <p className="text-gray-600 text-sm mb-3">Cấu hình ngưỡng thanh toán tối thiểu với kiểm soát tự động và theo dõi trạng thái số dư realtime</p>
+            <div className="text-xs text-red-600 font-medium">✓ Threshold & Balance Control</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Payout Reports</h3>
+            <p className="text-gray-600 text-sm mb-3">Dashboard phân tích lịch sử thanh toán toàn diện với thống kê tổng quan và khả năng xuất báo cáo</p>
+            <div className="text-xs text-indigo-600 font-medium">✓ Analytics & Export</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-lg mb-2">Performance Analysis</h3>
+            <p className="text-gray-600 text-sm mb-3">So sánh hiệu suất theo thời gian với phân tích xu hướng và insights cho từng chiến dịch</p>
+            <div className="text-xs text-yellow-600 font-medium">✓ Period Comparison & Trends</div>
+          </div>
+        </div>
+
+        <div className="text-center mt-8">
+          <div className="inline-flex items-center gap-4 bg-white rounded-lg p-4 shadow-sm">
+            <div className="text-sm text-gray-600">
+              <div className="font-semibold text-gray-900">Production Ready</div>
+              <div>Enterprise-level financial management</div>
+            </div>
+            <div className="h-8 w-px bg-gray-200"></div>
+            <div className="text-sm text-gray-600">
+              <div className="font-semibold text-gray-900">Phase 3 Active</div>
+              <div>PWA, Offline, Push Notifications</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Phase 3 PWA Features Showcase */}
+      <PWAFeaturesShowcase />
     </div>
   );
 }
