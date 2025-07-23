@@ -39,9 +39,9 @@ interface AuthContextType {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  register: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<{ success: boolean; error?: string }>
+  register: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<{ success: boolean; error?: string; message?: string; requiresVerification?: boolean }>
   logout: () => Promise<void>
-  updateProfile: (data: any) => Promise<{ success: boolean; error?: string }>
+  updateProfile: (data: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>
   refreshUser: () => Promise<void>
 }
 
@@ -110,8 +110,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json()
 
       if (response.ok) {
-        // Auto login after successful registration
-        return await login(registerData.email, registerData.password)
+        // Don't auto-login after registration since user needs to verify email first
+        // setUser(data.user) // This would be done after email verification
+        return { 
+          success: true, 
+          message: data.message,
+          requiresVerification: true 
+        }
       } else {
         return { success: false, error: data.error }
       }

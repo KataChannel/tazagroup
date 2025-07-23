@@ -25,12 +25,19 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(validatedData.password)
     
-    // Create user
+    // Generate verification token for email verification
+    const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+    
+    // Create user with unverified status
     const user = await prisma.user.create({
       data: {
         name: validatedData.name,
         email: validatedData.email,
         password: hashedPassword,
+        isVerified: false, // User needs to verify email
+        resetToken: verificationToken, // Using resetToken field for verification
+        resetTokenExpiry: tokenExpiry,
         profile: {
           create: {}
         }
@@ -46,27 +53,32 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         type: 'REGISTER',
         title: 'Đăng ký tài khoản',
-        description: `Tài khoản ${user.email} đã được tạo thành công`
+        description: `Tài khoản ${user.email} đã được tạo thành công - Chờ xác thực email`
       }
     })
     
+    // In a real application, send verification email here
+    console.log(`Email verification token for ${user.email}: ${verificationToken}`)
+    
     // Remove password from response
-    const { password, ...userWithoutPassword } = user
+    const { password: _, ...userWithoutPassword } = user
     
     return NextResponse.json(
       { 
-        message: 'Đăng ký thành công',
-        user: userWithoutPassword 
+        message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.',
+        user: userWithoutPassword,
+        // Remove this in production - only for development
+        verificationToken: process.env.NODE_ENV === 'development' ? verificationToken : undefined
       },
       { status: 201 }
     )
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Registration error:', error)
     
-    if (error.name === 'ZodError') {
+    if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ', details: error.errors },
+        { error: 'Dữ liệu không hợp lệ' },
         { status: 400 }
       )
     }

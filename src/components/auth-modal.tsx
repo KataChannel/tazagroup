@@ -10,7 +10,7 @@ import { Eye, EyeOff, Mail, User, Lock, X } from 'lucide-react'
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
-  defaultTab?: 'login' | 'register'
+  defaultTab?: 'login' | 'register' | 'forgot-password' | 'reset-password'
 }
 
 interface ValidationErrors {
@@ -24,6 +24,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
   const [activeTab, setActiveTab] = useState(defaultTab)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
@@ -41,11 +42,22 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
     confirmPassword: ''
   })
 
+  const [forgotPasswordData, setForgotPasswordData] = useState({
+    email: ''
+  })
+
+  const [resetPasswordData, setResetPasswordData] = useState({
+    token: '',
+    password: '',
+    confirmPassword: ''
+  })
+
   // Reset states when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setActiveTab(defaultTab)
       setError('')
+      setSuccess('')
       setValidationErrors({})
       setShowPassword(false)
       setShowConfirmPassword(false)
@@ -66,7 +78,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
 
   if (!isOpen) return null
 
-  const validateForm = (data: any, isLogin: boolean): ValidationErrors => {
+  const validateForm = (data: Record<string, unknown>, isLogin: boolean): ValidationErrors => {
     const errors: ValidationErrors = {}
     
     if (!isLogin && (!data.name || data.name.trim().length < 2)) {
@@ -100,6 +112,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
     
     setIsLoading(true)
     setError('')
+    setSuccess('')
 
     const result = await login(loginData.email, loginData.password)
     
@@ -107,7 +120,15 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
       onClose()
       setLoginData({ email: '', password: '' })
     } else {
-      setError(result.error || 'Đã xảy ra lỗi')
+      if (result.error?.includes('chưa được xác thực')) {
+        setError(result.error)
+        // Auto-fill email for resending verification
+        setForgotPasswordData({ email: loginData.email })
+        // Show option to resend verification
+        setSuccess('Bạn có thể gửi lại email xác thực bằng cách chuyển sang "Quên mật khẩu".')
+      } else {
+        setError(result.error || 'Đã xảy ra lỗi')
+      }
     }
     
     setIsLoading(false)
@@ -125,12 +146,19 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
     
     setIsLoading(true)
     setError('')
+    setSuccess('')
 
     const result = await register(registerData)
     
     if (result.success) {
-      onClose()
-      setRegisterData({ name: '', email: '', password: '', confirmPassword: '' })
+      if (result.requiresVerification) {
+        setSuccess('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.')
+        setRegisterData({ name: '', email: '', password: '', confirmPassword: '' })
+        // Don't close modal - show success message
+      } else {
+        onClose()
+        setRegisterData({ name: '', email: '', password: '', confirmPassword: '' })
+      }
     } else {
       setError(result.error || 'Đã xảy ra lỗi')
     }
@@ -138,9 +166,105 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
     setIsLoading(false)
   }
 
-  const switchTab = (tab: 'login' | 'register') => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!forgotPasswordData.email) {
+      setValidationErrors({ email: 'Vui lòng nhập email' })
+      return
+    }
+    
+    setIsLoading(true)
+    setError('')
+    setSuccess('')
+    
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(forgotPasswordData),
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok) {
+        setSuccess('Link đặt lại mật khẩu đã được gửi đến email của bạn')
+        if (process.env.NODE_ENV === 'development' && data.resetToken) {
+          // Auto-fill token in development mode
+          setResetPasswordData(prev => ({ ...prev, token: data.resetToken }))
+          setActiveTab('reset-password')
+        }
+      } else {
+        setError(data.error || 'Có lỗi xảy ra')
+      }
+    } catch (error) {
+      setError('Có lỗi xảy ra khi gửi yêu cầu')
+    }
+    
+    setIsLoading(false)
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    const errors: ValidationErrors = {}
+    
+    if (!resetPasswordData.token) {
+      errors.email = 'Token là bắt buộc'
+    }
+    
+    if (!resetPasswordData.password || resetPasswordData.password.length < 6) {
+      errors.password = 'Mật khẩu phải có ít nhất 6 ký tự'
+    }
+    
+    if (resetPasswordData.password !== resetPasswordData.confirmPassword) {
+      errors.confirmPassword = 'Mật khẩu xác nhận không khớp'
+    }
+    
+    setValidationErrors(errors)
+    
+    if (Object.keys(errors).length > 0) {
+      return
+    }
+    
+    setIsLoading(true)
+    setError('')
+    setSuccess('')
+    
+    try {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resetPasswordData),
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok) {
+        setSuccess('Mật khẩu đã được đặt lại thành công')
+        setResetPasswordData({ token: '', password: '', confirmPassword: '' })
+        setTimeout(() => {
+          setActiveTab('login')
+          setSuccess('')
+        }, 2000)
+      } else {
+        setError(data.error || 'Có lỗi xảy ra')
+      }
+    } catch (error) {
+      setError('Có lỗi xảy ra khi đặt lại mật khẩu')
+    }
+    
+    setIsLoading(false)
+  }
+
+  const switchTab = (tab: 'login' | 'register' | 'forgot-password' | 'reset-password') => {
     setActiveTab(tab)
     setError('')
+    setSuccess('')
     setValidationErrors({})
   }
 
@@ -160,37 +284,57 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
           <div className="text-center mb-6">
             <div className="h-10 w-10 rounded bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-3"></div>
             <h2 className="text-2xl font-bold text-gray-900">
-              {activeTab === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
+              {activeTab === 'login' ? 'Đăng nhập' : 
+               activeTab === 'register' ? 'Tạo tài khoản' :
+               activeTab === 'forgot-password' ? 'Quên mật khẩu' : 'Đặt lại mật khẩu'}
             </h2>
             <p className="text-gray-600 text-sm">
               {activeTab === 'login' 
                 ? 'Chào mừng bạn trở lại với AccessTrade' 
-                : 'Bắt đầu hành trình affiliate marketing của bạn'
+                : activeTab === 'register' 
+                ? 'Bắt đầu hành trình affiliate marketing của bạn'
+                : activeTab === 'forgot-password'
+                ? 'Nhập email để nhận link đặt lại mật khẩu'
+                : 'Nhập mật khẩu mới của bạn'
               }
             </p>
           </div>
 
           {/* Tabs */}
-          <div className="flex border-b border-gray-200 mb-6">
-            <button
-              className={`flex-1 pb-2 text-center font-medium transition-colors ${activeTab === 'login' 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-gray-500 hover:text-gray-700'
-              }`}
-              onClick={() => switchTab('login')}
-            >
-              Đăng nhập
-            </button>
-            <button
-              className={`flex-1 pb-2 text-center font-medium transition-colors ${activeTab === 'register' 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-gray-500 hover:text-gray-700'
-              }`}
-              onClick={() => switchTab('register')}
-            >
-              Đăng ký
-            </button>
-          </div>
+          {(activeTab === 'login' || activeTab === 'register') && (
+            <div className="flex border-b border-gray-200 mb-6">
+              <button
+                className={`flex-1 pb-2 text-center font-medium transition-colors ${activeTab === 'login' 
+                  ? 'border-b-2 border-blue-600 text-blue-600' 
+                  : 'text-gray-500 hover:text-gray-700'
+                }`}
+                onClick={() => switchTab('login')}
+              >
+                Đăng nhập
+              </button>
+              <button
+                className={`flex-1 pb-2 text-center font-medium transition-colors ${activeTab === 'register' 
+                  ? 'border-b-2 border-blue-600 text-blue-600' 
+                  : 'text-gray-500 hover:text-gray-700'
+                }`}
+                onClick={() => switchTab('register')}
+              >
+                Đăng ký
+              </button>
+            </div>
+          )}
+
+          {/* Back Button for Forgot/Reset Password */}
+          {(activeTab === 'forgot-password' || activeTab === 'reset-password') && (
+            <div className="mb-6">
+              <button
+                onClick={() => switchTab('login')}
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+              >
+                ← Quay lại đăng nhập
+              </button>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -200,8 +344,16 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
             </div>
           )}
 
+          {/* Success Message */}
+          {success && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm flex items-start gap-2">
+              <div className="w-4 h-4 text-green-500 mt-0.5">✓</div>
+              <span>{success}</span>
+            </div>
+          )}
+
           {/* Login Form */}
-          {activeTab === 'login' ? (
+          {activeTab === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -250,6 +402,16 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
                 )}
               </div>
 
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => switchTab('forgot-password')}
+                  className="text-blue-600 hover:text-blue-700 text-sm"
+                >
+                  Quên mật khẩu?
+                </button>
+              </div>
+
               <Button
                 type="submit"
                 className="w-full"
@@ -265,8 +427,10 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
                 )}
               </Button>
             </form>
-          ) : (
-            /* Register Form */
+          )}
+
+          {/* Register Form */}
+          {activeTab === 'register' && (
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -379,18 +543,154 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
             </form>
           )}
 
+          {/* Forgot Password Form */}
+          {activeTab === 'forgot-password' && (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="email"
+                    value={forgotPasswordData.email}
+                    onChange={(e) => setForgotPasswordData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="example@email.com"
+                    className={`pl-10 ${validationErrors.email ? 'border-red-300' : ''}`}
+                    required
+                  />
+                </div>
+                {validationErrors.email && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Đang gửi email...
+                  </div>
+                ) : (
+                  'Gửi link đặt lại mật khẩu'
+                )}
+              </Button>
+            </form>
+          )}
+
+          {/* Reset Password Form */}
+          {activeTab === 'reset-password' && (
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Token xác thực
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    value={resetPasswordData.token}
+                    onChange={(e) => setResetPasswordData(prev => ({ ...prev, token: e.target.value }))}
+                    placeholder="Nhập token từ email"
+                    className={`pl-10 ${validationErrors.email ? 'border-red-300' : ''}`}
+                    required
+                  />
+                </div>
+                {validationErrors.email && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mật khẩu mới
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={resetPasswordData.password}
+                    onChange={(e) => setResetPasswordData(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="••••••••"
+                    className={`pl-10 pr-10 ${validationErrors.password ? 'border-red-300' : ''}`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {validationErrors.password && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.password}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Xác nhận mật khẩu mới
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={resetPasswordData.confirmPassword}
+                    onChange={(e) => setResetPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    placeholder="••••••••"
+                    className={`pl-10 pr-10 ${validationErrors.confirmPassword ? 'border-red-300' : ''}`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {validationErrors.confirmPassword && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.confirmPassword}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Đang đặt lại mật khẩu...
+                  </div>
+                ) : (
+                  'Đặt lại mật khẩu'
+                )}
+              </Button>
+            </form>
+          )}
+
           {/* Terms and Privacy */}
-          <div className="mt-6 text-center text-xs text-gray-500">
-            Bằng việc {activeTab === 'login' ? 'đăng nhập' : 'đăng ký'}, bạn đồng ý với{' '}
-            <a href="#" className="text-blue-600 hover:underline font-medium">
-              Điều khoản sử dụng
-            </a>{' '}
-            và{' '}
-            <a href="#" className="text-blue-600 hover:underline font-medium">
-              Chính sách bảo mật
-            </a>{' '}
-            của AccessTrade
-          </div>
+          {(activeTab === 'login' || activeTab === 'register') && (
+            <div className="mt-6 text-center text-xs text-gray-500">
+              Bằng việc {activeTab === 'login' ? 'đăng nhập' : 'đăng ký'}, bạn đồng ý với{' '}
+              <a href="#" className="text-blue-600 hover:underline font-medium">
+                Điều khoản sử dụng
+              </a>{' '}
+              và{' '}
+              <a href="#" className="text-blue-600 hover:underline font-medium">
+                Chính sách bảo mật
+              </a>{' '}
+              của AccessTrade
+            </div>
+          )}
         </div>
       </Card>
     </div>

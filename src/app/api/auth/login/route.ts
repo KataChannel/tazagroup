@@ -42,6 +42,18 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       )
     }
+
+    // Check if email is verified (optional - can be commented out for testing)
+    if (!user.isVerified) {
+      return NextResponse.json(
+        { 
+          error: 'Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực tài khoản.',
+          requiresVerification: true,
+          email: user.email
+        },
+        { status: 403 }
+      )
+    }
     
     // Generate JWT token
     const token = await signToken({ 
@@ -65,7 +77,7 @@ export async function POST(request: NextRequest) {
     })
     
     // Remove password from response
-    const { password, ...userWithoutPassword } = user
+    const { password: _, ...userWithoutPassword } = user
     
     const response = NextResponse.json(
       { 
@@ -86,12 +98,12 @@ export async function POST(request: NextRequest) {
     
     return response
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error)
     
-    if (error.name === 'ZodError') {
+    if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ', details: error.errors },
+        { error: 'Dữ liệu không hợp lệ' },
         { status: 400 }
       )
     }
