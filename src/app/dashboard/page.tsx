@@ -5,10 +5,14 @@ import { useAuth } from '@/lib/auth-context'
 import { DashboardStats } from "@/components/dashboard-stats"
 import { RevenueChart } from "@/components/revenue-chart"
 import { RecentActivity } from "@/components/recent-activity"
+import RealTimeAnalytics from "@/components/real-time-analytics"
+import DateRangeAnalytics from "@/components/date-range-analytics"
+import { NotificationDemo } from "@/components/notification-demo"
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, DollarSign, MousePointer, Target, Calendar, ArrowRight } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { TrendingUp, DollarSign, MousePointer, Target, Calendar, ArrowRight, BarChart3, Activity } from 'lucide-react'
 import Link from 'next/link'
 
 interface BalanceData {
@@ -196,15 +200,55 @@ export default function Dashboard() {
         <DashboardStats />
       </section>
 
-      {/* Charts and Activity */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <RevenueChart />
-        </div>
-        <div>
-          <RecentActivity />
-        </div>
-      </div>
+      {/* Analytics Tabs */}
+      <Card className="p-6">
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="realtime" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Real-time
+            </TabsTrigger>
+            <TabsTrigger value="daterange" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Custom Range
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Activity
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="overview" className="mt-6">
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <RevenueChart />
+              </div>
+              <div>
+                <DashboardStats />
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="realtime" className="mt-6">
+            <RealTimeAnalytics />
+          </TabsContent>
+          
+          <TabsContent value="daterange" className="mt-6">
+            <DateRangeAnalytics />
+          </TabsContent>
+          
+          <TabsContent value="activity" className="mt-6">
+            <RecentActivity />
+          </TabsContent>
+        </Tabs>
+      </Card>
+
+      {/* Notification System Demo */}
+      <NotificationDemo />
 
       {/* Top Performing Campaigns */}
       {balance?.topCampaigns && balance.topCampaigns.length > 0 && (

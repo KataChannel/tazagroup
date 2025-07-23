@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
+import DataExport from "@/components/data-export"
+import DateRangeAnalytics from "@/components/date-range-analytics"
 import { 
   LineChart, 
   Line, 
@@ -26,7 +28,8 @@ import {
   TrendingDown, 
   DollarSign, 
   MousePointer, 
-  Eye
+  Eye,
+  FileSpreadsheet
 } from "lucide-react"
 
 // Sample data for charts
@@ -250,7 +253,12 @@ export default function ReportsPage() {
           <TabsList>
             <TabsTrigger value="performance">Hiệu suất</TabsTrigger>
             <TabsTrigger value="campaigns">Chiến dịch</TabsTrigger>
+            <TabsTrigger value="daterange">Phân tích theo thời gian</TabsTrigger>
             <TabsTrigger value="transactions">Giao dịch</TabsTrigger>
+            <TabsTrigger value="export" className="flex items-center gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Xuất dữ liệu
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="performance" className="space-y-4">
@@ -358,6 +366,10 @@ export default function ReportsPage() {
             </div>
           </TabsContent>
 
+          <TabsContent value="daterange">
+            <DateRangeAnalytics />
+          </TabsContent>
+
           <TabsContent value="transactions">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -387,6 +399,10 @@ export default function ReportsPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="export">
+            <DataExport />
           </TabsContent>
         </Tabs>
       </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
+import { CampaignNotificationService } from '@/lib/campaign-notifications'
 
 interface RouteParams {
   params: { id: string }
@@ -143,6 +144,18 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         description: `Đăng ký tham gia chiến dịch "${campaign.name}"`
       }
     })
+
+    // Trigger application submitted notification (for demo - normally admin would approve/reject)
+    try {
+      await CampaignNotificationService.createNotification(
+        'CAMPAIGN_APPROVED', // For demo purposes, auto-approve
+        campaignId,
+        `Chúc mừng! Đơn đăng ký chiến dịch "${campaign.name}" đã được phê duyệt tự động.`
+      )
+    } catch (notificationError) {
+      console.error('Failed to send notification:', notificationError)
+      // Don't fail the main request if notification fails
+    }
     
     return NextResponse.json(
       { 

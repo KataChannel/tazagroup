@@ -1,12 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, X, User, Bell, Search, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { AuthModal } from "@/components/auth-modal"
+import { NotificationCenter } from "@/components/notification-center"
 import { useAuth } from "@/lib/auth-context"
+import { useNotifications } from "@/hooks/use-notifications"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -14,6 +17,14 @@ export function Header() {
   const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login')
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { user, logout, isLoading } = useAuth()
+  const { unreadCount, refreshNotifications } = useNotifications()
+
+  // Refresh notifications when user logs in
+  useEffect(() => {
+    if (user) {
+      refreshNotifications()
+    }
+  }, [user, refreshNotifications])
 
   const handleLogout = async () => {
     await logout()
@@ -40,6 +51,9 @@ export function Header() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/campaigns" className="text-sm font-medium hover:text-primary">
                 Chiến dịch
+              </Link>
+              <Link href="/favorites" className="text-sm font-medium hover:text-primary">
+                Yêu thích
               </Link>
               <Link href="/tools" className="text-sm font-medium hover:text-primary">
                 Công cụ
@@ -70,9 +84,9 @@ export function Header() {
                 <>
                   {user ? (
                     <>
-                      <Button variant="ghost" size="icon">
-                        <Bell className="h-5 w-5" />
-                      </Button>
+                      <div className="relative">
+                        <NotificationCenter />
+                      </div>
                       <div className="relative">
                         <Button 
                           variant="ghost" 
@@ -155,6 +169,13 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Chiến dịch
+                </Link>
+                <Link 
+                  href="/favorites" 
+                  className="text-sm font-medium hover:text-primary py-2 px-2 rounded-md hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Yêu thích
                 </Link>
                 <Link 
                   href="/tools" 

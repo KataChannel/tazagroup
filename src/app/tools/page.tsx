@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import CommissionCalculator from "@/components/commission-calculator"
+import DeepLinkGenerator from "@/components/deep-link-generator"
 import { 
   Link, 
   QrCode, 
@@ -19,7 +21,9 @@ import {
   Palette,
   Code,
   Smartphone,
-  Globe
+  Globe,
+  Calculator,
+  LinkIcon
 } from "lucide-react"
 
 interface Tool {
@@ -29,6 +33,7 @@ interface Tool {
   icon: React.ReactNode
   category: string
   isPro?: boolean
+  component?: React.ComponentType
 }
 
 const tools: Tool[] = [
@@ -38,6 +43,22 @@ const tools: Tool[] = [
     description: "Tạo link affiliate tracking cho các chiến dịch",
     icon: <Link className="h-6 w-6" />,
     category: "links"
+  },
+  {
+    id: "deep-link-generator",
+    name: "Deep Link Generator",
+    description: "Tạo deep link với UTM parameters chi tiết",
+    icon: <LinkIcon className="h-6 w-6" />,
+    category: "links",
+    component: DeepLinkGenerator
+  },
+  {
+    id: "commission-calculator",
+    name: "Máy tính hoa hồng",
+    description: "Tính toán hoa hồng và thu nhập tiềm năng",
+    icon: <Calculator className="h-6 w-6" />,
+    category: "financial",
+    component: CommissionCalculator
   },
   {
     id: "qr-generator", 
@@ -78,7 +99,7 @@ const tools: Tool[] = [
   }
 ]
 
-function ToolCard({ tool }: { tool: Tool }) {
+function ToolCard({ tool, onToolSelect }: { tool: Tool; onToolSelect: (toolId: string) => void }) {
   return (
     <Card className="group hover:shadow-lg transition-all duration-200">
       <CardHeader className="pb-4">
@@ -106,7 +127,17 @@ function ToolCard({ tool }: { tool: Tool }) {
           {tool.description}
         </p>
         
-        <Button className="w-full">
+        <Button 
+          className="w-full"
+          onClick={() => {
+            if (tool.component) {
+              onToolSelect(tool.id)
+            } else {
+              // Handle other tools without components
+              console.log('Opening tool:', tool.name)
+            }
+          }}
+        >
           Sử dụng ngay
         </Button>
       </CardContent>
@@ -116,12 +147,14 @@ function ToolCard({ tool }: { tool: Tool }) {
 
 export default function ToolsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedTool, setSelectedTool] = useState<string | null>(null)
   const [linkUrl, setLinkUrl] = useState("")
   const [affiliateLink, setAffiliateLink] = useState("")
 
   const categories = [
     { id: "all", name: "Tất cả" },
     { id: "links", name: "Link & QR" },
+    { id: "financial", name: "Tài chính" },
     { id: "creative", name: "Sáng tạo" },
     { id: "pages", name: "Landing Page" },
     { id: "mobile", name: "Mobile" }
@@ -141,6 +174,35 @@ export default function ToolsPage() {
       timestamp: Date.now().toString()
     })
     setAffiliateLink(`${baseUrl}?${params.toString()}`)
+  }
+
+  // If a tool is selected and has a component, render it
+  const selectedToolData = tools.find(tool => tool.id === selectedTool)
+  if (selectedTool && selectedToolData?.component) {
+    const ToolComponent = selectedToolData.component
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          {/* Back Button */}
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setSelectedTool(null)}
+              className="flex items-center gap-2"
+            >
+              ← Back to Tools
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold">{selectedToolData.name}</h1>
+              <p className="text-muted-foreground">{selectedToolData.description}</p>
+            </div>
+          </div>
+          
+          {/* Tool Component */}
+          <ToolComponent />
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -179,7 +241,7 @@ export default function ToolsPage() {
             {/* Tools Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredTools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
+                <ToolCard key={tool.id} tool={tool} onToolSelect={setSelectedTool} />
               ))}
             </div>
           </TabsContent>
@@ -349,3 +411,4 @@ export default function ToolsPage() {
     </div>
   )
 }
+
