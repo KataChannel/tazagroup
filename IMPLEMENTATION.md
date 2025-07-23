@@ -151,7 +151,7 @@
 #### Prerequisites
 - Node.js 18+ 
 - npm or bun
-- SQLite database (included)
+- PostgreSQL database
 
 #### Installation
 ```bash
@@ -166,10 +166,10 @@ npx prisma db push
 ```
 
 #### Environment Variables
-Create `.env.local`:
+Create `.env`:
 ```env
 JWT_SECRET=your_jwt_secret_here
-DATABASE_URL="file:./dev.db"
+DATABASE_URL=postgresql://username:password@host:port/database
 NODE_ENV=development
 ```
 

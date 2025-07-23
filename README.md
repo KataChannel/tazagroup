@@ -66,7 +66,7 @@ This is a comprehensive affiliate marketing platform built with Next.js 15, feat
 ### 🔧 Technical Infrastructure
 - **Next.js 15** with App Router architecture
 - **TypeScript** for type safety and better development experience
-- **Prisma ORM** with SQLite database (production-ready for PostgreSQL)
+- **Prisma ORM** with PostgreSQL database for production-ready performance
 - **JWT Authentication** with jose library for secure token handling
 - **bcrypt** for password hashing and security
 - **Zod Schemas** for comprehensive data validation
