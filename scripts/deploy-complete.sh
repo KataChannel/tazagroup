@@ -72,14 +72,14 @@ echo -e "${CYAN}🔧 Server Configuration${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
-read -p "$(echo -e ${YELLOW}Server User [it]: ${NC})" SERVER_USER
-SERVER_USER=${SERVER_USER:-it}
+read -p "$(echo -e ${YELLOW}Server User [root]: ${NC})" SERVER_USER
+SERVER_USER=${SERVER_USER:-root}
 
 read -p "$(echo -e ${YELLOW}Server Host [116.118.49.243]: ${NC})" SERVER_HOST
 SERVER_HOST=${SERVER_HOST:-116.118.49.243}
 
-read -p "$(echo -e ${YELLOW}Deploy Path [/home/it/tazagroup-deploy]: ${NC})" SERVER_PATH
-SERVER_PATH=${SERVER_PATH:-/home/it/tazagroup-deploy}
+read -p "$(echo -e ${YELLOW}Deploy Path [/home/root/tazagroup-deploy]: ${NC})" SERVER_PATH
+SERVER_PATH=${SERVER_PATH:-/home/root/tazagroup-deploy}
 
 export SERVER_USER
 export SERVER_HOST

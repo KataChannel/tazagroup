@@ -67,7 +67,7 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 # Only remove dangling images that are related to tazagroup project
 echo -e "${BLUE}Checking for dangling TazaGroup images...${NC}"
 if [ "$MODE" = "server" ]; then
-    DANGLING_TAZAGROUP=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker images -f 'dangling=true' --format '{{.ID}} {{.Repository}}' | grep -E 'tazagroup|<none>' | grep -B1 tazagroup | awk '{print \$1}' | sort -u" || echo "")
+    DANGLING_TAZAGROUP=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker images -f 'dangling=true' --format '{{.ID}} {{.Repository}}' | grep -E 'tazagroup|<none>' | awk '{print \$1}' | sort -u" || echo "")
 else
     DANGLING_TAZAGROUP=$(docker images -f 'dangling=true' --format '{{.ID}} {{.Repository}}' 2>/dev/null | grep -E 'tazagroup|<none>' | awk '{print $1}' | sort -u || echo "")
 fi
@@ -76,7 +76,7 @@ if [ -n "$DANGLING_TAZAGROUP" ]; then
     DANGLING_COUNT=$(echo "$DANGLING_TAZAGROUP" | wc -l)
     echo -e "${BLUE}Found ${DANGLING_COUNT} dangling TazaGroup-related images${NC}"
     
-    read -p "$(echo -e ${YELLOW}Remove dangling TazaGroup images? [y/N]: ${NC})" -n 1 -r
+    read -p "$(echo -e "${YELLOW}Remove dangling TazaGroup images? [y/N]: ${NC}")" -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         if [ "$MODE" = "server" ]; then
@@ -104,7 +104,7 @@ echo -e "${BLUE}Listing TazaGroup images:${NC}"
 execute_cmd "docker images | grep tazagroup || echo 'No TazaGroup images found'"
 echo ""
 
-read -p "$(echo -e ${YELLOW}Do you want to remove old TazaGroup images (keep latest)? [y/N]: ${NC})" -n 1 -r
+read -p "$(echo -e "${YELLOW}Do you want to remove old TazaGroup images (keep latest)? [y/N]: ${NC}")" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Keep only the latest tag, remove others
@@ -136,7 +136,7 @@ if [ -n "$STOPPED_TAZAGROUP" ]; then
     echo -e "${BLUE}Found ${STOPPED_COUNT} stopped TazaGroup containers${NC}"
     execute_cmd "docker ps -a -f status=exited --format 'table {{.Names}}\t{{.Status}}' | grep tazagroup"
     
-    read -p "$(echo -e ${YELLOW}Remove stopped TazaGroup containers? [y/N]: ${NC})" -n 1 -r
+    read -p "$(echo -e "${YELLOW}Remove stopped TazaGroup containers? [y/N]: ${NC}")" -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         if [ "$MODE" = "server" ]; then
