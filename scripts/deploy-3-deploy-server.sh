@@ -109,87 +109,9 @@ version: '3.8'
 
 # TazaGroup Production Deployment
 # Using pre-built images
+# Note: PostgreSQL, Redis, and MinIO are already running on the host server
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: tazagroup-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: tazagroupcore
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - \"13003:5432\"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - tazagroup-network
-    healthcheck:
-      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
-
-  # Redis Cache
-  redis:
-    image: redis:7.4-alpine
-    container_name: tazagroup-redis
-    restart: unless-stopped
-    command: redis-server --appendonly yes --timeout 300 --maxmemory 256mb --maxmemory-policy allkeys-lru --requirepass 123456
-    ports:
-      - \"12004:6379\"
-    volumes:
-      - redis_data:/data
-    networks:
-      - tazagroup-network
-    healthcheck:
-      test: [\"CMD\", \"redis-cli\", \"--raw\", \"incr\", \"ping\"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-        reservations:
-          memory: 128M
-
-  # MinIO Object Storage
-  minio:
-    image: minio/minio:RELEASE.2024-08-26T15-33-07Z
-    container_name: tazagroup-minio
-    restart: unless-stopped
-    environment:
-      MINIO_ROOT_USER: minio-admin
-      MINIO_ROOT_PASSWORD: minio-secret-2025
-    ports:
-      - \"12007:9000\"
-      - \"12008:9001\"
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address \":9001\"
-    networks:
-      - tazagroup-network
-    healthcheck:
-      test: [\"CMD\", \"mc\", \"ready\", \"local\"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-        reservations:
-          memory: 128M
-
   # Backend API - Using pre-built image
   backend:
     image: \${BACKEND_IMAGE}
@@ -200,27 +122,9 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/tazagroupcore
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: 123456
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_USE_SSL: \"false\"
-      MINIO_ACCESS_KEY: minio-admin
-      MINIO_SECRET_KEY: minio-secret-2025
-      MINIO_BUCKET_NAME: tazagroup-uploads
     ports:
       - \"13001:4000\"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - tazagroup-network
+    network_mode: host
     deploy:
       resources:
         limits:
@@ -244,27 +148,13 @@ services:
       - \"13000:3000\"
     depends_on:
       - backend
-    networks:
-      - tazagroup-network
+    network_mode: host
     deploy:
       resources:
         limits:
           memory: 512M
         reservations:
           memory: 256M
-
-volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
-  minio_data:
-    driver: local
-
-networks:
-  tazagroup-network:
-    driver: bridge
-    name: tazagroup-network
 EOFCOMPOSE
 "
 
