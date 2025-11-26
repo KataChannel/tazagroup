@@ -60,12 +60,16 @@ while true; do
     echo "  15) kill:all               - Kill all dev ports"
     echo ""
     
+    print_color $PURPLE "🚀 DEPLOYMENT:"
+    echo "  16) deploy:complete        - Full deployment (local build + server)"
+    echo ""
+    
     print_color $YELLOW "  0)  Exit"
     echo ""
     print_color $CYAN "💡 Tip: Use Ctrl+C to stop running services"
     echo ""
     
-    read -p "$(print_color $CYAN 'Select option (0-15): ')" choice
+    read -p "$(print_color $CYAN 'Select option (0-16): ')" choice
     
     case $choice in
         1)
@@ -139,6 +143,11 @@ while true; do
             print_color $RED "⚡ Killing all dev ports..."
             $(pwd)/scripts/kill-ports.sh 13000 13001
             sleep 1
+            ;;
+        16)
+            print_color $PURPLE "🚀 Starting complete deployment..."
+            print_color $YELLOW "This will build locally and deploy to server"
+            $(pwd)/scripts/deploy-complete.sh
             ;;
         0)
             print_color $YELLOW "👋 Goodbye!"
