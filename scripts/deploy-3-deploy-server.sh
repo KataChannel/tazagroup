@@ -123,6 +123,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 13001
+      DOCKER_REDIS_HOST: 127.0.0.1
+      DOCKER_REDIS_PORT: 12004
+      DOCKER_MINIO_ENDPOINT: 127.0.0.1
+      DOCKER_MINIO_PORT: 12007
     deploy:
       resources:
         limits:
