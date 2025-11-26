@@ -8,7 +8,8 @@
     "backend"
   ],
   "scripts": {
-    "dev": "./vscode-menu.sh",
+    "menu": "./scripts/menu.sh",
+    "dev": "./scripts/vscode-menu.sh",
     "dev:backend": "cd backend && bun run dev",
     "dev:frontend": "cd frontend && bun run dev",
     "deploy": "./scripts/deploy-complete.sh",
