@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Interactive Menu for Development Scripts
+# Interactive Menu for Development Scripts - TAZAGROUP ONLY
 # Each command runs in a separate terminal
 
 # Colors for better UX
@@ -57,73 +57,56 @@ clear
 # Main menu
 while true; do
     print_color $CYAN "╔════════════════════════════════════════════════════════════╗"
-    print_color $CYAN "║          🚀 DEVELOPMENT SCRIPTS MENU 🚀                   ║"
+    print_color $CYAN "║          🚀 TAZAGROUP DEVELOPMENT MENU 🚀                 ║"
     print_color $CYAN "╚════════════════════════════════════════════════════════════╝"
     echo ""
     
-    print_color $GREEN "📦 GENERAL DEVELOPMENT:"
+    print_color $GREEN "📦 DEVELOPMENT:"
     echo "  1)  dev                    - Run both backend + frontend"
-    echo "  2)  dev:backend            - Run backend only"
-    echo "  3)  dev:frontend           - Run frontend only"
-    echo ""
-    
-    print_color $BLUE "🌐 RAUSACH DOMAIN (Port 12000/12001):"
-    echo "  4)  dev:rausach            - Run Rausach (backend + frontend)"
-    echo "  5)  dev:rausach:backend    - Run Rausach backend only"
-    echo "  6)  dev:rausach:frontend   - Run Rausach frontend only"
-    echo ""
-    
-    print_color $PURPLE "🌐 TAZAGROUP DOMAIN (Port 13000/13001):"
-    echo "  7)  dev:tazagroup          - Run Tazagroup (backend + frontend)"
-    echo "  8)  dev:tazagroup:backend  - Run Tazagroup backend only"
-    echo "  9)  dev:tazagroup:frontend - Run Tazagroup frontend only"
+    echo "  2)  dev:backend            - Run backend only (Port 13001)"
+    echo "  3)  dev:frontend           - Run frontend only (Port 13000)"
     echo ""
     
     print_color $YELLOW "🏗️  BUILD & DEPLOYMENT:"
-    echo "  10) build                  - Build both backend + frontend"
-    echo "  11) build:backend          - Build backend only"
-    echo "  12) build:frontend         - Build frontend only"
+    echo "  4)  build                  - Build both backend + frontend"
+    echo "  5)  build:backend          - Build backend only"
+    echo "  6)  build:frontend         - Build frontend only"
     echo ""
     
     print_color $CYAN "🗄️  DATABASE OPERATIONS:"
-    echo "  13) db:studio              - Open Prisma Studio"
-    echo "  14) db:studio:rausach      - Open Prisma Studio (Rausach DB)"
-    echo "  15) db:studio:tazagroup    - Open Prisma Studio (Tazagroup DB)"
-    echo "  16) db:migrate             - Run database migration"
-    echo "  17) db:push                - Push schema to database"
-    echo "  18) db:seed                - Seed database"
-    echo "  19) db:backup              - Backup database"
-    echo "  20) db:restore             - Restore database"
+    echo "  7)  db:studio              - Open Prisma Studio"
+    echo "  8)  db:migrate             - Run database migration"
+    echo "  9)  db:push                - Push schema to database"
+    echo "  10) db:seed                - Seed database"
+    echo "  11) db:backup              - Backup database"
+    echo "  12) db:restore             - Restore database"
     echo ""
     
     print_color $RED "🐳 DOCKER OPERATIONS:"
-    echo "  21) docker:dev             - Start Docker services (Postgres, Redis, Minio)"
-    echo "  22) docker:devfull         - Start all Docker services"
-    echo "  23) docker:prod:rausach    - Deploy Rausach to Docker"
-    echo "  24) docker:prod:tazagroup  - Deploy Tazagroup to Docker"
-    echo "  25) docker:down            - Stop Docker services"
+    echo "  13) docker:up              - Start Docker services"
+    echo "  14) docker:down            - Stop Docker services"
+    echo "  15) docker:logs            - View Docker logs"
+    echo "  16) docker:build           - Build Docker images"
     echo ""
     
     print_color $GREEN "🔧 UTILITIES:"
-    echo "  26) setup                  - Install all dependencies"
-    echo "  27) clean                  - Clean node_modules and lockfiles"
-    echo "  28) lint                   - Run linters"
-    echo "  29) format                 - Format code with Prettier"
-    echo "  30) test                   - Run all tests"
+    echo "  17) setup                  - Install all dependencies"
+    echo "  18) clean                  - Clean node_modules and lockfiles"
+    echo "  19) lint                   - Run linters"
+    echo "  20) format                 - Format code with Prettier"
+    echo "  21) test                   - Run all tests"
     echo ""
     
     print_color $RED "⚡ KILL PORTS:"
-    echo "  31) kill:12000             - Kill process on port 12000 (Rausach frontend)"
-    echo "  32) kill:12001             - Kill process on port 12001 (Rausach backend)"
-    echo "  33) kill:13000             - Kill process on port 13000 (Tazagroup frontend)"
-    echo "  34) kill:13001             - Kill process on port 13001 (Tazagroup backend)"
-    echo "  35) kill:all               - Kill all dev ports (12000, 12001, 13000, 13001)"
+    echo "  22) kill:13000             - Kill port 13000 (frontend)"
+    echo "  23) kill:13001             - Kill port 13001 (backend)"
+    echo "  24) kill:all               - Kill all dev ports"
     echo ""
     
     print_color $YELLOW "  0)  Exit"
     echo ""
     
-    read -p "$(print_color $CYAN 'Select option (0-35): ')" choice
+    read -p "$(print_color $CYAN 'Select option (0-24): ')" choice
     
     case $choice in
         1)
@@ -139,136 +122,90 @@ while true; do
             run_in_terminal "Dev - Frontend" "cd $(pwd) && bun run dev:frontend"
             ;;
         4)
-            print_color $BLUE "🌐 Starting Rausach (backend + frontend)..."
-            run_in_terminal "Rausach - Full" "cd $(pwd) && bun run dev:rausach"
-            ;;
-        5)
-            print_color $BLUE "🌐 Starting Rausach backend..."
-            run_in_terminal "Rausach - Backend" "cd $(pwd) && bun run dev:rausach:backend"
-            ;;
-        6)
-            print_color $BLUE "🌐 Starting Rausach frontend..."
-            run_in_terminal "Rausach - Frontend" "cd $(pwd) && bun run dev:rausach:frontend"
-            ;;
-        7)
-            print_color $PURPLE "🌐 Starting Tazagroup (backend + frontend)..."
-            run_in_terminal "Tazagroup - Full" "cd $(pwd) && bun run dev:tazagroup"
-            ;;
-        8)
-            print_color $PURPLE "🌐 Starting Tazagroup backend..."
-            run_in_terminal "Tazagroup - Backend" "cd $(pwd) && bun run dev:tazagroup:backend"
-            ;;
-        9)
-            print_color $PURPLE "🌐 Starting Tazagroup frontend..."
-            run_in_terminal "Tazagroup - Frontend" "cd $(pwd) && bun run dev:tazagroup:frontend"
-            ;;
-        10)
             print_color $YELLOW "🏗️  Building project..."
             run_in_terminal "Build - Full" "cd $(pwd) && bun run build"
             ;;
-        11)
+        5)
             print_color $YELLOW "🏗️  Building backend..."
             run_in_terminal "Build - Backend" "cd $(pwd) && bun run build:backend"
             ;;
-        12)
+        6)
             print_color $YELLOW "🏗️  Building frontend..."
             run_in_terminal "Build - Frontend" "cd $(pwd) && bun run build:frontend"
             ;;
-        13)
+        7)
             print_color $CYAN "🗄️  Opening Prisma Studio..."
             run_in_terminal "Prisma Studio" "cd $(pwd) && bun run db:studio"
             ;;
-        14)
-            print_color $CYAN "🗄️  Opening Prisma Studio (Rausach)..."
-            run_in_terminal "Prisma Studio - Rausach" "cd $(pwd) && bun run db:studio:rausach"
-            ;;
-        15)
-            print_color $CYAN "🗄️  Opening Prisma Studio (Tazagroup)..."
-            run_in_terminal "Prisma Studio - Tazagroup" "cd $(pwd) && bun run db:studio:tazagroup"
-            ;;
-        16)
+        8)
             print_color $CYAN "🗄️  Running database migration..."
             run_in_terminal "DB Migrate" "cd $(pwd) && bun run db:migrate"
             ;;
-        17)
+        9)
             print_color $CYAN "🗄️  Pushing schema to database..."
             run_in_terminal "DB Push" "cd $(pwd) && bun run db:push"
             ;;
-        18)
+        10)
             print_color $CYAN "🗄️  Seeding database..."
             run_in_terminal "DB Seed" "cd $(pwd) && bun run db:seed"
             ;;
-        19)
+        11)
             print_color $CYAN "🗄️  Backing up database..."
             run_in_terminal "DB Backup" "cd $(pwd) && bun run db:backup"
             ;;
-        20)
+        12)
             print_color $CYAN "🗄️  Restoring database..."
             run_in_terminal "DB Restore" "cd $(pwd) && bun run db:restore"
             ;;
-        21)
-            print_color $RED "🐳 Starting Docker dev services..."
-            run_in_terminal "Docker Dev" "cd $(pwd) && bun run docker:dev"
+        13)
+            print_color $RED "🐳 Starting Docker services..."
+            run_in_terminal "Docker Up" "cd $(pwd) && docker-compose up"
             ;;
-        22)
-            print_color $RED "🐳 Starting all Docker services..."
-            run_in_terminal "Docker Full" "cd $(pwd) && bun run docker:devfull"
-            ;;
-        23)
-            print_color $RED "🐳 Deploying Rausach to Docker..."
-            run_in_terminal "Docker - Rausach" "cd $(pwd) && bun run docker:prod:rausach"
-            ;;
-        24)
-            print_color $RED "🐳 Deploying Tazagroup to Docker..."
-            run_in_terminal "Docker - Tazagroup" "cd $(pwd) && bun run docker:prod:tazagroup"
-            ;;
-        25)
+        14)
             print_color $RED "🐳 Stopping Docker services..."
-            run_in_terminal "Docker Down" "cd $(pwd) && bun run docker:down"
+            run_in_terminal "Docker Down" "cd $(pwd) && docker-compose down"
             ;;
-        26)
+        15)
+            print_color $RED "🐳 Docker logs..."
+            run_in_terminal "Docker Logs" "cd $(pwd) && docker-compose logs -f"
+            ;;
+        16)
+            print_color $RED "🐳 Building Docker images..."
+            run_in_terminal "Docker Build" "cd $(pwd) && docker-compose build"
+            ;;
+        17)
             print_color $GREEN "🔧 Installing dependencies..."
             run_in_terminal "Setup" "cd $(pwd) && bun run setup"
             ;;
-        27)
+        18)
             print_color $GREEN "🔧 Cleaning project..."
             run_in_terminal "Clean" "cd $(pwd) && bun run clean"
             ;;
-        28)
+        19)
             print_color $GREEN "🔧 Running linters..."
             run_in_terminal "Lint" "cd $(pwd) && bun run lint"
             ;;
-        29)
+        20)
             print_color $GREEN "🔧 Formatting code..."
             run_in_terminal "Format" "cd $(pwd) && bun run format"
             ;;
-        30)
+        21)
             print_color $GREEN "🔧 Running tests..."
             run_in_terminal "Test" "cd $(pwd) && bun run test"
             ;;
-        31)
-            print_color $RED "⚡ Killing process on port 12000..."
-            $(pwd)/scripts/kill-ports.sh 12000
-            sleep 1
-            ;;
-        32)
-            print_color $RED "⚡ Killing process on port 12001..."
-            $(pwd)/scripts/kill-ports.sh 12001
-            sleep 1
-            ;;
-        33)
+        22)
             print_color $RED "⚡ Killing process on port 13000..."
             $(pwd)/scripts/kill-ports.sh 13000
             sleep 1
             ;;
-        34)
+        23)
             print_color $RED "⚡ Killing process on port 13001..."
             $(pwd)/scripts/kill-ports.sh 13001
             sleep 1
             ;;
-        35)
-            print_color $RED "⚡ Killing all dev ports and processes..."
-            $(pwd)/scripts/kill-ports.sh
+        24)
+            print_color $RED "⚡ Killing all dev ports..."
+            $(pwd)/scripts/kill-ports.sh 13000 13001
             sleep 1
             ;;
         0)
