@@ -46,12 +46,16 @@ while true; do
     echo "  7)  docker:up              - Start Docker services"
     echo "  8)  docker:down            - Stop Docker services"
     echo "  9)  docker:logs            - View Docker logs"
+    echo "  17) docker:build           - Build without cache"
+    echo "  18) docker:rebuild         - Down + Build + Up"
+    echo "  19) docker:fresh           - Clean volumes + Build + Up"
     echo ""
     
     print_color $GREEN "🔧 UTILITIES:"
     echo "  10) lint                   - Run linters"
     echo "  11) format                 - Format code"
     echo "  12) test                   - Run tests"
+    echo "  20) clean:build            - Clean all build artifacts (.next, dist)"
     echo ""
     
     print_color $RED "⚡ KILL PORTS:"
@@ -62,6 +66,7 @@ while true; do
     
     print_color $PURPLE "🚀 DEPLOYMENT:"
     echo "  16) deploy:complete        - Full deployment (local build + server)"
+    echo "  21) deploy:quick           - Quick deploy to server (no local build)"
     echo ""
     
     print_color $YELLOW "  0)  Exit"
@@ -148,6 +153,36 @@ while true; do
             print_color $PURPLE "🚀 Starting complete deployment..."
             print_color $YELLOW "This will build locally and deploy to server"
             $(pwd)/scripts/deploy-complete.sh
+            ;;
+        17)
+            print_color $RED "🐳 Building Docker images (no cache)..."
+            bun run docker:build
+            print_color $GREEN "✅ Docker build complete!"
+            sleep 2
+            ;;
+        18)
+            print_color $RED "🐳 Full rebuild (down + build + up)..."
+            bun run docker:rebuild
+            print_color $GREEN "✅ Docker rebuild complete!"
+            sleep 2
+            ;;
+        19)
+            print_color $RED "🐳 Fresh start (clean volumes + build + up)..."
+            print_color $YELLOW "⚠️  This will delete all volumes and data!"
+            bun run docker:fresh
+            print_color $GREEN "✅ Fresh Docker start complete!"
+            sleep 2
+            ;;
+        20)
+            print_color $GREEN "🔧 Cleaning build artifacts..."
+            bun run clean:build
+            print_color $GREEN "✅ Build artifacts cleaned!"
+            sleep 2
+            ;;
+        21)
+            print_color $PURPLE "🚀 Quick deploy to server..."
+            print_color $YELLOW "Building and deploying directly on server"
+            bun run deploy:quick
             ;;
         0)
             print_color $YELLOW "👋 Goodbye!"

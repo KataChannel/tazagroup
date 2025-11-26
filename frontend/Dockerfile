@@ -1,14 +1,34 @@
 # ============================================================================
-# OPTIMIZED Frontend Dockerfile - Copy pre-built files only
-# Build locally: cd frontend && bun run build
-# Then: docker compose build frontend --no-cache
-#
-# Benefits:
-#   • ~80% smaller image (only runtime files, no dependencies)
-#   • ~5x faster build time (no installation in Docker)
-#   • Production ready with minimal dependencies
+# TAZAGROUP Frontend Dockerfile - Fresh Build (No Cache)
+# Builds directly to .next with latest code changes every time
 # ============================================================================
 
+# ===== STAGE 1: DEPENDENCIES =====
+FROM node:22-alpine AS deps
+WORKDIR /app
+
+# Install dependencies
+COPY frontend/package.json frontend/package-lock.json* frontend/bun.lockb* ./
+RUN npm ci --prefer-offline --no-audit
+
+# ===== STAGE 2: BUILDER =====
+FROM node:22-alpine AS builder
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all source code
+COPY frontend/ ./
+
+# Set build environment variables
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build the application (generates .next directory with latest code)
+RUN npm run build
+
+# ===== STAGE 3: PRODUCTION RUNTIME =====
 FROM node:22-alpine AS runtime
 
 # Install minimal runtime dependencies
@@ -25,31 +45,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Copy pre-built application files from local build
-# These files must be built locally before Docker build:
-#   $ cd frontend && bun run build
-#
-# Expected local paths:
-#   - frontend/.next/standalone/     (compiled app)
-#   - frontend/.next/static/         (static assets)
-#   - frontend/public/               (public files)
-#   - frontend/node_modules/         (dependencies)
-
-# IMPORTANT: .next/standalone IS the complete app that was built
-# It contains: frontend/ subfolder + node_modules + package.json at root
-# We copy everything from .next/standalone root directly to container root
-
-# Copy entire .next/standalone as /app root (already contains everything)
-# .next/standalone includes: frontend/ + node_modules/ + package.json + server.js
-# No need to copy node_modules separately - standalone build has optimized production deps
-COPY --chown=nextjs:nodejs frontend/.next/standalone/ ./
-
-# Copy static files to the correct location (frontend/.next/static/)
-# Server runs from /app/frontend/, so it looks for static files at /app/frontend/.next/static/
-COPY --chown=nextjs:nodejs frontend/.next/static/ ./frontend/.next/static/
-
-# Copy public assets (frontend/public)
-COPY --chown=nextjs:nodejs frontend/public/ ./frontend/public/
+# Copy built application from builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/ ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static/ ./frontend/.next/static/
+COPY --from=builder --chown=nextjs:nodejs /app/public/ ./frontend/public/
 
 # Switch to non-root user for security
 USER nextjs
@@ -62,7 +61,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:3000/ || exit 1
 
 # Start the application
-# .next/standalone was built with server.js at: frontend/server.js
-# After COPY to root, it's at: /app/frontend/server.js
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "frontend/server.js"]

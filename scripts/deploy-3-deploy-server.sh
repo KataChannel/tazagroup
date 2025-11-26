@@ -17,9 +17,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-SERVER_USER="${SERVER_USER:-it}"
+SERVER_USER="${SERVER_USER:-root}"
 SERVER_HOST="${SERVER_HOST:-116.118.49.243}"
-SERVER_PATH="${SERVER_PATH:-/home/it/tazagroup-deploy}"
+SERVER_PATH="${SERVER_PATH:-/root/tazagroup-deploy}"
 RUN_LOCALLY="${1:-false}"  # Set to "local" to execute commands on server from local machine
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"

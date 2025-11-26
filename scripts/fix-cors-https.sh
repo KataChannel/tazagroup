@@ -1,3 +1,30 @@
+#!/bin/bash
+
+# ============================================================================
+# Fix CORS Headers for HTTPS on appapi.tazagroup.vn
+# ============================================================================
+
+set -e
+
+SERVER_USER="${SERVER_USER:-root}"
+SERVER_HOST="${SERVER_HOST:-116.118.49.243}"
+
+echo "🔧 Adding CORS Headers to HTTPS Configuration"
+echo "=============================================="
+echo ""
+
+ssh "${SERVER_USER}@${SERVER_HOST}" << 'ENDSSH'
+    set -e
+    
+    NGINX_CONF="/etc/nginx/sites-available/appapi.tazagroup.vn"
+    
+    echo "📝 Backing up current configuration..."
+    sudo cp "$NGINX_CONF" "${NGINX_CONF}.backup-$(date +%Y%m%d-%H%M%S)"
+    
+    echo "✏️  Adding CORS headers to HTTPS location block..."
+    
+    # Create temporary file with updated configuration
+    sudo tee "$NGINX_CONF" > /dev/null << 'EOF'
 # Tazagroup Backend API - appapi.tazagroup.vn
 # Port 13001 (backend tazagroup)
 
@@ -13,7 +40,6 @@ server {
     return 404;
 }
 
-# HTTPS configuration (managed by Certbot)
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
@@ -75,3 +101,21 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 }
+EOF
+
+    echo "🧪 Testing nginx configuration..."
+    sudo nginx -t
+    
+    echo "🔄 Reloading nginx..."
+    sudo systemctl reload nginx
+    
+    echo ""
+    echo "✅ CORS headers added successfully to HTTPS configuration!"
+    
+ENDSSH
+
+echo ""
+echo "✅ Configuration Updated!"
+echo ""
+echo "🧪 Test CORS:"
+echo "  curl -X OPTIONS https://appapi.tazagroup.vn/graphql -H 'Origin: https://app.tazagroup.vn' -I"

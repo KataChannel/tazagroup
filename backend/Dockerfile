@@ -18,13 +18,13 @@ WORKDIR /app
 COPY backend/package.json backend/package-lock.json* backend/bun.lockb* ./
 
 # Install ALL dependencies (including devDependencies for Prisma generation)
-RUN bun install --frozen-lockfile
+# Force fresh install without cache
+RUN bun install --frozen-lockfile --force
 
-# Copy source code
-COPY backend/prisma ./prisma
-COPY backend/dist ./dist
+# Copy all source code (including latest changes)
+COPY backend/ ./
 
-# Generate Prisma client
+# Generate Prisma client with latest schema
 RUN bun prisma generate
 
 # ===== STAGE 2: PRODUCTION =====

@@ -16,23 +16,25 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-SERVER_USER="${SERVER_USER:-it}"
+SERVER_USER="${SERVER_USER:-root}"
 SERVER_HOST="${SERVER_HOST:-116.118.49.243}"
-SERVER_PATH="${SERVER_PATH:-/home/it/tazagroup-deploy}"
+SERVER_PATH="${SERVER_PATH:-/root/tazagroup-deploy}"
 TEMP_DIR="./docker-images-export"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║     📦 TAZAGROUP - EXPORT & COPY IMAGES TO SERVER        ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Load image tags from previous build
-if [ ! -f ".docker-image-tags" ]; then
-    echo -e "${RED}❌ .docker-image-tags file not found. Please run deploy-1-build-local.sh first.${NC}"
+# Get image names from docker-compose
+BACKEND_IMAGE=$(docker compose config | grep -A 5 "backend:" | grep "image:" | awk '{print $2}')
+FRONTEND_IMAGE=$(docker compose config | grep -A 5 "frontend:" | grep "image:" | awk '{print $2}')
+
+if [ -z "$BACKEND_IMAGE" ] || [ -z "$FRONTEND_IMAGE" ]; then
+    echo -e "${RED}❌ Could not determine image names from docker-compose.yml${NC}"
     exit 1
 fi
-
-source .docker-image-tags
 
 echo -e "${GREEN}📦 Images to Export:${NC}"
 echo "  Backend:  ${BACKEND_IMAGE}"
@@ -54,9 +56,9 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 echo -e "${YELLOW}📦 STEP 1: Exporting Backend Image...${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-BACKEND_TAR="${TEMP_DIR}/backend-${IMAGE_TAG}.tar"
+BACKEND_TAR="${TEMP_DIR}/backend-${TIMESTAMP}.tar"
 
-echo -e "${BLUE}💾 Saving image to: ${BACKEND_TAR}${NC}"
+echo -e "${BLUE}💾 Saving image to: ${BACKEND_TAR}.gz${NC}"
 docker save "${BACKEND_IMAGE}" | gzip > "${BACKEND_TAR}.gz"
 
 if [ $? -eq 0 ]; then
@@ -75,9 +77,9 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 echo -e "${YELLOW}📦 STEP 2: Exporting Frontend Image...${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-FRONTEND_TAR="${TEMP_DIR}/frontend-${IMAGE_TAG}.tar"
+FRONTEND_TAR="${TEMP_DIR}/frontend-${TIMESTAMP}.tar"
 
-echo -e "${BLUE}💾 Saving image to: ${FRONTEND_TAR}${NC}"
+echo -e "${BLUE}💾 Saving image to: ${FRONTEND_TAR}.gz${NC}"
 docker save "${FRONTEND_IMAGE}" | gzip > "${FRONTEND_TAR}.gz"
 
 if [ $? -eq 0 ]; then
@@ -99,26 +101,25 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 # Copy necessary files to temp directory
 echo -e "${BLUE}📝 Copying deployment files...${NC}"
 cp docker-compose.yml "${TEMP_DIR}/"
-cp .env "${TEMP_DIR}/"
-cp .docker-image-tags "${TEMP_DIR}/"
+if [ -f ".env" ]; then
+    cp .env "${TEMP_DIR}/"
+fi
 
 # Create deployment info file
 cat > "${TEMP_DIR}/deployment-info.txt" << EOF
 TAZAGROUP Deployment Package
 ============================
 Generated: $(date)
-Version: ${VERSION}
-Image Tag: ${IMAGE_TAG}
+Timestamp: ${TIMESTAMP}
 
 Images:
   - Backend:  ${BACKEND_IMAGE} (${BACKEND_SIZE})
   - Frontend: ${FRONTEND_IMAGE} (${FRONTEND_SIZE})
 
 Deployment:
-  1. Load images: docker load -i backend-${IMAGE_TAG}.tar.gz
-  2. Load images: docker load -i frontend-${IMAGE_TAG}.tar.gz
-  3. Update docker-compose.yml with image tags
-  4. Run: docker-compose up -d
+  1. Load images: gunzip -c backend-${TIMESTAMP}.tar.gz | docker load
+  2. Load images: gunzip -c frontend-${TIMESTAMP}.tar.gz | docker load
+  3. Run: docker compose up -d
 EOF
 
 echo -e "${GREEN}✅ Deployment package created${NC}"

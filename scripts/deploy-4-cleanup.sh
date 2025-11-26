@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 MODE="${1:-local}"  # local or server
-SERVER_USER="${SERVER_USER:-it}"
+SERVER_USER="${SERVER_USER:-root}"
 SERVER_HOST="${SERVER_HOST:-116.118.49.243}"
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"

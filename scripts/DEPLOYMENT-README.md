@@ -138,9 +138,9 @@ cd ~/tazagroup-deploy
 
 ```bash
 # Server configuration
-export SERVER_USER="it"
+export SERVER_USER="root"
 export SERVER_HOST="116.118.49.243"
-export SERVER_PATH="/home/it/tazagroup-deploy"
+export SERVER_PATH="/root/tazagroup-deploy"
 ```
 
 ### Docker Images
