@@ -123,6 +123,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 13001
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:12003/tazagroupcore
       DOCKER_REDIS_HOST: 127.0.0.1
       DOCKER_REDIS_PORT: 12004
       DOCKER_MINIO_ENDPOINT: 127.0.0.1
