@@ -14,14 +14,12 @@ services:
       dockerfile: ./backend/Dockerfile
     container_name: tazagroup-backend
     restart: unless-stopped
+    network_mode: host
     env_file:
       - .env
     environment:
       NODE_ENV: production
-      PORT: 4000
-    ports:
-      - "13001:4000"
-    network_mode: host
+      PORT: 13001
     deploy:
       resources:
         limits:
@@ -38,18 +36,16 @@ services:
       dockerfile: ./frontend/Dockerfile.tazagroup
     container_name: tazagroup-frontend
     restart: unless-stopped
+    network_mode: host
     environment:
       NODE_ENV: production
-      PORT: 3000
+      PORT: 13000
       NEXT_OTEL_ENABLED: "false"
       NEXT_TELEMETRY_DISABLED: "1"
       NEXT_PUBLIC_APP_URL: http://116.118.49.243:13000
       NEXT_PUBLIC_GRAPHQL_ENDPOINT: https://appapi.tazagroup.vn/graphql
-    ports:
-      - "13000:3000"
     depends_on:
       - backend
-    network_mode: host
     deploy:
       resources:
         limits:
