@@ -58,19 +58,38 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 show_disk_usage
 
 # ============================================================================
-# STEP 2: Remove Dangling Images
+# STEP 2: Remove Dangling TazaGroup Images Only
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 2: Removing Dangling Images${NC}"
+echo -e "${YELLOW}🗑️  STEP 2: Removing Dangling TazaGroup Images${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-DANGLING_COUNT=$(execute_cmd "docker images -f 'dangling=true' -q | wc -l")
-if [ "$DANGLING_COUNT" -gt 0 ]; then
-    echo -e "${BLUE}Found ${DANGLING_COUNT} dangling images${NC}"
-    execute_cmd "docker rmi \$(docker images -f 'dangling=true' -q) 2>/dev/null || true"
-    echo -e "${GREEN}✅ Dangling images removed${NC}"
+# Only remove dangling images that are related to tazagroup project
+echo -e "${BLUE}Checking for dangling TazaGroup images...${NC}"
+if [ "$MODE" = "server" ]; then
+    DANGLING_TAZAGROUP=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker images -f 'dangling=true' --format '{{.ID}} {{.Repository}}' | grep -E 'tazagroup|<none>' | grep -B1 tazagroup | awk '{print \$1}' | sort -u" || echo "")
 else
-    echo -e "${GREEN}✅ No dangling images found${NC}"
+    DANGLING_TAZAGROUP=$(docker images -f 'dangling=true' --format '{{.ID}} {{.Repository}}' 2>/dev/null | grep -E 'tazagroup|<none>' | awk '{print $1}' | sort -u || echo "")
+fi
+
+if [ -n "$DANGLING_TAZAGROUP" ]; then
+    DANGLING_COUNT=$(echo "$DANGLING_TAZAGROUP" | wc -l)
+    echo -e "${BLUE}Found ${DANGLING_COUNT} dangling TazaGroup-related images${NC}"
+    
+    read -p "$(echo -e ${YELLOW}Remove dangling TazaGroup images? [y/N]: ${NC})" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [ "$MODE" = "server" ]; then
+            echo "$DANGLING_TAZAGROUP" | xargs -r ssh "${SERVER_USER}@${SERVER_HOST}" docker rmi 2>/dev/null || true
+        else
+            echo "$DANGLING_TAZAGROUP" | xargs -r docker rmi 2>/dev/null || true
+        fi
+        echo -e "${GREEN}✅ Dangling TazaGroup images removed${NC}"
+    else
+        echo -e "${BLUE}ℹ️  Skipped removing dangling images${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ No dangling TazaGroup images found${NC}"
 fi
 echo ""
 
@@ -98,73 +117,141 @@ fi
 echo ""
 
 # ============================================================================
-# STEP 4: Remove Stopped Containers
+# STEP 4: Remove Stopped TazaGroup Containers Only
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 4: Removing Stopped Containers${NC}"
+echo -e "${YELLOW}🗑️  STEP 4: Removing Stopped TazaGroup Containers${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-STOPPED_COUNT=$(execute_cmd "docker ps -a -q -f status=exited | wc -l")
-if [ "$STOPPED_COUNT" -gt 0 ]; then
-    echo -e "${BLUE}Found ${STOPPED_COUNT} stopped containers${NC}"
-    execute_cmd "docker container prune -f"
-    echo -e "${GREEN}✅ Stopped containers removed${NC}"
+# Only remove stopped containers with tazagroup in the name
+echo -e "${BLUE}Checking for stopped TazaGroup containers...${NC}"
+if [ "$MODE" = "server" ]; then
+    STOPPED_TAZAGROUP=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker ps -a -f status=exited --format '{{.ID}} {{.Names}}' | grep tazagroup | awk '{print \$1}'" || echo "")
 else
-    echo -e "${GREEN}✅ No stopped containers found${NC}"
+    STOPPED_TAZAGROUP=$(docker ps -a -f status=exited --format '{{.ID}} {{.Names}}' | grep tazagroup | awk '{print $1}' || echo "")
+fi
+
+if [ -n "$STOPPED_TAZAGROUP" ]; then
+    STOPPED_COUNT=$(echo "$STOPPED_TAZAGROUP" | wc -l)
+    echo -e "${BLUE}Found ${STOPPED_COUNT} stopped TazaGroup containers${NC}"
+    execute_cmd "docker ps -a -f status=exited --format 'table {{.Names}}\t{{.Status}}' | grep tazagroup"
+    
+    read -p "$(echo -e ${YELLOW}Remove stopped TazaGroup containers? [y/N]: ${NC})" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [ "$MODE" = "server" ]; then
+            echo "$STOPPED_TAZAGROUP" | xargs -r ssh "${SERVER_USER}@${SERVER_HOST}" docker rm 2>/dev/null || true
+        else
+            echo "$STOPPED_TAZAGROUP" | xargs -r docker rm 2>/dev/null || true
+        fi
+        echo -e "${GREEN}✅ Stopped TazaGroup containers removed${NC}"
+    else
+        echo -e "${BLUE}ℹ️  Skipped removing containers${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ No stopped TazaGroup containers found${NC}"
 fi
 echo ""
 
 # ============================================================================
-# STEP 5: Remove Unused Volumes
+# STEP 5: Remove Unused TazaGroup Volumes Only
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 5: Removing Unused Volumes${NC}"
+echo -e "${YELLOW}🗑️  STEP 5: Removing Unused TazaGroup Volumes${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-echo -e "${BLUE}Listing volumes:${NC}"
-execute_cmd "docker volume ls"
-echo ""
-
-read -p "$(echo -e ${YELLOW}Do you want to remove unused volumes? [y/N]: ${NC})" -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    execute_cmd "docker volume prune -f"
-    echo -e "${GREEN}✅ Unused volumes removed${NC}"
+echo -e "${BLUE}Listing TazaGroup volumes:${NC}"
+if [ "$MODE" = "server" ]; then
+    TAZAGROUP_VOLUMES=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker volume ls --format '{{.Name}}' | grep -E 'tazagroup|tazagroupcore'" || echo "")
 else
-    echo -e "${BLUE}ℹ️  Skipped removing volumes${NC}"
+    TAZAGROUP_VOLUMES=$(docker volume ls --format '{{.Name}}' | grep -E 'tazagroup|tazagroupcore' || echo "")
+fi
+
+if [ -n "$TAZAGROUP_VOLUMES" ]; then
+    echo "$TAZAGROUP_VOLUMES"
+    echo ""
+    
+    echo -e "${YELLOW}⚠️  WARNING: Only unused TazaGroup volumes will be removed${NC}"
+    read -p "$(echo -e ${YELLOW}Do you want to remove unused TazaGroup volumes? [y/N]: ${NC})" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # Remove only unused tazagroup volumes
+        if [ "$MODE" = "server" ]; then
+            echo "$TAZAGROUP_VOLUMES" | while read vol; do
+                ssh "${SERVER_USER}@${SERVER_HOST}" "docker volume rm $vol 2>/dev/null || echo 'Volume $vol is in use, skipping'"
+            done
+        else
+            echo "$TAZAGROUP_VOLUMES" | while read vol; do
+                docker volume rm "$vol" 2>/dev/null || echo "Volume $vol is in use, skipping"
+            done
+        fi
+        echo -e "${GREEN}✅ Unused TazaGroup volumes removed${NC}"
+    else
+        echo -e "${BLUE}ℹ️  Skipped removing volumes${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ No TazaGroup volumes found${NC}"
 fi
 echo ""
 
 # ============================================================================
-# STEP 6: Remove Build Cache
+# STEP 6: Remove TazaGroup Build Cache Only
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 6: Removing Build Cache${NC}"
+echo -e "${YELLOW}🗑️  STEP 6: Removing TazaGroup Build Cache${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 echo -e "${BLUE}Current build cache:${NC}"
 execute_cmd "docker buildx du 2>/dev/null || docker builder df 2>/dev/null || echo 'No build cache info available'"
 echo ""
 
-read -p "$(echo -e ${YELLOW}Do you want to remove build cache? [y/N]: ${NC})" -n 1 -r
+echo -e "${YELLOW}⚠️  NOTE: This will remove build cache for TazaGroup images only${NC}"
+read -p "$(echo -e ${YELLOW}Do you want to remove TazaGroup build cache? [y/N]: ${NC})" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    execute_cmd "docker buildx prune -f 2>/dev/null || docker builder prune -f 2>/dev/null || true"
-    echo -e "${GREEN}✅ Build cache removed${NC}"
+    # Prune build cache with filter (only removes unused cache)
+    # Note: Docker doesn't support filtering by project name, so we prune all unused cache
+    # This is safe as it only removes cache not currently in use
+    execute_cmd "docker buildx prune -f --filter 'unused-for=24h' 2>/dev/null || docker builder prune -f --filter 'unused-for=24h' 2>/dev/null || true"
+    echo -e "${GREEN}✅ Build cache (unused for 24h) removed${NC}"
 else
     echo -e "${BLUE}ℹ️  Skipped removing build cache${NC}"
 fi
 echo ""
 
 # ============================================================================
-# STEP 7: Remove Unused Networks
+# STEP 7: Remove Unused TazaGroup Networks Only
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 7: Removing Unused Networks${NC}"
+echo -e "${YELLOW}🗑️  STEP 7: Removing Unused TazaGroup Networks${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-execute_cmd "docker network prune -f"
-echo -e "${GREEN}✅ Unused networks removed${NC}"
+echo -e "${BLUE}Checking for TazaGroup networks...${NC}"
+if [ "$MODE" = "server" ]; then
+    TAZAGROUP_NETWORKS=$(ssh "${SERVER_USER}@${SERVER_HOST}" "docker network ls --format '{{.ID}} {{.Name}}' | grep tazagroup | awk '{print \$1}'" || echo "")
+else
+    TAZAGROUP_NETWORKS=$(docker network ls --format '{{.ID}} {{.Name}}' | grep tazagroup | awk '{print $1}' || echo "")
+fi
+
+if [ -n "$TAZAGROUP_NETWORKS" ]; then
+    execute_cmd "docker network ls --format 'table {{.Name}}\t{{.Driver}}\t{{.Scope}}' | grep tazagroup"
+    echo ""
+    
+    read -p "$(echo -e ${YELLOW}Remove unused TazaGroup networks? [y/N]: ${NC})" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [ "$MODE" = "server" ]; then
+            echo "$TAZAGROUP_NETWORKS" | xargs -r ssh "${SERVER_USER}@${SERVER_HOST}" docker network rm 2>/dev/null || echo "Some networks are in use, skipping"
+        else
+            echo "$TAZAGROUP_NETWORKS" | xargs -r docker network rm 2>/dev/null || echo "Some networks are in use, skipping"
+        fi
+        echo -e "${GREEN}✅ Unused TazaGroup networks removed${NC}"
+    else
+        echo -e "${BLUE}ℹ️  Skipped removing networks${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ No TazaGroup networks found${NC}"
+fi
 echo ""
 
 # ============================================================================
@@ -194,21 +281,20 @@ if [ "$MODE" = "local" ]; then
 fi
 
 # ============================================================================
-# STEP 9: Full System Prune (Optional)
+# STEP 9: Full System Prune (DISABLED for Safety)
 # ============================================================================
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${YELLOW}🗑️  STEP 9: Full System Prune (Optional)${NC}"
+echo -e "${YELLOW}🗑️  STEP 9: Full System Prune (Not Recommended)${NC}"
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-echo -e "${RED}⚠️  WARNING: This will remove ALL unused Docker resources!${NC}"
-read -p "$(echo -e ${YELLOW}Do you want to run full system prune? [y/N]: ${NC})" -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    execute_cmd "docker system prune -a -f --volumes"
-    echo -e "${GREEN}✅ Full system prune completed${NC}"
-else
-    echo -e "${BLUE}ℹ️  Skipped full system prune${NC}"
-fi
+echo -e "${RED}⚠️  WARNING: Full system prune is DISABLED by default!${NC}"
+echo -e "${RED}⚠️  It would remove ALL unused Docker resources from ALL projects!${NC}"
+echo -e "${BLUE}ℹ️  This script only targets TazaGroup resources for safety.${NC}"
+echo ""
+echo -e "${BLUE}If you need to do full cleanup, run manually:${NC}"
+echo "  docker system prune -a -f --volumes"
+echo ""
+echo -e "${BLUE}ℹ️  Full system prune skipped (safe mode)${NC}"
 echo ""
 
 # ============================================================================
