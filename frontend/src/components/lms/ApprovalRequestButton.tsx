@@ -36,6 +36,7 @@ export function ApprovalRequestButton({
       toast({
         title: 'Thành công',
         description: `Đã gửi yêu cầu phê duyệt ${type === 'course' ? 'khóa học' : 'tài liệu'} "${title}" đến admin`,
+        type: 'success',
         variant: 'default',
       });
       setIsRequesting(true);
@@ -45,6 +46,7 @@ export function ApprovalRequestButton({
       toast({
         title: 'Lỗi',
         description: error.message || 'Không thể gửi yêu cầu phê duyệt',
+        type: 'error',
         variant: 'destructive',
       });
     },
@@ -55,6 +57,7 @@ export function ApprovalRequestButton({
       toast({
         title: 'Cảnh báo',
         description: `Chỉ có thể gửi yêu cầu phê duyệt cho ${type === 'course' ? 'khóa học' : 'tài liệu'} ở trạng thái nháp`,
+        type: 'warning',
         variant: 'default',
       });
       return;
@@ -64,6 +67,7 @@ export function ApprovalRequestButton({
       toast({
         title: 'Thông báo',
         description: 'Yêu cầu phê duyệt đã được gửi trước đó',
+        type: 'info',
         variant: 'default',
       });
       return;

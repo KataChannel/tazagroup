@@ -428,8 +428,7 @@ export function AdvancedTable<T extends RowData>({
           {visibleColumns.map((column, index) => {
             const sortConfig = getSortConfig(column.field);
             const baseWidth = columnWidths[String(column.field)] || column.width || 150;
-            const isFirstColumn = index === 0 && !enableRowSelection;
-            const isPinnedLeft = column.pinned === 'left' || isFirstColumn;
+            const isPinnedLeft = column.pinned === 'left';
             const isPinnedRight = column.pinned === 'right';
             const isLastColumn = index === visibleColumns.length - 1;
             
@@ -505,8 +504,7 @@ export function AdvancedTable<T extends RowData>({
                 const isEditing = editingCell?.rowId === row.id && editingCell?.field === column.field;
                 const isSelected = selectedRows.has(row.id);
                 const baseWidth = columnWidths[String(column.field)] || column.width || 150;
-                const isFirstColumn = colIndex === 0 && !enableRowSelection;
-                const isPinnedLeft = column.pinned === 'left' || isFirstColumn;
+                const isPinnedLeft = column.pinned === 'left';
                 const isPinnedRight = column.pinned === 'right';
                 const isLastColumn = colIndex === visibleColumns.length - 1;
 

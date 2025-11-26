@@ -93,11 +93,37 @@ export default function AdminBlogPage() {
     };
   }, [blogs, total]);
 
+  // Convert OneDrive share link to direct download link
+  const convertOneDriveLink = (url: string): string => {
+    if (!url.includes('1drv.ms') && !url.includes('onedrive.live.com')) {
+      return url;
+    }
+    
+    // OneDrive share links cannot be directly embedded
+    // Return empty string to show placeholder instead
+    console.warn('OneDrive links cannot be embedded directly:', url);
+    return '';
+  };
+
   // Get image URL
   const getImageUrl = (blog: BlogRow) => {
-    const url = blog.featuredImage || blog.thumbnailUrl;
+    let url = blog.featuredImage || blog.thumbnailUrl;
     if (!url) return '';
-    if (url.startsWith('http')) return url;
+    
+    // Fix malformed URLs that have nested protocols
+    // e.g., "https://domain.com/path/https:/other-domain.com/image.png"
+    const httpsMatch = url.match(/https?:\/\/[^/]+\/.*?(https?:\/\/.+)$/);
+    if (httpsMatch) {
+      url = httpsMatch[1].replace(/^https:\/([^/])/, 'https://$1'); // Fix missing slash after https:
+      console.log('Fixed malformed URL:', url);
+    }
+    
+    // Handle external URLs
+    if (url.startsWith('http')) {
+      return convertOneDriveLink(url);
+    }
+    
+    // Handle relative URLs
     const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:12001';
     return `${apiBase}${url.startsWith('/') ? '' : '/'}${url}`;
   };
@@ -118,25 +144,36 @@ export default function AdminBlogPage() {
       pinned: 'left',
       sortable: false,
       filterable: false,
-      cellRenderer: ({ data }) => (
-        <div className="flex items-center justify-center p-1">
-          {getImageUrl(data) ? (
-            <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden border">
-              <Image
-                src={getImageUrl(data)}
-                alt={data.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 48px, 64px"
-              />
-            </div>
-          ) : (
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md bg-gray-100 flex items-center justify-center">
-              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-            </div>
-          )}
-        </div>
-      ),
+      cellRenderer: ({ data }) => {
+        const [imageError, setImageError] = React.useState(false);
+        const imageUrl = getImageUrl(data);
+        const originalUrl = data.featuredImage || data.thumbnailUrl;
+        const isOneDriveLink = originalUrl?.includes('1drv.ms') || originalUrl?.includes('onedrive.live.com');
+        
+        return (
+          <div className="flex items-center justify-center p-1">
+            {imageUrl && !imageError ? (
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden border">
+                <Image
+                  src={imageUrl}
+                  alt={data.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 48px, 64px"
+                  onError={() => setImageError(true)}
+                />
+              </div>
+            ) : (
+              <div 
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-md bg-gray-100 flex items-center justify-center"
+                title={isOneDriveLink ? 'Link OneDrive không thể hiển thị trực tiếp. Vui lòng upload ảnh lên server.' : 'Không có ảnh'}
+              >
+                <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+              </div>
+            )}
+          </div>
+        );
+      },
     },
     {
       field: 'title',

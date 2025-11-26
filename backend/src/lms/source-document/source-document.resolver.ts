@@ -146,6 +146,12 @@ export class SourceDocumentResolver {
 
   // ============== Approval Workflow ==============
 
+  @Query(() => Int)
+  @UseGuards(JwtAuthGuard)
+  async getPendingApprovalsCount() {
+    return this.sourceDocumentService.countPendingApprovals();
+  }
+
   @Mutation(() => SourceDocument)
   @UseGuards(JwtAuthGuard)
   async requestDocumentApproval(

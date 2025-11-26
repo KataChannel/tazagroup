@@ -82,11 +82,31 @@ let AuthService = AuthService_1 = class AuthService {
         return user;
     }
     async generateTokens(user) {
+        const userRoles = await this.prisma.userRoleAssignment.findMany({
+            where: {
+                userId: user.id,
+                effect: 'allow',
+            },
+            include: {
+                role: {
+                    select: {
+                        id: true,
+                        name: true,
+                        displayName: true,
+                    },
+                },
+            },
+        });
         const payload = {
             sub: user.id,
             email: user.email,
             username: user.username,
-            roleType: user.roleType
+            roleType: user.roleType,
+            roles: userRoles.map(assignment => ({
+                id: assignment.role.id,
+                name: assignment.role.name,
+                displayName: assignment.role.displayName,
+            })),
         };
         const accessToken = this.jwtService.sign(payload, {
             expiresIn: '24h',
@@ -536,14 +556,14 @@ let AuthService = AuthService_1 = class AuthService {
             .sort(() => Math.random() - 0.5)
             .join('');
     }
-    async adminResetPassword(userId, adminId) {
+    async adminResetPassword(userId, adminId, customPassword) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
         });
         if (!user) {
             throw new common_1.UnauthorizedException('Người dùng không tồn tại');
         }
-        const newPassword = this.generateRandomPassword();
+        const newPassword = customPassword || this.generateRandomPassword();
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         const updatedUser = await this.prisma.user.update({
             where: { id: userId },

@@ -85,6 +85,7 @@ input AdminCreateUserInput {
 }
 
 input AdminResetPasswordInput {
+  customPassword: String
   userId: String!
 }
 
@@ -509,9 +510,9 @@ enum BlockType {
 
 type BlogAuthorType {
   email: String!
-  firstName: String!
+  firstName: String
   id: ID!
-  lastName: String!
+  lastName: String
   username: String!
 }
 
@@ -592,6 +593,7 @@ input BulkUpdateFilesInput {
 
 input BulkUserActionInput {
   action: String!
+  hardDelete: Boolean
   newRole: UserRoleType
   userIds: [String!]!
 }
@@ -2442,8 +2444,12 @@ type LessonProgress {
   createdAt: DateTime!
   enrollmentId: String!
   id: ID!
+  lastWatchedAt: DateTime
   lessonId: String!
+  timeSpent: Int
   updatedAt: DateTime!
+  videoProgress: Float
+  watchTime: Int
 }
 
 """Type of lesson content"""
@@ -2912,6 +2918,7 @@ type Mutation {
   """Execute any Prisma mutation operation dynamically"""
   universalMutation(input: UniversalQueryInput!): JSONObject!
   unlinkDocumentFromCourse(courseId: ID!, documentId: ID!): Boolean!
+  unmarkLessonComplete(enrollmentId: ID!, lessonId: ID!): LessonProgress!
   unshareTemplate(templateId: String!, userId: String!): Boolean!
   unsubscribeFromPush(endpoint: String!): Boolean!
 
@@ -2986,6 +2993,7 @@ type Mutation {
   updateTechnicalSupportTicket(id: String!, input: UpdateTechnicalSupportTicketInput!): TechnicalSupportTicket!
   updateTemplatePublicity(input: UpdateTemplatePublicityInput!): CustomTemplate!
   updateUser(id: String!, input: UpdateUserInput!): User!
+  updateVideoProgress(enrollmentId: ID!, lessonId: ID!, timeSpent: Int!, videoProgress: Float!, watchTime: Int!): LessonProgress!
   updateWebsiteSetting(input: UpdateWebsiteSettingInput!, key: String!): WebsiteSetting!
 
   """Update ext_sanphamhoadon"""
@@ -4044,6 +4052,7 @@ type Query {
   getPageBySlug(slug: String!): Page
   getPageBySlugPattern(slugPattern: String!): Page
   getPages(filters: PageFiltersInput, pagination: PaginationInput! = {limit: 10, page: 1}): PaginatedPages!
+  getPendingApprovalsCount: Int!
   getPermissionById(id: String!): Permission!
   getPostById(id: String!): Post!
   getPostBySlug(slug: String!): Post!

@@ -149,7 +149,7 @@ let UserResolver = class UserResolver {
         return this.userService.adminCreateUser(input);
     }
     async adminResetPassword(input, adminUser) {
-        return this.userService.adminResetPassword(input.userId, adminUser.id);
+        return this.userService.adminResetPassword(input.userId, adminUser.id, input.customPassword);
     }
     async requestForgotPassword(email) {
         const result = await this.authService.requestForgotPassword(email);

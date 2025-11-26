@@ -43,6 +43,12 @@ let EnrollmentsResolver = class EnrollmentsResolver {
     markLessonComplete(user, enrollmentId, lessonId) {
         return this.enrollmentsService.markLessonComplete(user.id, enrollmentId, lessonId);
     }
+    unmarkLessonComplete(user, enrollmentId, lessonId) {
+        return this.enrollmentsService.unmarkLessonComplete(user.id, enrollmentId, lessonId);
+    }
+    updateVideoProgress(user, enrollmentId, lessonId, videoProgress, watchTime, timeSpent) {
+        return this.enrollmentsService.updateVideoProgress(user.id, enrollmentId, lessonId, videoProgress, Math.floor(watchTime), Math.floor(timeSpent));
+    }
 };
 exports.EnrollmentsResolver = EnrollmentsResolver;
 __decorate([
@@ -99,6 +105,29 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", void 0)
 ], EnrollmentsResolver.prototype, "markLessonComplete", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => lesson_progress_entity_1.LessonProgress, { name: 'unmarkLessonComplete' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('enrollmentId', { type: () => graphql_1.ID })),
+    __param(2, (0, graphql_1.Args)('lessonId', { type: () => graphql_1.ID })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", void 0)
+], EnrollmentsResolver.prototype, "unmarkLessonComplete", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => lesson_progress_entity_1.LessonProgress, { name: 'updateVideoProgress' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('enrollmentId', { type: () => graphql_1.ID })),
+    __param(2, (0, graphql_1.Args)('lessonId', { type: () => graphql_1.ID })),
+    __param(3, (0, graphql_1.Args)('videoProgress', { type: () => graphql_1.Float })),
+    __param(4, (0, graphql_1.Args)('watchTime', { type: () => graphql_1.Int })),
+    __param(5, (0, graphql_1.Args)('timeSpent', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String, Number, Number, Number]),
+    __metadata("design:returntype", void 0)
+], EnrollmentsResolver.prototype, "updateVideoProgress", null);
 exports.EnrollmentsResolver = EnrollmentsResolver = __decorate([
     (0, graphql_1.Resolver)(() => enrollment_entity_1.Enrollment),
     __metadata("design:paramtypes", [enrollments_service_1.EnrollmentsService])

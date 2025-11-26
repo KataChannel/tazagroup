@@ -17,6 +17,20 @@ let EnrollmentsService = class EnrollmentsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    normalizeEnrollment(enrollment) {
+        if (!enrollment)
+            return enrollment;
+        if (Array.isArray(enrollment)) {
+            return enrollment.map(e => ({
+                ...e,
+                progress: Math.round(e.progress || 0)
+            }));
+        }
+        return {
+            ...enrollment,
+            progress: Math.round(enrollment.progress || 0)
+        };
+    }
     async enroll(userId, courseId) {
         const course = await this.prisma.course.findUnique({
             where: { id: courseId },
@@ -34,12 +48,15 @@ let EnrollmentsService = class EnrollmentsService {
                     courseId,
                 },
             },
+            include: {
+                course: true,
+            },
         });
         if (existingEnrollment) {
             if (existingEnrollment.status === client_1.EnrollmentStatus.ACTIVE) {
-                throw new common_1.BadRequestException('Already enrolled in this course');
+                return this.normalizeEnrollment(existingEnrollment);
             }
-            return this.prisma.enrollment.update({
+            const reactivated = await this.prisma.enrollment.update({
                 where: { id: existingEnrollment.id },
                 data: {
                     status: client_1.EnrollmentStatus.ACTIVE,
@@ -49,12 +66,14 @@ let EnrollmentsService = class EnrollmentsService {
                     course: true,
                 },
             });
+            return this.normalizeEnrollment(reactivated);
         }
         const enrollment = await this.prisma.enrollment.create({
             data: {
                 userId,
                 courseId,
                 status: client_1.EnrollmentStatus.ACTIVE,
+                progress: 0,
             },
             include: {
                 course: true,
@@ -66,10 +85,10 @@ let EnrollmentsService = class EnrollmentsService {
                 enrollmentCount: { increment: 1 },
             },
         });
-        return enrollment;
+        return this.normalizeEnrollment(enrollment);
     }
     async getMyEnrollments(userId) {
-        return this.prisma.enrollment.findMany({
+        const enrollments = await this.prisma.enrollment.findMany({
             where: { userId },
             include: {
                 course: {
@@ -89,6 +108,7 @@ let EnrollmentsService = class EnrollmentsService {
             },
             orderBy: { enrolledAt: 'desc' },
         });
+        return this.normalizeEnrollment(enrollments);
     }
     async getEnrollment(userId, courseId) {
         const enrollment = await this.prisma.enrollment.findUnique({
@@ -118,7 +138,7 @@ let EnrollmentsService = class EnrollmentsService {
                 },
             },
         });
-        return enrollment;
+        return this.normalizeEnrollment(enrollment);
     }
     async updateProgress(userId, courseId) {
         const enrollment = await this.prisma.enrollment.findUnique({
@@ -146,7 +166,7 @@ let EnrollmentsService = class EnrollmentsService {
         }
         const totalLessons = enrollment.course.modules.reduce((total, module) => total + module.lessons.length, 0);
         if (totalLessons === 0) {
-            return enrollment;
+            return this.normalizeEnrollment(enrollment);
         }
         const completedLessons = enrollment.lessonProgress.filter((progress) => progress.completed).length;
         const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
@@ -158,10 +178,11 @@ let EnrollmentsService = class EnrollmentsService {
             updateData.status = client_1.EnrollmentStatus.COMPLETED;
             updateData.completedAt = new Date();
         }
-        return this.prisma.enrollment.update({
+        const updated = await this.prisma.enrollment.update({
             where: { id: enrollment.id },
             data: updateData,
         });
+        return this.normalizeEnrollment(updated);
     }
     async dropCourse(userId, courseId) {
         const enrollment = await this.prisma.enrollment.findUnique({
@@ -178,12 +199,13 @@ let EnrollmentsService = class EnrollmentsService {
         if (enrollment.status === client_1.EnrollmentStatus.COMPLETED) {
             throw new common_1.BadRequestException('Cannot drop a completed course');
         }
-        return this.prisma.enrollment.update({
+        const dropped = await this.prisma.enrollment.update({
             where: { id: enrollment.id },
             data: {
                 status: client_1.EnrollmentStatus.DROPPED,
             },
         });
+        return this.normalizeEnrollment(dropped);
     }
     async getCourseEnrollments(courseId, instructorId) {
         const course = await this.prisma.course.findUnique({
@@ -195,7 +217,7 @@ let EnrollmentsService = class EnrollmentsService {
         if (instructorId && course.instructorId !== instructorId) {
             throw new common_1.ForbiddenException('You do not have permission to view these enrollments');
         }
-        return this.prisma.enrollment.findMany({
+        const enrollments = await this.prisma.enrollment.findMany({
             where: { courseId },
             include: {
                 user: {
@@ -211,6 +233,7 @@ let EnrollmentsService = class EnrollmentsService {
             },
             orderBy: { enrolledAt: 'desc' },
         });
+        return this.normalizeEnrollment(enrollments);
     }
     async markLessonComplete(userId, enrollmentId, lessonId) {
         const enrollment = await this.prisma.enrollment.findUnique({
@@ -251,13 +274,15 @@ let EnrollmentsService = class EnrollmentsService {
             if (existingProgress.completed) {
                 return existingProgress;
             }
-            return this.prisma.lessonProgress.update({
+            const updated = await this.prisma.lessonProgress.update({
                 where: { id: existingProgress.id },
                 data: {
                     completed: true,
                     completedAt: new Date(),
                 },
             });
+            await this.updateEnrollmentProgress(enrollmentId);
+            return updated;
         }
         const lessonProgress = await this.prisma.lessonProgress.create({
             data: {
@@ -269,6 +294,82 @@ let EnrollmentsService = class EnrollmentsService {
         });
         await this.updateEnrollmentProgress(enrollmentId);
         return lessonProgress;
+    }
+    async unmarkLessonComplete(userId, enrollmentId, lessonId) {
+        const enrollment = await this.prisma.enrollment.findUnique({
+            where: { id: enrollmentId },
+        });
+        if (!enrollment) {
+            throw new common_1.NotFoundException('Enrollment not found');
+        }
+        if (enrollment.userId !== userId) {
+            throw new common_1.ForbiddenException('Not authorized to update this enrollment');
+        }
+        const existingProgress = await this.prisma.lessonProgress.findUnique({
+            where: {
+                enrollmentId_lessonId: {
+                    enrollmentId,
+                    lessonId,
+                },
+            },
+        });
+        if (!existingProgress) {
+            throw new common_1.NotFoundException('Lesson progress not found');
+        }
+        const updated = await this.prisma.lessonProgress.update({
+            where: { id: existingProgress.id },
+            data: {
+                completed: false,
+                completedAt: null,
+            },
+        });
+        await this.updateEnrollmentProgress(enrollmentId);
+        return updated;
+    }
+    async updateVideoProgress(userId, enrollmentId, lessonId, videoProgress, watchTime, timeSpent) {
+        const enrollment = await this.prisma.enrollment.findUnique({
+            where: { id: enrollmentId },
+        });
+        if (!enrollment) {
+            throw new common_1.NotFoundException('Enrollment not found');
+        }
+        if (enrollment.userId !== userId) {
+            throw new common_1.ForbiddenException('Not authorized to update this enrollment');
+        }
+        if (videoProgress < 0 || videoProgress > 100) {
+            throw new common_1.BadRequestException('Video progress must be between 0 and 100');
+        }
+        const existingProgress = await this.prisma.lessonProgress.findUnique({
+            where: {
+                enrollmentId_lessonId: {
+                    enrollmentId,
+                    lessonId,
+                },
+            },
+        });
+        const now = new Date();
+        if (existingProgress) {
+            return this.prisma.lessonProgress.update({
+                where: { id: existingProgress.id },
+                data: {
+                    videoProgress,
+                    watchTime,
+                    timeSpent,
+                    lastWatchedAt: now,
+                },
+            });
+        }
+        return this.prisma.lessonProgress.create({
+            data: {
+                enrollmentId,
+                lessonId,
+                videoProgress,
+                watchTime,
+                timeSpent,
+                lastWatchedAt: now,
+                completed: false,
+            },
+        });
     }
     async updateEnrollmentProgress(enrollmentId) {
         const enrollment = await this.prisma.enrollment.findUnique({
@@ -292,7 +393,7 @@ let EnrollmentsService = class EnrollmentsService {
         if (totalLessons === 0)
             return;
         const completedLessons = enrollment.lessonProgress.filter(p => p.completed).length;
-        const progress = (completedLessons / totalLessons) * 100;
+        const progress = Math.round((completedLessons / totalLessons) * 100);
         await this.prisma.enrollment.update({
             where: { id: enrollmentId },
             data: {

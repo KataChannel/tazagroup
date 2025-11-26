@@ -16,10 +16,14 @@ exports.CoursesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const notification_service_1 = require("../../services/notification.service");
+const push_notification_service_1 = require("../../services/push-notification.service");
 const slugify_1 = __importDefault(require("slugify"));
 let CoursesService = class CoursesService {
-    constructor(prisma) {
+    constructor(prisma, notificationService, pushNotificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
+        this.pushNotificationService = pushNotificationService;
     }
     async create(userId, createCourseInput) {
         const { title, categoryId, ...rest } = createCourseInput;
@@ -274,6 +278,136 @@ let CoursesService = class CoursesService {
             },
         });
     }
+    async requestApproval(courseId, userId) {
+        const course = await this.prisma.course.findUnique({
+            where: { id: courseId },
+            include: {
+                modules: {
+                    include: {
+                        lessons: true,
+                    },
+                },
+            },
+        });
+        if (!course) {
+            throw new common_1.NotFoundException(`Course with ID ${courseId} not found`);
+        }
+        if (course.instructorId !== userId) {
+            throw new common_1.ForbiddenException('You do not have permission to request approval for this course');
+        }
+        if (course.status !== client_1.CourseStatus.DRAFT) {
+            throw new common_1.BadRequestException('Only draft courses can be submitted for approval');
+        }
+        if (course.approvalRequested) {
+            throw new common_1.BadRequestException('Approval already requested for this course');
+        }
+        if (course.modules.length === 0) {
+            throw new common_1.BadRequestException('Course must have at least one module before requesting approval');
+        }
+        const hasLessons = course.modules.some(module => module.lessons.length > 0);
+        if (!hasLessons) {
+            throw new common_1.BadRequestException('Course must have at least one lesson before requesting approval');
+        }
+        const updated = await this.prisma.course.update({
+            where: { id: courseId },
+            data: {
+                approvalRequested: true,
+                approvalRequestedAt: new Date(),
+            },
+        });
+        const instructor = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { username: true, firstName: true, lastName: true },
+        });
+        const instructorName = instructor?.firstName && instructor?.lastName
+            ? `${instructor.firstName} ${instructor.lastName}`
+            : instructor?.username || 'Giảng viên';
+        const admins = await this.prisma.user.findMany({
+            where: {
+                userRoles: {
+                    some: {
+                        role: {
+                            name: 'ADMIN',
+                        },
+                    },
+                },
+            },
+            select: { id: true },
+        });
+        for (const admin of admins) {
+            try {
+                await this.notificationService.create({
+                    userId: admin.id,
+                    title: 'Yêu cầu phê duyệt khóa học',
+                    message: `${instructorName} đã gửi yêu cầu phê duyệt khóa học "${updated.title}"`,
+                    type: 'SYSTEM',
+                    data: {
+                        courseId: updated.id,
+                        courseTitle: updated.title,
+                        courseSlug: updated.slug,
+                        instructorId: userId,
+                        instructorName,
+                        type: 'course_approval_request',
+                    },
+                });
+                await this.pushNotificationService.sendToUser(admin.id, {
+                    title: 'Yêu cầu phê duyệt khóa học',
+                    message: `${instructorName} đã gửi yêu cầu phê duyệt khóa học "${updated.title}"`,
+                    url: `/admin/lms/courses/approvals`,
+                    data: {
+                        courseId: updated.id,
+                        type: 'course_approval_request',
+                    },
+                });
+            }
+            catch (error) {
+                console.error(`Failed to notify admin ${admin.id}:`, error);
+            }
+        }
+        return updated;
+    }
+    async approveCourse(courseId, adminUserId) {
+        const course = await this.prisma.course.findUnique({
+            where: { id: courseId },
+        });
+        if (!course) {
+            throw new common_1.NotFoundException(`Course with ID ${courseId} not found`);
+        }
+        if (!course.approvalRequested) {
+            throw new common_1.BadRequestException('No approval request found for this course');
+        }
+        if (course.status === client_1.CourseStatus.PUBLISHED) {
+            throw new common_1.BadRequestException('Course is already published');
+        }
+        return this.prisma.course.update({
+            where: { id: courseId },
+            data: {
+                status: client_1.CourseStatus.PUBLISHED,
+                publishedAt: new Date(),
+                approvedBy: adminUserId,
+                approvedAt: new Date(),
+            },
+        });
+    }
+    async rejectCourse(courseId, adminUserId, reason) {
+        const course = await this.prisma.course.findUnique({
+            where: { id: courseId },
+        });
+        if (!course) {
+            throw new common_1.NotFoundException(`Course with ID ${courseId} not found`);
+        }
+        if (!course.approvalRequested) {
+            throw new common_1.BadRequestException('No approval request found for this course');
+        }
+        return this.prisma.course.update({
+            where: { id: courseId },
+            data: {
+                approvalRequested: false,
+                approvalRequestedAt: null,
+                rejectionReason: reason,
+            },
+        });
+    }
     async remove(id, userId) {
         const course = await this.prisma.course.findUnique({
             where: { id },
@@ -499,6 +633,8 @@ let CoursesService = class CoursesService {
 exports.CoursesService = CoursesService;
 exports.CoursesService = CoursesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        notification_service_1.NotificationService,
+        push_notification_service_1.PushNotificationService])
 ], CoursesService);
 //# sourceMappingURL=courses.service.js.map

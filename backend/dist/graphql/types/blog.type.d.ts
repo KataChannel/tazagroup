@@ -12,8 +12,8 @@ export declare enum BlogSortBy {
 export declare class BlogAuthorType {
     id: string;
     username: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
 }
 export declare class BlogTagType {

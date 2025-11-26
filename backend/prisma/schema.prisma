@@ -3404,11 +3404,14 @@ model Enrollment {
 }
 
 model LessonProgress {
-  id           String  @id @default(uuid())
-  enrollmentId String
-  lessonId     String
-  completed    Boolean @default(false)
-  watchTime    Int?    @default(0) // Seconds watched for video lessons
+  id               String  @id @default(uuid())
+  enrollmentId     String
+  lessonId         String
+  completed        Boolean @default(false)
+  watchTime        Int?    @default(0) // Seconds watched for video lessons
+  videoProgress    Float?  @default(0) // Percentage watched (0-100) for video lessons
+  timeSpent        Int?    @default(0) // Total time spent in seconds (includes pauses, rewinds)
+  lastWatchedAt    DateTime? // Last time user watched this lesson
 
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)

@@ -362,6 +362,12 @@ __decorate([
     (0, class_validator_1.IsEnum)(client_1.$Enums.UserRoleType),
     __metadata("design:type", String)
 ], BulkUserActionInput.prototype, "newRole", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], BulkUserActionInput.prototype, "hardDelete", void 0);
 exports.BulkUserActionInput = BulkUserActionInput = __decorate([
     (0, graphql_1.InputType)()
 ], BulkUserActionInput);
@@ -554,6 +560,13 @@ __decorate([
     (0, class_validator_1.IsUUID)(undefined, { message: 'User ID phải là UUID hợp lệ' }),
     __metadata("design:type", String)
 ], AdminResetPasswordInput.prototype, "userId", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8, { message: 'Mật khẩu phải có ít nhất 8 ký tự' }),
+    __metadata("design:type", String)
+], AdminResetPasswordInput.prototype, "customPassword", void 0);
 exports.AdminResetPasswordInput = AdminResetPasswordInput = __decorate([
     (0, graphql_1.InputType)()
 ], AdminResetPasswordInput);

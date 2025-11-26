@@ -47,7 +47,7 @@ export default function LMSLayout({
   // Regular LMS routes use LMSNavigation
   return (
     <div className="min-h-screen flex flex-col">
-      <LMSNavigation user={user} showInstructorLink={true} />
+      <LMSNavigation user={user} />
       <main className="flex-1">
         {children}
       </main>

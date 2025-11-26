@@ -68,6 +68,15 @@ let CoursesResolver = class CoursesResolver {
         const result = await this.coursesService.remove(id, user.id);
         return result.success;
     }
+    requestCourseApproval(user, courseId) {
+        return this.coursesService.requestApproval(courseId, user.id);
+    }
+    approveCourse(user, courseId) {
+        return this.coursesService.approveCourse(courseId, user.id);
+    }
+    rejectCourse(user, courseId, reason) {
+        return this.coursesService.rejectCourse(courseId, user.id, reason);
+    }
     createModule(user, input) {
         return this.coursesService.createModule(user.id, input);
     }
@@ -201,6 +210,34 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], CoursesResolver.prototype, "removeCourse", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => course_entity_1.Course, { name: 'requestCourseApproval' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('courseId', { type: () => graphql_1.ID })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], CoursesResolver.prototype, "requestCourseApproval", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => course_entity_1.Course, { name: 'approveCourse' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('courseId', { type: () => graphql_1.ID })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], CoursesResolver.prototype, "approveCourse", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => course_entity_1.Course, { name: 'rejectCourse' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('courseId', { type: () => graphql_1.ID })),
+    __param(2, (0, graphql_1.Args)('reason', { type: () => String })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", void 0)
+], CoursesResolver.prototype, "rejectCourse", null);
 __decorate([
     (0, graphql_1.Mutation)(() => course_module_entity_1.CourseModule, { name: 'createModule' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

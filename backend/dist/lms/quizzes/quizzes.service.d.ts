@@ -46,8 +46,8 @@ export declare class QuizzesService {
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
-                    tags: string[];
                     description: string | null;
+                    tags: string[];
                     title: string;
                     slug: string;
                     status: import("@prisma/client").$Enums.CourseStatus;
@@ -58,7 +58,9 @@ export declare class QuizzesService {
                     metaDescription: string | null;
                     price: import("@prisma/client/runtime/library").Decimal;
                     viewCount: number;
+                    approvedAt: Date | null;
                     duration: number | null;
+                    approvedBy: string | null;
                     trailer: string | null;
                     whatYouWillLearn: string[];
                     requirements: string[];
@@ -68,6 +70,9 @@ export declare class QuizzesService {
                     avgRating: number;
                     reviewCount: number;
                     enrollmentCount: number;
+                    approvalRequested: boolean;
+                    approvalRequestedAt: Date | null;
+                    rejectionReason: string | null;
                 };
             } & {
                 order: number;

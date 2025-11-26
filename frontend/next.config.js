@@ -75,6 +75,14 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'images.rausachtrangia.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'images.rausachtrangia.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
       },
       {
@@ -84,6 +92,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: '1drv.ms',
       },
       {
         protocol: 'https',

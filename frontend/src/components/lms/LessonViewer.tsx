@@ -3,12 +3,14 @@
 
 'use client';
 
-import React, { useState } from 'react';
-import { useFindMany, useFindUnique, useCreateOne, useUpdateOne, useDeleteOne } from '@/hooks/useDynamicGraphQL';
+import React, { useState, useEffect, useRef } from 'react';
+import { useMutation } from '@apollo/client';
+import { useFindMany } from '@/hooks/useDynamicGraphQL';
+import { MARK_LESSON_COMPLETE, UNMARK_LESSON_COMPLETE, UPDATE_VIDEO_PROGRESS } from '@/graphql/lms/courses.graphql';
 import VideoPlayer from './VideoPlayer';
 import QuizTaker from './QuizTaker';
 import QuizResults from './QuizResults';
-import { PlayCircle, FileText, CheckCircle, Clock } from 'lucide-react';
+import { PlayCircle, FileText, CheckCircle, Clock, RotateCcw } from 'lucide-react';
 
 interface Lesson {
   id: string;
@@ -41,10 +43,13 @@ export default function LessonViewer({
   const [completed, setCompleted] = useState(isCompleted);
   const [quizAttemptId, setQuizAttemptId] = useState<string | null>(null);
   const [markingComplete, setMarkingComplete] = useState(false);
+  const [watchStartTime, setWatchStartTime] = useState<number | null>(null);
+  const progressUpdateTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ✅ Migrated: Create or update lesson progress
-  const [createLessonProgress] = useCreateOne('lessonProgress');
-  const [updateLessonProgress] = useUpdateOne('lessonProgress');
+  // GraphQL mutations
+  const [markLessonComplete] = useMutation(MARK_LESSON_COMPLETE);
+  const [unmarkLessonComplete] = useMutation(UNMARK_LESSON_COMPLETE);
+  const [updateVideoProgress] = useMutation(UPDATE_VIDEO_PROGRESS);
 
   // ✅ Migrated: Fetch quizzes by lesson - Always fetch quizzes for any lesson
   const { data: quizzes, loading: loadingQuizzes } = useFindMany('quiz', 
@@ -66,8 +71,62 @@ export default function LessonViewer({
 
   const existingProgress = progressRecords?.[0];
 
-  const handleVideoProgress = (progressPercent: number) => {
+  // Initialize progress from existing record
+  useEffect(() => {
+    if (existingProgress) {
+      setCompleted(existingProgress.completed);
+      if (existingProgress.videoProgress) {
+        setProgress(existingProgress.videoProgress);
+      }
+    }
+  }, [existingProgress]);
+
+  // Track time spent
+  useEffect(() => {
+    if (lesson.type === 'VIDEO' || lesson.type === 'TEXT') {
+      setWatchStartTime(Date.now());
+      
+      return () => {
+        setWatchStartTime(null);
+        if (progressUpdateTimerRef.current) {
+          clearTimeout(progressUpdateTimerRef.current);
+        }
+      };
+    }
+  }, [lesson.id, lesson.type]);
+
+  const calculateTimeSpent = () => {
+    if (!watchStartTime) return 0;
+    return Math.floor((Date.now() - watchStartTime) / 1000);
+  };
+
+  const handleVideoProgress = async (progressPercent: number, watchTimeSeconds: number) => {
     setProgress(progressPercent);
+    
+    // Debounce video progress updates
+    if (progressUpdateTimerRef.current) {
+      clearTimeout(progressUpdateTimerRef.current);
+    }
+
+    progressUpdateTimerRef.current = setTimeout(async () => {
+      if (enrollmentId) {
+        const timeSpent = calculateTimeSpent();
+        
+        try {
+          await updateVideoProgress({
+            variables: {
+              enrollmentId,
+              lessonId: lesson.id,
+              videoProgress: progressPercent,
+              watchTime: Math.floor(watchTimeSeconds),
+              timeSpent: Math.floor(timeSpent),
+            },
+          });
+        } catch (error) {
+          console.error('Failed to update video progress:', error);
+        }
+      }
+    }, 2000); // Update every 2 seconds
     
     // Auto-mark as complete when 90% watched
     if (progressPercent >= 90 && !completed && enrollmentId) {
@@ -86,50 +145,12 @@ export default function LessonViewer({
 
     setMarkingComplete(true);
     try {
-      // Refetch to ensure we have the latest progress data
-      await refetchProgress();
-      
-      // Create or update lesson progress
-      if (existingProgress?.id) {
-        // Update existing progress
-        await updateLessonProgress({
-          where: { id: existingProgress.id },
-          data: {
-            completed: true,
-            completedAt: new Date().toISOString(),
-          },
-        });
-      } else {
-        // Try to create new progress record, handle duplicate error
-        try {
-          await createLessonProgress({
-            data: {
-              enrollmentId,
-              lessonId: lesson.id,
-              completed: true,
-              completedAt: new Date().toISOString(),
-            },
-          });
-        } catch (createError: any) {
-          // If record already exists (race condition), refetch and update instead
-          if (createError?.message?.includes('unique constraint') || 
-              createError?.message?.includes('already exists')) {
-            await refetchProgress();
-            const latestProgress = progressRecords?.[0];
-            if (latestProgress?.id) {
-              await updateLessonProgress({
-                where: { id: latestProgress.id },
-                data: {
-                  completed: true,
-                  completedAt: new Date().toISOString(),
-                },
-              });
-            }
-          } else {
-            throw createError;
-          }
-        }
-      }
+      await markLessonComplete({
+        variables: {
+          enrollmentId,
+          lessonId: lesson.id,
+        },
+      });
       
       setCompleted(true);
       
@@ -140,6 +161,32 @@ export default function LessonViewer({
       onComplete?.();
     } catch (error) {
       console.error('Failed to mark lesson complete:', error);
+    } finally {
+      setMarkingComplete(false);
+    }
+  };
+
+  const handleUnmarkComplete = async () => {
+    if (!enrollmentId || markingComplete) return;
+
+    setMarkingComplete(true);
+    try {
+      await unmarkLessonComplete({
+        variables: {
+          enrollmentId,
+          lessonId: lesson.id,
+        },
+      });
+      
+      setCompleted(false);
+      
+      // Refetch enrollment progress
+      await refetchProgress();
+      
+      // Call parent onComplete callback to refresh enrollment
+      onComplete?.();
+    } catch (error) {
+      console.error('Failed to unmark lesson complete:', error);
     } finally {
       setMarkingComplete(false);
     }
@@ -160,7 +207,7 @@ export default function LessonViewer({
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-700">
-                  Video Progress
+                  Tiến độ video
                 </span>
                 <span className="text-sm font-bold text-blue-600">
                   {Math.round(progress)}%
@@ -190,7 +237,7 @@ export default function LessonViewer({
                 disabled={markingComplete}
                 className="mt-8 w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 px-6 rounded-lg font-medium transition-colors"
               >
-                {markingComplete ? 'Marking Complete...' : 'Mark as Complete'}
+                {markingComplete ? 'Đang đánh dấu hoàn thành...' : 'Đánh dấu hoàn thành'}
               </button>
             )}
           </div>
@@ -205,9 +252,9 @@ export default function LessonViewer({
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="w-8 h-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No Quiz Available</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Chưa có bài kiểm tra</h3>
               <p className="text-gray-600 mb-6">
-                This lesson does not have a quiz yet
+                Bài học này chưa có bài kiểm tra
               </p>
             </div>
           );
@@ -228,7 +275,7 @@ export default function LessonViewer({
         if (!enrollmentId) {
           return (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-              <p className="text-yellow-800">You must be enrolled to take this quiz</p>
+              <p className="text-yellow-800">Bạn phải đăng ký khóa học để làm bài kiểm tra này</p>
             </div>
           );
         }
@@ -252,9 +299,9 @@ export default function LessonViewer({
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="w-8 h-8 text-orange-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Assignment Coming Soon</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Bài tập sắp ra mắt</h3>
             <p className="text-gray-600">
-              Assignment submission will be available in the next update
+              Tính năng nộp bài tập sẽ có trong bản cập nhật tiếp theo
             </p>
           </div>
         );
@@ -282,19 +329,46 @@ export default function LessonViewer({
               <p className="text-gray-600 mb-4">{lesson.description}</p>
             )}
             
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              {lesson.duration && (
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{lesson.duration} minutes</span>
-                </div>
-              )}
-              
-              {completed && (
-                <div className="flex items-center gap-1 text-green-600">
-                  <CheckCircle className="w-4 h-4" />
-                  <span className="font-medium">Completed</span>
-                </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                {lesson.duration && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    <span>{lesson.duration} phút</span>
+                  </div>
+                )}
+                
+                {existingProgress?.timeSpent && existingProgress.timeSpent > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    <span>Thời gian học: {Math.floor(existingProgress.timeSpent / 60)}p {existingProgress.timeSpent % 60}s</span>
+                  </div>
+                )}
+                
+                {completed && (
+                  <div className="flex items-center gap-1 text-green-600">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="font-medium">Đã hoàn thành</span>
+                    {existingProgress?.completedAt && (
+                      <span className="text-xs text-gray-500 ml-2">
+                        vào {new Date(existingProgress.completedAt).toLocaleDateString('vi-VN')}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Unmark Complete Button */}
+              {completed && enrollmentId && (
+                <button
+                  onClick={handleUnmarkComplete}
+                  disabled={markingComplete}
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                  title="Bỏ đánh dấu hoàn thành"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Bỏ đánh dấu</span>
+                </button>
               )}
             </div>
           </div>
@@ -309,14 +383,14 @@ export default function LessonViewer({
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Ready for the next lesson?</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Sẵn sàng cho bài học tiếp theo?</h3>
               <p className="text-sm text-gray-600">{nextLesson.title}</p>
             </div>
             <button
               onClick={onNextLesson}
               className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg font-medium transition-colors flex items-center gap-2"
             >
-              Next Lesson
+              Bài học tiếp theo
               <PlayCircle className="w-4 h-4" />
             </button>
           </div>

@@ -125,8 +125,8 @@ export declare class AICourseGeneratorService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -137,7 +137,9 @@ export declare class AICourseGeneratorService {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -147,6 +149,9 @@ export declare class AICourseGeneratorService {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     generateCourseFromDocuments(input: GenerateCourseFromDocumentsInput): Promise<{
         category: {
@@ -250,8 +255,8 @@ export declare class AICourseGeneratorService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -262,7 +267,9 @@ export declare class AICourseGeneratorService {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -272,6 +279,9 @@ export declare class AICourseGeneratorService {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     private aggregateDocumentAnalysis;
     private getFrequency;

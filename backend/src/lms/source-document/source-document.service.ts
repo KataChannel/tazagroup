@@ -462,6 +462,18 @@ export class SourceDocumentService {
   // ============== Approval Workflow ==============
 
   /**
+   * Count pending approval requests
+   */
+  async countPendingApprovals(): Promise<number> {
+    return this.prisma.sourceDocument.count({
+      where: {
+        approvalRequested: true,
+        status: 'DRAFT',
+      },
+    });
+  }
+
+  /**
    * Request approval for a source document (Instructor -> Admin)
    */
   async requestApproval(documentId: string, userId: string) {
@@ -512,7 +524,7 @@ export class SourceDocumentService {
     // Send notification to all admins
     const admins = await this.prisma.user.findMany({
       where: {
-        roles: {
+        userRoles: {
           some: {
             role: {
               name: 'ADMIN',

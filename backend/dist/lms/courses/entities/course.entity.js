@@ -111,6 +111,26 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "instructorId", void 0);
 __decorate([
+    (0, graphql_1.Field)(() => Boolean, { defaultValue: false }),
+    __metadata("design:type", Boolean)
+], Course.prototype, "approvalRequested", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Date, { nullable: true }),
+    __metadata("design:type", Date)
+], Course.prototype, "approvalRequestedAt", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], Course.prototype, "approvedBy", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Date, { nullable: true }),
+    __metadata("design:type", Date)
+], Course.prototype, "approvedAt", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], Course.prototype, "rejectionReason", void 0);
+__decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", Date)
 ], Course.prototype, "createdAt", void 0);

@@ -103,6 +103,30 @@ __decorate([
     __metadata("design:type", String)
 ], SourceDocument.prototype, "status", void 0);
 __decorate([
+    (0, graphql_1.Field)(() => Boolean, { defaultValue: false }),
+    __metadata("design:type", Boolean)
+], SourceDocument.prototype, "approvalRequested", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Date, { nullable: true }),
+    __metadata("design:type", Date)
+], SourceDocument.prototype, "approvalRequestedAt", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], SourceDocument.prototype, "approvalRequestedBy", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], SourceDocument.prototype, "approvedBy", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Date, { nullable: true }),
+    __metadata("design:type", Date)
+], SourceDocument.prototype, "approvedAt", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], SourceDocument.prototype, "rejectionReason", void 0);
+__decorate([
     (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
 ], SourceDocument.prototype, "url", void 0);

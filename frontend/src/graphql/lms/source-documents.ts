@@ -62,6 +62,12 @@ export const GET_SOURCE_DOCUMENT = gql`
       thumbnailUrl
       categoryId
       tags
+      approvalRequested
+      approvalRequestedAt
+      approvalRequestedBy
+      approvedBy
+      approvedAt
+      rejectionReason
       aiSummary
       aiKeywords
       aiTopics
@@ -82,6 +88,11 @@ export const GET_SOURCE_DOCUMENT = gql`
         description
         icon
         color
+      }
+      user {
+        id
+        email
+        username
       }
     }
   }
@@ -167,6 +178,12 @@ export const GET_COURSE_DOCUMENTS = gql`
 export const GET_SOURCE_DOCUMENT_STATS = gql`
   query GetSourceDocumentStats($userId: ID) {
     sourceDocumentStats(userId: $userId)
+  }
+`;
+
+export const GET_PENDING_APPROVALS_COUNT = gql`
+  query GetPendingApprovalsCount {
+    getPendingApprovalsCount
   }
 `;
 

@@ -127,7 +127,7 @@ export default function EditBlogPage() {
       excerpt: formData.excerpt || undefined,
       content: formData.content,
       categoryId: formData.categoryId || undefined,
-      thumbnailUrl: formData.featuredImage || undefined,
+      featuredImage: formData.featuredImage || undefined,
       isFeatured: formData.isFeatured,
       metaTitle: formData.metaTitle || undefined,
       metaDescription: formData.metaDescription || undefined,

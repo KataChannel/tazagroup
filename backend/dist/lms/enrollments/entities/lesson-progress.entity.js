@@ -31,6 +31,22 @@ __decorate([
     __metadata("design:type", Boolean)
 ], LessonProgress.prototype, "completed", void 0);
 __decorate([
+    (0, graphql_1.Field)(() => graphql_1.Int, { nullable: true }),
+    __metadata("design:type", Number)
+], LessonProgress.prototype, "watchTime", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => graphql_1.Float, { nullable: true }),
+    __metadata("design:type", Number)
+], LessonProgress.prototype, "videoProgress", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => graphql_1.Int, { nullable: true }),
+    __metadata("design:type", Number)
+], LessonProgress.prototype, "timeSpent", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", Date)
+], LessonProgress.prototype, "lastWatchedAt", void 0);
+__decorate([
     (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", Date)
 ], LessonProgress.prototype, "completedAt", void 0);

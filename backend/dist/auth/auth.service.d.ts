@@ -54,7 +54,7 @@ export declare class AuthService {
     }>;
     hasPassword(userId: string): Promise<boolean>;
     private generateRandomPassword;
-    adminResetPassword(userId: string, adminId: string): Promise<{
+    adminResetPassword(userId: string, adminId: string, customPassword?: string): Promise<{
         success: boolean;
         message: string;
         newPassword: string;

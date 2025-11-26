@@ -65,6 +65,11 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [newPassword, setNewPassword] = useState<string>('');
   const [copied, setCopied] = useState(false);
+  
+  // Custom Password Dialog
+  const [showCustomPasswordDialog, setShowCustomPasswordDialog] = useState(false);
+  const [customPassword, setCustomPassword] = useState<string>('');
+  const [customPasswordError, setCustomPasswordError] = useState<string>('');
 
   // Sync form data with user prop
   useEffect(() => {
@@ -129,12 +134,14 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
         variables: {
           id: user.id,
           input: {
-            username: formData.username.trim(),
+            username: formData.username.trim() || undefined,
             email: formData.email.trim() || undefined,
             firstName: formData.firstName.trim() || undefined,
             lastName: formData.lastName.trim() || undefined,
             phone: formData.phone.trim() || undefined,
-            roleType: formData.roleType,
+            roleType: formData.roleType && ['ADMIN', 'USER', 'GUEST'].includes(formData.roleType) 
+              ? formData.roleType 
+              : undefined,
             isActive: formData.isActive,
             isVerified: formData.isVerified,
             isTwoFactorEnabled: formData.isTwoFactorEnabled,
@@ -184,7 +191,7 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
     }
   }, [loading, resettingPassword, hasChanges, onClose]);
 
-  // Handle Reset Password
+  // Handle Reset Password (Auto-generate)
   const handleResetPassword = useCallback(async () => {
     if (!user) return;
 
@@ -223,6 +230,43 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
       });
     }
   }, [user, adminResetPassword]);
+
+  // Handle Set Custom Password
+  const handleSetCustomPassword = useCallback(async () => {
+    if (!user) return;
+
+    // Validate password
+    if (!customPassword || customPassword.length < 8) {
+      setCustomPasswordError('Mật khẩu phải có ít nhất 8 ký tự');
+      return;
+    }
+
+    try {
+      const { data } = await adminResetPassword({
+        variables: {
+          input: {
+            userId: user.id,
+            customPassword: customPassword,
+          },
+        },
+      });
+
+      if (data?.adminResetPassword?.success) {
+        setShowCustomPasswordDialog(false);
+        setCustomPassword('');
+        setCustomPasswordError('');
+
+        toast({
+          title: 'Đổi mật khẩu thành công',
+          description: `Mật khẩu mới đã được cài đặt cho "${user.username}"`,
+          type: 'success',
+        });
+      }
+    } catch (err: any) {
+      const errorMessage = err.graphQLErrors?.[0]?.message || err.message || 'Không thể đổi mật khẩu';
+      setCustomPasswordError(errorMessage);
+    }
+  }, [user, customPassword, adminResetPassword]);
 
   // Handle Copy Password
   const handleCopyPassword = useCallback(async () => {
@@ -480,7 +524,7 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
               <Alert className="border-amber-200 bg-amber-50">
                 <Key className="h-4 w-4 text-amber-600" />
                 <AlertDescription className="text-sm">
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <p className="text-amber-800 font-medium">
                       Reset mật khẩu cho nhân viên
                     </p>
@@ -493,7 +537,7 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
                       size="sm"
                       onClick={handleResetPassword}
                       disabled={loading || resettingPassword}
-                      className="w-full sm:w-auto mt-2 border-amber-300 text-amber-700 hover:bg-amber-100 hover:text-amber-800"
+                      className="w-full sm:w-auto border-amber-300 text-amber-700 hover:bg-amber-100 hover:text-amber-800"
                     >
                       {resettingPassword ? (
                         <>
@@ -503,10 +547,27 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
                       ) : (
                         <>
                           <RefreshCw className="mr-2 h-4 w-4" />
-                          Reset Password
+                          Reset Password (Auto)
                         </>
                       )}
                     </Button>
+                    
+                    <div className="pt-2 border-t border-amber-200">
+                      <p className="text-xs text-amber-700 mb-2">
+                        Hoặc nhập mật khẩu tùy chỉnh:
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowCustomPasswordDialog(true)}
+                        disabled={loading || resettingPassword}
+                        className="w-full sm:w-auto border-amber-300 text-amber-700 hover:bg-amber-100 hover:text-amber-800"
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Đổi mật khẩu tùy chỉnh
+                      </Button>
+                    </div>
                   </div>
                 </AlertDescription>
               </Alert>
@@ -644,6 +705,91 @@ export function EditUserModal({ user, isOpen, onClose, onSuccess }: EditUserModa
             className="flex-1"
           >
             Đóng
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+
+    {/* Custom Password Dialog */}
+    <Dialog open={showCustomPasswordDialog} onOpenChange={setShowCustomPasswordDialog}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Edit className="h-5 w-5 text-amber-600" />
+            Đổi mật khẩu tùy chỉnh
+          </DialogTitle>
+          <DialogDescription>
+            Nhập mật khẩu mới cho người dùng <strong>{user?.username}</strong>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4">
+          {/* Password Input */}
+          <div className="space-y-2">
+            <Label htmlFor="customPassword" className="text-sm font-medium">
+              Mật khẩu mới
+            </Label>
+            <Input
+              id="customPassword"
+              type="text"
+              value={customPassword}
+              onChange={(e) => {
+                setCustomPassword(e.target.value);
+                setCustomPasswordError('');
+              }}
+              placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)"
+              className={customPasswordError ? 'border-red-500' : ''}
+              disabled={resettingPassword}
+            />
+            {customPasswordError && (
+              <p className="text-sm text-red-600">{customPasswordError}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Mật khẩu phải có ít nhất 8 ký tự. Nên bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
+            </p>
+          </div>
+
+          {/* Warning Alert */}
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-xs text-amber-800">
+              Mật khẩu sẽ được thay đổi ngay lập tức. Vui lòng gửi mật khẩu mới cho người dùng.
+            </AlertDescription>
+          </Alert>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setShowCustomPasswordDialog(false);
+              setCustomPassword('');
+              setCustomPasswordError('');
+            }}
+            disabled={resettingPassword}
+            className="flex-1"
+          >
+            Hủy
+          </Button>
+          <Button
+            type="button"
+            onClick={handleSetCustomPassword}
+            disabled={resettingPassword || !customPassword}
+            className="flex-1"
+          >
+            {resettingPassword ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Đang đổi...
+              </>
+            ) : (
+              <>
+                <Key className="mr-2 h-4 w-4" />
+                Đổi mật khẩu
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

@@ -331,6 +331,24 @@ let UserService = class UserService {
                     });
                     affectedCount = deleteResult.count;
                     break;
+                case 'hardDelete':
+                    try {
+                        for (const userId of userIds) {
+                            try {
+                                await this.prisma.user.delete({
+                                    where: { id: userId },
+                                });
+                                affectedCount++;
+                            }
+                            catch (deleteError) {
+                                errors.push(`Failed to delete user ${userId}: ${deleteError.message}`);
+                            }
+                        }
+                    }
+                    catch (error) {
+                        errors.push(`Hard delete failed: ${error.message}`);
+                    }
+                    break;
                 default:
                     errors.push(`Unknown action: ${action}`);
             }
@@ -432,8 +450,8 @@ let UserService = class UserService {
             },
         });
     }
-    async adminResetPassword(userId, adminId) {
-        return this.authService.adminResetPassword(userId, adminId);
+    async adminResetPassword(userId, adminId, customPassword) {
+        return this.authService.adminResetPassword(userId, adminId, customPassword);
     }
 };
 exports.UserService = UserService;

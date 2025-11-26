@@ -44,11 +44,11 @@ __decorate([
     __metadata("design:type", String)
 ], BlogAuthorType.prototype, "username", void 0);
 __decorate([
-    (0, graphql_1.Field)(),
+    (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
 ], BlogAuthorType.prototype, "firstName", void 0);
 __decorate([
-    (0, graphql_1.Field)(),
+    (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
 ], BlogAuthorType.prototype, "lastName", void 0);
 __decorate([

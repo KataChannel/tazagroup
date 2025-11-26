@@ -441,7 +441,7 @@ describe('EnrollmentsService', () => {
         });
         it('should throw NotFoundException if course not found', async () => {
             mockPrismaService.course.findUnique.mockResolvedValue(null);
-            await expect(service.getCourseEnrollments('course-1')).rejects.toThrow(new common_1.NotFoundException('Course not found'));
+            await expect(service.getCourseEnrollments('course-1', 'instructor-1')).rejects.toThrow(new common_1.NotFoundException('Course not found'));
         });
         it('should throw ForbiddenException if user is not course instructor', async () => {
             const mockCourse = {

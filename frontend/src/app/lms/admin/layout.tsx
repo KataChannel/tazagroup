@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useQuery } from '@apollo/client';
 import { 
   LayoutDashboard, 
   BookOpen, 
@@ -22,7 +23,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { GET_PENDING_APPROVALS_COUNT } from '@/graphql/lms/source-documents';
 
 interface AdminLMSLayoutProps {
   children: ReactNode;
@@ -100,16 +104,30 @@ export default function AdminLMSLayout({ children }: AdminLMSLayoutProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Query pending approvals count
+  const { data: approvalsData } = useQuery(GET_PENDING_APPROVALS_COUNT, {
+    pollInterval: 30000, // Refresh every 30 seconds
+  });
+
   const handleNavigation = (href: string) => {
     router.push(href);
     setSidebarOpen(false);
   };
 
+  const pendingApprovalsCount = approvalsData?.getPendingApprovalsCount || 0;
+
   const SidebarContent = () => (
     <>
       <div className="p-4 sm:p-6 border-b border-gray-200">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900">LMS Admin</h2>
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">Quản lý hệ thống học tập</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">LMS Admin</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Quản lý hệ thống học tập</p>
+          </div>
+          <div className="hidden lg:block">
+            <NotificationBell />
+          </div>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-3 sm:p-4">
@@ -117,6 +135,7 @@ export default function AdminLMSLayout({ children }: AdminLMSLayoutProps) {
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+            const showBadge = item.href === '/lms/admin/approvals' && pendingApprovalsCount > 0;
             return (
               <li key={item.href}>
                 <button
@@ -129,6 +148,11 @@ export default function AdminLMSLayout({ children }: AdminLMSLayoutProps) {
                 >
                   <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                   <span className="font-medium truncate">{item.title}</span>
+                  {showBadge && (
+                    <Badge variant="destructive" className="text-white ml-auto h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
+                      {pendingApprovalsCount > 99 ? '99+' : pendingApprovalsCount}
+                    </Badge>
+                  )}
                 </button>
                 
                 {/* Submenu */}
@@ -186,20 +210,23 @@ export default function AdminLMSLayout({ children }: AdminLMSLayoutProps) {
             <h2 className="text-lg font-bold text-gray-900">LMS Admin</h2>
             <p className="text-xs text-gray-500">Quản lý hệ thống</p>
           </div>
-          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="w-5 h-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent 
-              side="left" 
-              className="w-[280px] sm:w-[320px] p-0 flex flex-col"
-              title="Menu quản lý LMS"
-            >
-              <SidebarContent />
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="left" 
+                className="w-[280px] sm:w-[320px] p-0 flex flex-col"
+                title="Menu quản lý LMS"
+              >
+                <SidebarContent />
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
 
         {/* Desktop Sidebar */}

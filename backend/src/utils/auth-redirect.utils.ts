@@ -50,15 +50,21 @@ export async function getLoginRedirectUrl(userId: string): Promise<string> {
     return settings['auth_login_redirect'] || '/dashboard';
   }
 
-  // Check for giangvien role first (highest priority for LMS)
-  const hasGiangvienRole = user.userRoles.some(ur => ur.role.name === 'giangvien');
-  if (hasGiangvienRole) {
+  // Check for giangvien role or INSTRUCTOR roleType first (highest priority for LMS)
+  const hasGiangvienRole = user.userRoles.some(ur => 
+    ur.role.name === 'giangvien' || 
+    ur.role.name.toLowerCase() === 'instructor'
+  );
+  const isInstructor = user.roleType.toUpperCase() === 'INSTRUCTOR';
+  
+  if (hasGiangvienRole || isInstructor) {
     return settings['auth_redirect_giangvien'] || '/lms/instructor';
   }
 
   // Then check roleType for backward compatibility
   switch (user.roleType.toUpperCase()) {
     case 'ADMIN':
+    case 'SUPERADMIN':
       return settings['auth_redirect_admin'] || '/admin';
     case 'USER':
       return settings['auth_redirect_user'] || '/dashboard';

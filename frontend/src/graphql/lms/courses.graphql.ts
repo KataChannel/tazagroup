@@ -280,6 +280,52 @@ export const MARK_LESSON_COMPLETE = gql`
       lessonId
       completed
       completedAt
+      videoProgress
+      watchTime
+      timeSpent
+      lastWatchedAt
+    }
+  }
+`;
+
+export const UNMARK_LESSON_COMPLETE = gql`
+  mutation UnmarkLessonComplete($enrollmentId: ID!, $lessonId: ID!) {
+    unmarkLessonComplete(enrollmentId: $enrollmentId, lessonId: $lessonId) {
+      id
+      lessonId
+      completed
+      completedAt
+      videoProgress
+      watchTime
+      timeSpent
+      lastWatchedAt
+    }
+  }
+`;
+
+export const UPDATE_VIDEO_PROGRESS = gql`
+  mutation UpdateVideoProgress(
+    $enrollmentId: ID!
+    $lessonId: ID!
+    $videoProgress: Float!
+    $watchTime: Int!
+    $timeSpent: Int!
+  ) {
+    updateVideoProgress(
+      enrollmentId: $enrollmentId
+      lessonId: $lessonId
+      videoProgress: $videoProgress
+      watchTime: $watchTime
+      timeSpent: $timeSpent
+    ) {
+      id
+      lessonId
+      videoProgress
+      watchTime
+      timeSpent
+      lastWatchedAt
+      completed
+      completedAt
     }
   }
 `;

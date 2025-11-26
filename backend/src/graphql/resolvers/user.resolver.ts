@@ -270,7 +270,7 @@ export class UserResolver {
     @Args('input') input: AdminResetPasswordInput,
     @CurrentUser() adminUser: User,
   ): Promise<AdminResetPasswordResult> {
-    return this.userService.adminResetPassword(input.userId, adminUser.id);
+    return this.userService.adminResetPassword(input.userId, adminUser.id, input.customPassword);
   }
 
   /**

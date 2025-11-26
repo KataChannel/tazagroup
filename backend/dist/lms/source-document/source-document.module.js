@@ -17,6 +17,9 @@ const minio_module_1 = require("../../minio/minio.module");
 const ai_module_1 = require("../../ai/ai.module");
 const auth_module_1 = require("../../auth/auth.module");
 const user_service_1 = require("../../services/user.service");
+const notification_service_1 = require("../../services/notification.service");
+const push_notification_service_1 = require("../../services/push-notification.service");
+const real_time_notification_service_1 = require("../../realtime/real-time-notification.service");
 let SourceDocumentModule = class SourceDocumentModule {
 };
 exports.SourceDocumentModule = SourceDocumentModule;
@@ -30,6 +33,9 @@ exports.SourceDocumentModule = SourceDocumentModule = __decorate([
             source_document_category_resolver_1.SourceDocumentCategoryResolver,
             source_document_category_service_1.SourceDocumentCategoryService,
             user_service_1.UserService,
+            notification_service_1.NotificationService,
+            push_notification_service_1.PushNotificationService,
+            real_time_notification_service_1.RealTimeNotificationService,
         ],
         exports: [source_document_service_1.SourceDocumentService, source_document_category_service_1.SourceDocumentCategoryService],
     })

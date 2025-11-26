@@ -70,7 +70,7 @@ interface UserTableProps {
   onEditUser: (user: User) => void;
   onActivateUser?: (user: User) => void;
   onDeactivateUser?: (user: User) => void;
-  onDeleteUser?: (user: User) => void;
+  onDeleteUser?: (user: User, hardDelete?: boolean) => void;
   sortBy: string;
   sortOrder: string;
 }
@@ -302,11 +302,27 @@ export function UserTable({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem 
-              className="text-red-600"
-              onClick={() => onDeleteUser && onDeleteUser(data)}
+              className="text-orange-600"
+              onClick={() => {
+                if (confirm(`Soft delete user ${getDisplayName(data)}? They will be deactivated but data will be preserved.`)) {
+                  onDeleteUser && onDeleteUser(data, false);
+                }
+              }}
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              Delete User
+              Soft Delete (Deactivate)
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={() => {
+                if (confirm(`⚠️ PERMANENTLY DELETE user ${getDisplayName(data)}?\n\nThis action CANNOT be undone!\nAll user data will be permanently removed from the database.\n\nType 'DELETE' to confirm.`) && 
+                    prompt('Type DELETE to confirm permanent deletion:') === 'DELETE') {
+                  onDeleteUser && onDeleteUser(data, true);
+                }
+              }}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Hard Delete (Permanent)
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

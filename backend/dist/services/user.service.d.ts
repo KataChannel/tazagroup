@@ -20,7 +20,7 @@ export declare class UserService {
     bulkUserAction(actionInput: any): Promise<any>;
     adminUpdateUser(id: string, input: any): Promise<User>;
     adminCreateUser(input: AdminCreateUserInput): Promise<User>;
-    adminResetPassword(userId: string, adminId: string): Promise<{
+    adminResetPassword(userId: string, adminId: string, customPassword?: string): Promise<{
         success: boolean;
         message: string;
         newPassword: string;

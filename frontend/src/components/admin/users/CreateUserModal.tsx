@@ -54,6 +54,7 @@ export function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUserModalP
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [simplePasswordMode, setSimplePasswordMode] = useState(false);
 
   // Reset form when modal opens
   useEffect(() => {
@@ -87,7 +88,7 @@ export function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUserModalP
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    } else if (!simplePasswordMode && !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
       newErrors.password = 'Password must contain uppercase, lowercase, and number';
     }
 
@@ -98,7 +99,7 @@ export function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUserModalP
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData]);
+  }, [formData, simplePasswordMode]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,6 +250,25 @@ export function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUserModalP
                 </div>
               </div>
 
+              {/* Password Mode Toggle */}
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                <div className="space-y-0.5">
+                  <Label className="text-sm font-medium">
+                    Simple Password Mode
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {simplePasswordMode 
+                      ? 'Requires only 8 characters minimum' 
+                      : 'Requires 8+ characters with uppercase, lowercase, and number'}
+                  </p>
+                </div>
+                <Switch
+                  checked={simplePasswordMode}
+                  onCheckedChange={setSimplePasswordMode}
+                  disabled={loading}
+                />
+              </div>
+
               {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="required">
@@ -270,7 +290,9 @@ export function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUserModalP
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Must be at least 8 characters with uppercase, lowercase, and number
+                  {simplePasswordMode
+                    ? 'Must be at least 8 characters'
+                    : 'Must be at least 8 characters with uppercase, lowercase, and number'}
                 </p>
               </div>
             </div>

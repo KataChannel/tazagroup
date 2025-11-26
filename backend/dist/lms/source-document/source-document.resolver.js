@@ -89,6 +89,18 @@ let SourceDocumentResolver = class SourceDocumentResolver {
         const stats = await this.sourceDocumentService.getStats(user.id);
         return JSON.stringify(stats);
     }
+    async getPendingApprovalsCount() {
+        return this.sourceDocumentService.countPendingApprovals();
+    }
+    async requestDocumentApproval(user, documentId) {
+        return this.sourceDocumentService.requestApproval(documentId, user.id);
+    }
+    async approveDocument(user, documentId) {
+        return this.sourceDocumentService.approveDocument(documentId, user.id);
+    }
+    async rejectDocument(user, documentId, reason) {
+        return this.sourceDocumentService.rejectDocument(documentId, user.id, reason);
+    }
     async uploadFile(file, bucket) {
         const { createReadStream, filename, mimetype } = await file;
         const chunks = [];
@@ -272,6 +284,41 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SourceDocumentResolver.prototype, "sourceDocumentStats", null);
+__decorate([
+    (0, graphql_1.Query)(() => graphql_1.Int),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SourceDocumentResolver.prototype, "getPendingApprovalsCount", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => source_document_entity_1.SourceDocument),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('documentId', { type: () => graphql_1.ID })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], SourceDocumentResolver.prototype, "requestDocumentApproval", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => source_document_entity_1.SourceDocument),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('documentId', { type: () => graphql_1.ID })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], SourceDocumentResolver.prototype, "approveDocument", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => source_document_entity_1.SourceDocument),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, graphql_1.Args)('documentId', { type: () => graphql_1.ID })),
+    __param(2, (0, graphql_1.Args)('reason', { type: () => String })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], SourceDocumentResolver.prototype, "rejectDocument", null);
 __decorate([
     (0, graphql_1.Mutation)(() => file_upload_entity_1.FileUploadResult),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

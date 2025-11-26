@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Float, Int } from '@nestjs/graphql';
 
 @ObjectType()
 export class LessonProgress {
@@ -13,6 +13,18 @@ export class LessonProgress {
 
   @Field()
   completed: boolean;
+
+  @Field(() => Int, { nullable: true })
+  watchTime?: number;
+
+  @Field(() => Float, { nullable: true })
+  videoProgress?: number;
+
+  @Field(() => Int, { nullable: true })
+  timeSpent?: number;
+
+  @Field({ nullable: true })
+  lastWatchedAt?: Date;
 
   @Field({ nullable: true })
   completedAt?: Date;

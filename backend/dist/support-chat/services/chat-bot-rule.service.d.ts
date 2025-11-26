@@ -8,9 +8,9 @@ export declare class ChatBotRuleService {
         isActive: boolean;
         name: string;
         updatedAt: Date;
+        conditions: import("@prisma/client/runtime/library").JsonValue | null;
         description: string | null;
         priority: number;
-        conditions: import("@prisma/client/runtime/library").JsonValue | null;
         responseType: string;
         pattern: string | null;
         keywords: string[];
@@ -28,9 +28,9 @@ export declare class ChatBotRuleService {
         isActive: boolean;
         name: string;
         updatedAt: Date;
+        conditions: import("@prisma/client/runtime/library").JsonValue | null;
         description: string | null;
         priority: number;
-        conditions: import("@prisma/client/runtime/library").JsonValue | null;
         responseType: string;
         pattern: string | null;
         keywords: string[];

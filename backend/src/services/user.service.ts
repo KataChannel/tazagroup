@@ -356,6 +356,26 @@ export class UserService {
           affectedCount = deleteResult.count;
           break;
 
+        case 'hardDelete':
+          // Hard delete - permanently remove users from database
+          // WARNING: This action cannot be undone and will cascade delete related data
+          try {
+            // Delete users one by one to handle cascade deletes properly
+            for (const userId of userIds) {
+              try {
+                await this.prisma.user.delete({
+                  where: { id: userId },
+                });
+                affectedCount++;
+              } catch (deleteError) {
+                errors.push(`Failed to delete user ${userId}: ${deleteError.message}`);
+              }
+            }
+          } catch (error) {
+            errors.push(`Hard delete failed: ${error.message}`);
+          }
+          break;
+
         default:
           errors.push(`Unknown action: ${action}`);
       }
@@ -478,12 +498,13 @@ export class UserService {
   async adminResetPassword(
     userId: string,
     adminId: string,
+    customPassword?: string,
   ): Promise<{
     success: boolean;
     message: string;
     newPassword: string;
     user: User;
   }> {
-    return this.authService.adminResetPassword(userId, adminId);
+    return this.authService.adminResetPassword(userId, adminId, customPassword);
   }
 }

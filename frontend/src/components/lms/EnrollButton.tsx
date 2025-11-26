@@ -36,7 +36,7 @@ export default function EnrollButton({
   }, [isEnrolled]);
   
   const [enrollCourse, { loading }] = useMutation(ENROLL_COURSE, {
-    onCompleted: () => {
+    onCompleted: (data) => {
       setEnrolled(true);
       
       if (onEnrollSuccess) {
@@ -50,14 +50,7 @@ export default function EnrollButton({
     },
     onError: (error) => {
       console.error('Enrollment error:', error);
-      
-      // Check if already enrolled - redirect to learning page instead of showing error
-      if (error.message.includes('Already enrolled')) {
-        setEnrolled(true);
-        router.push(`/lms/learn/${courseSlug}`);
-      } else {
-        alert(error.message || 'Không thể ghi danh khóa học');
-      }
+      alert(error.message || 'Không thể ghi danh khóa học');
     },
   });
 

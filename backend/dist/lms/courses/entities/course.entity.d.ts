@@ -24,6 +24,11 @@ export declare class Course {
     avgRating: number;
     reviewCount: number;
     instructorId: string;
+    approvalRequested: boolean;
+    approvalRequestedAt?: Date;
+    approvedBy?: string;
+    approvedAt?: Date;
+    rejectionReason?: string;
     createdAt: Date;
     updatedAt: Date;
     publishedAt?: Date;

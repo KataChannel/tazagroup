@@ -529,7 +529,7 @@ describe('EnrollmentsService', () => {
     it('should throw NotFoundException if course not found', async () => {
       mockPrismaService.course.findUnique.mockResolvedValue(null);
 
-      await expect(service.getCourseEnrollments('course-1')).rejects.toThrow(
+      await expect(service.getCourseEnrollments('course-1', 'instructor-1')).rejects.toThrow(
         new NotFoundException('Course not found'),
       );
     });

@@ -46,9 +46,9 @@ export declare class FileService {
             size: number;
             userId: string;
             updatedAt: Date;
-            tags: string[];
-            description: string | null;
             metadata: Prisma.JsonValue | null;
+            description: string | null;
+            tags: string[];
             title: string | null;
             url: string;
             filename: string;
@@ -106,9 +106,9 @@ export declare class FileService {
             size: number;
             userId: string;
             updatedAt: Date;
-            tags: string[];
-            description: string | null;
             metadata: Prisma.JsonValue | null;
+            description: string | null;
+            tags: string[];
             title: string | null;
             url: string;
             filename: string;

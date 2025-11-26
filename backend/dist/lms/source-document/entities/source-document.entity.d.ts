@@ -20,6 +20,12 @@ export declare class SourceDocument {
     description?: string;
     type: SourceDocumentType;
     status: SourceDocumentStatus;
+    approvalRequested: boolean;
+    approvalRequestedAt?: Date;
+    approvalRequestedBy?: string;
+    approvedBy?: string;
+    approvedAt?: Date;
+    rejectionReason?: string;
     url?: string;
     content?: string;
     fileName?: string;

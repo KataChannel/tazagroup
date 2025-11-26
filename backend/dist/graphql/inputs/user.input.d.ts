@@ -73,6 +73,7 @@ export declare class BulkUserActionInput {
     userIds: string[];
     action: string;
     newRole?: $Enums.UserRoleType;
+    hardDelete?: boolean;
 }
 export declare class AdminUpdateUserInput {
     username?: string;
@@ -110,4 +111,5 @@ export declare class SetPasswordInput {
 }
 export declare class AdminResetPasswordInput {
     userId: string;
+    customPassword?: string;
 }

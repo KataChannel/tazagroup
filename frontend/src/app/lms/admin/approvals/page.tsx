@@ -98,11 +98,13 @@ export default function ApprovalManagementPage() {
       toast({
         title: 'Phê duyệt thành công',
         description: `Đã phê duyệt ${type === 'course' ? 'khóa học' : 'tài liệu'} "${title}"`,
+        type: 'success',
       });
     } catch (error: any) {
       toast({
         title: 'Lỗi',
         description: error.message || 'Không thể phê duyệt',
+        type: 'error',
         variant: 'destructive',
       });
     }
@@ -113,6 +115,7 @@ export default function ApprovalManagementPage() {
       toast({
         title: 'Lỗi',
         description: 'Vui lòng nhập lý do từ chối',
+        type: 'error',
         variant: 'destructive',
       });
       return;
@@ -140,6 +143,7 @@ export default function ApprovalManagementPage() {
       toast({
         title: 'Đã từ chối',
         description: `Đã từ chối ${activeTab === 'courses' ? 'khóa học' : 'tài liệu'} "${selectedItem.title}"`,
+        type: 'success',
       });
 
       setRejectDialogOpen(false);
@@ -149,6 +153,7 @@ export default function ApprovalManagementPage() {
       toast({
         title: 'Lỗi',
         description: error.message || 'Không thể từ chối',
+        type: 'error',
         variant: 'destructive',
       });
     }

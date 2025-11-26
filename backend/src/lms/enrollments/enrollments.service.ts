@@ -6,6 +6,25 @@ import { EnrollmentStatus, CourseStatus } from '@prisma/client';
 export class EnrollmentsService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Normalize enrollment progress to ensure it's always an integer
+   */
+  private normalizeEnrollment(enrollment: any): any {
+    if (!enrollment) return enrollment;
+    
+    if (Array.isArray(enrollment)) {
+      return enrollment.map(e => ({
+        ...e,
+        progress: Math.round(e.progress || 0)
+      }));
+    }
+    
+    return {
+      ...enrollment,
+      progress: Math.round(enrollment.progress || 0)
+    };
+  }
+
   async enroll(userId: string, courseId: string) {
     // Check if course exists and is published
     const course = await this.prisma.course.findUnique({
@@ -28,14 +47,18 @@ export class EnrollmentsService {
           courseId,
         },
       },
+      include: {
+        course: true,
+      },
     });
 
     if (existingEnrollment) {
       if (existingEnrollment.status === EnrollmentStatus.ACTIVE) {
-        throw new BadRequestException('Already enrolled in this course');
+        // Return existing enrollment instead of throwing error
+        return this.normalizeEnrollment(existingEnrollment);
       }
       // Reactivate if previously dropped
-      return this.prisma.enrollment.update({
+      const reactivated = await this.prisma.enrollment.update({
         where: { id: existingEnrollment.id },
         data: {
           status: EnrollmentStatus.ACTIVE,
@@ -45,6 +68,7 @@ export class EnrollmentsService {
           course: true,
         },
       });
+      return this.normalizeEnrollment(reactivated);
     }
 
     // Create new enrollment
@@ -53,6 +77,7 @@ export class EnrollmentsService {
         userId,
         courseId,
         status: EnrollmentStatus.ACTIVE,
+        progress: 0,
       },
       include: {
         course: true,
@@ -67,11 +92,11 @@ export class EnrollmentsService {
       },
     });
 
-    return enrollment;
+    return this.normalizeEnrollment(enrollment);
   }
 
   async getMyEnrollments(userId: string) {
-    return this.prisma.enrollment.findMany({
+    const enrollments = await this.prisma.enrollment.findMany({
       where: { userId },
       include: {
         course: {
@@ -91,6 +116,7 @@ export class EnrollmentsService {
       },
       orderBy: { enrolledAt: 'desc' },
     });
+    return this.normalizeEnrollment(enrollments);
   }
 
   async getEnrollment(userId: string, courseId: string) {
@@ -123,7 +149,7 @@ export class EnrollmentsService {
     });
 
     // Return null instead of throwing error - let frontend handle unenrolled state
-    return enrollment;
+    return this.normalizeEnrollment(enrollment);
   }
 
   async updateProgress(userId: string, courseId: string) {
@@ -159,7 +185,7 @@ export class EnrollmentsService {
     );
 
     if (totalLessons === 0) {
-      return enrollment;
+      return this.normalizeEnrollment(enrollment);
     }
 
     // Calculate completed lessons
@@ -182,10 +208,11 @@ export class EnrollmentsService {
       updateData.completedAt = new Date();
     }
 
-    return this.prisma.enrollment.update({
+    const updated = await this.prisma.enrollment.update({
       where: { id: enrollment.id },
       data: updateData,
     });
+    return this.normalizeEnrollment(updated);
   }
 
   async dropCourse(userId: string, courseId: string) {
@@ -206,15 +233,16 @@ export class EnrollmentsService {
       throw new BadRequestException('Cannot drop a completed course');
     }
 
-    return this.prisma.enrollment.update({
+    const dropped = await this.prisma.enrollment.update({
       where: { id: enrollment.id },
       data: {
         status: EnrollmentStatus.DROPPED,
       },
     });
+    return this.normalizeEnrollment(dropped);
   }
 
-  async getCourseEnrollments(courseId: string, instructorId?: string) {
+  async getCourseEnrollments(courseId: string, instructorId: string) {
     // Verify course exists
     const course = await this.prisma.course.findUnique({
       where: { id: courseId },
@@ -229,7 +257,7 @@ export class EnrollmentsService {
       throw new ForbiddenException('You do not have permission to view these enrollments');
     }
 
-    return this.prisma.enrollment.findMany({
+    const enrollments = await this.prisma.enrollment.findMany({
       where: { courseId },
       include: {
         user: {
@@ -245,6 +273,7 @@ export class EnrollmentsService {
       },
       orderBy: { enrolledAt: 'desc' },
     });
+    return this.normalizeEnrollment(enrollments);
   }
 
   async markLessonComplete(userId: string, enrollmentId: string, lessonId: string) {
@@ -297,13 +326,18 @@ export class EnrollmentsService {
       }
 
       // Update to completed
-      return this.prisma.lessonProgress.update({
+      const updated = await this.prisma.lessonProgress.update({
         where: { id: existingProgress.id },
         data: {
           completed: true,
           completedAt: new Date(),
         },
       });
+
+      // Recalculate enrollment progress
+      await this.updateEnrollmentProgress(enrollmentId);
+
+      return updated;
     }
 
     // Create new progress record
@@ -320,6 +354,114 @@ export class EnrollmentsService {
     await this.updateEnrollmentProgress(enrollmentId);
 
     return lessonProgress;
+  }
+
+  async unmarkLessonComplete(userId: string, enrollmentId: string, lessonId: string) {
+    // Verify enrollment belongs to user
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException('Enrollment not found');
+    }
+
+    if (enrollment.userId !== userId) {
+      throw new ForbiddenException('Not authorized to update this enrollment');
+    }
+
+    // Find existing progress
+    const existingProgress = await this.prisma.lessonProgress.findUnique({
+      where: {
+        enrollmentId_lessonId: {
+          enrollmentId,
+          lessonId,
+        },
+      },
+    });
+
+    if (!existingProgress) {
+      throw new NotFoundException('Lesson progress not found');
+    }
+
+    // Update to not completed
+    const updated = await this.prisma.lessonProgress.update({
+      where: { id: existingProgress.id },
+      data: {
+        completed: false,
+        completedAt: null,
+      },
+    });
+
+    // Recalculate enrollment progress
+    await this.updateEnrollmentProgress(enrollmentId);
+
+    return updated;
+  }
+
+  async updateVideoProgress(
+    userId: string,
+    enrollmentId: string,
+    lessonId: string,
+    videoProgress: number,
+    watchTime: number,
+    timeSpent: number
+  ) {
+    // Verify enrollment belongs to user
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException('Enrollment not found');
+    }
+
+    if (enrollment.userId !== userId) {
+      throw new ForbiddenException('Not authorized to update this enrollment');
+    }
+
+    // Validate progress
+    if (videoProgress < 0 || videoProgress > 100) {
+      throw new BadRequestException('Video progress must be between 0 and 100');
+    }
+
+    // Find or create progress record
+    const existingProgress = await this.prisma.lessonProgress.findUnique({
+      where: {
+        enrollmentId_lessonId: {
+          enrollmentId,
+          lessonId,
+        },
+      },
+    });
+
+    const now = new Date();
+
+    if (existingProgress) {
+      // Update existing progress
+      return this.prisma.lessonProgress.update({
+        where: { id: existingProgress.id },
+        data: {
+          videoProgress,
+          watchTime,
+          timeSpent,
+          lastWatchedAt: now,
+        },
+      });
+    }
+
+    // Create new progress record
+    return this.prisma.lessonProgress.create({
+      data: {
+        enrollmentId,
+        lessonId,
+        videoProgress,
+        watchTime,
+        timeSpent,
+        lastWatchedAt: now,
+        completed: false,
+      },
+    });
   }
 
   private async updateEnrollmentProgress(enrollmentId: string) {
@@ -352,7 +494,7 @@ export class EnrollmentsService {
     // Calculate completed lessons
     const completedLessons = enrollment.lessonProgress.filter(p => p.completed).length;
 
-    const progress = (completedLessons / totalLessons) * 100;
+    const progress = Math.round((completedLessons / totalLessons) * 100);
 
     // Update enrollment
     await this.prisma.enrollment.update({

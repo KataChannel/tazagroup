@@ -17,7 +17,7 @@ const Plyr = dynamic(() => import('plyr-react'), {
 interface VideoPlayerProps {
   src: string;
   poster?: string;
-  onProgress?: (progress: number) => void;
+  onProgress?: (progress: number, watchTime: number) => void;
   onComplete?: () => void;
   autoPlay?: boolean;
   startTime?: number;
@@ -48,7 +48,8 @@ export default function VideoPlayer({
     const trackProgress = () => {
       if (player && player.duration) {
         const progressPercent = (player.currentTime / player.duration) * 100;
-        onProgress?.(progressPercent);
+        const watchTime = Math.floor(player.currentTime);
+        onProgress?.(progressPercent, watchTime);
       }
     };
 
@@ -58,7 +59,8 @@ export default function VideoPlayer({
     };
 
     const handleEnded = () => {
-      onProgress?.(100);
+      const watchTime = player ? Math.floor(player.currentTime) : 0;
+      onProgress?.(100, watchTime);
       onComplete?.();
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);

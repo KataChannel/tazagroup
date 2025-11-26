@@ -46,6 +46,7 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ApprovalRequestButton } from '@/components/lms/ApprovalRequestButton';
 import {
   GET_SOURCE_DOCUMENT,
   GET_SOURCE_DOCUMENT_CATEGORIES,
@@ -255,6 +256,16 @@ export default function DocumentDetailPage() {
         <div className="flex items-center gap-2">
           {!isEditing ? (
             <>
+              {/* Approval Request Button */}
+              <ApprovalRequestButton
+                type="document"
+                id={document.id}
+                title={document.title}
+                approvalRequested={document.approvalRequested}
+                status={document.status}
+                onSuccess={refetch}
+              />
+              
               <Button variant="outline" onClick={() => setIsEditing(true)}>
                 <Edit className="w-4 h-4 mr-2" />
                 Chỉnh sửa

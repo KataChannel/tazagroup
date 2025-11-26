@@ -720,6 +720,7 @@ export class AuthService {
   async adminResetPassword(
     userId: string,
     adminId: string,
+    customPassword?: string,
   ): Promise<{
     success: boolean;
     message: string;
@@ -735,8 +736,8 @@ export class AuthService {
       throw new UnauthorizedException('Người dùng không tồn tại');
     }
 
-    // Tạo mật khẩu ngẫu nhiên
-    const newPassword = this.generateRandomPassword();
+    // Sử dụng mật khẩu tùy chỉnh hoặc tạo mật khẩu ngẫu nhiên
+    const newPassword = customPassword || this.generateRandomPassword();
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Cập nhật mật khẩu

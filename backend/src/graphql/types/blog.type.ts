@@ -34,11 +34,11 @@ export class BlogAuthorType {
   @Field()
   username: string;
 
-  @Field()
-  firstName: string;
+  @Field({ nullable: true })
+  firstName?: string;
 
-  @Field()
-  lastName: string;
+  @Field({ nullable: true })
+  lastName?: string;
 
   @Field()
   email: string;

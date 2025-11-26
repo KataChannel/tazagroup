@@ -41,12 +41,15 @@ async function getLoginRedirectUrl(userId) {
     if (!user) {
         return settings['auth_login_redirect'] || '/dashboard';
     }
-    const hasGiangvienRole = user.userRoles.some(ur => ur.role.name === 'giangvien');
-    if (hasGiangvienRole) {
+    const hasGiangvienRole = user.userRoles.some(ur => ur.role.name === 'giangvien' ||
+        ur.role.name.toLowerCase() === 'instructor');
+    const isInstructor = user.roleType.toUpperCase() === 'INSTRUCTOR';
+    if (hasGiangvienRole || isInstructor) {
         return settings['auth_redirect_giangvien'] || '/lms/instructor';
     }
     switch (user.roleType.toUpperCase()) {
         case 'ADMIN':
+        case 'SUPERADMIN':
             return settings['auth_redirect_admin'] || '/admin';
         case 'USER':
             return settings['auth_redirect_user'] || '/dashboard';

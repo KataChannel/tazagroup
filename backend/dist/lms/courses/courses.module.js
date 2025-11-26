@@ -14,6 +14,9 @@ const ai_course_generator_service_1 = require("./ai-course-generator.service");
 const prisma_module_1 = require("../../prisma/prisma.module");
 const auth_module_1 = require("../../auth/auth.module");
 const user_service_1 = require("../../services/user.service");
+const notification_service_1 = require("../../services/notification.service");
+const push_notification_service_1 = require("../../services/push-notification.service");
+const real_time_notification_service_1 = require("../../realtime/real-time-notification.service");
 let CoursesModule = class CoursesModule {
 };
 exports.CoursesModule = CoursesModule;
@@ -23,7 +26,15 @@ exports.CoursesModule = CoursesModule = __decorate([
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
         ],
-        providers: [courses_service_1.CoursesService, courses_resolver_1.CoursesResolver, ai_course_generator_service_1.AICourseGeneratorService, user_service_1.UserService],
+        providers: [
+            courses_service_1.CoursesService,
+            courses_resolver_1.CoursesResolver,
+            ai_course_generator_service_1.AICourseGeneratorService,
+            user_service_1.UserService,
+            notification_service_1.NotificationService,
+            push_notification_service_1.PushNotificationService,
+            real_time_notification_service_1.RealTimeNotificationService,
+        ],
         exports: [courses_service_1.CoursesService, ai_course_generator_service_1.AICourseGeneratorService],
     })
 ], CoursesModule);

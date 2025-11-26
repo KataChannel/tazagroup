@@ -68,10 +68,10 @@ export declare class ProjectAnalyticsService {
             createdAt: Date;
             userId: string;
             updatedAt: Date;
-            tags: string[];
             description: string | null;
             parentId: string | null;
             priority: import("@prisma/client").$Enums.TaskPriority;
+            tags: string[];
             title: string;
             status: import("@prisma/client").$Enums.TaskStatus;
             dueDate: Date | null;
@@ -143,10 +143,10 @@ export declare class ProjectAnalyticsService {
         createdAt: Date;
         userId: string;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
         parentId: string | null;
         priority: import("@prisma/client").$Enums.TaskPriority;
+        tags: string[];
         title: string;
         status: import("@prisma/client").$Enums.TaskStatus;
         dueDate: Date | null;
@@ -173,10 +173,10 @@ export declare class ProjectAnalyticsService {
         createdAt: Date;
         userId: string;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
         parentId: string | null;
         priority: import("@prisma/client").$Enums.TaskPriority;
+        tags: string[];
         title: string;
         status: import("@prisma/client").$Enums.TaskStatus;
         dueDate: Date | null;

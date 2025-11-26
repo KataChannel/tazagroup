@@ -264,12 +264,17 @@ export class BulkUserActionInput {
 
   @Field()
   @IsString()
-  action: string; // 'activate', 'deactivate', 'delete', 'verify', 'changeRole'
+  action: string; // 'activate', 'deactivate', 'delete', 'hardDelete', 'verify', 'changeRole'
 
   @Field(() => $Enums.UserRoleType, { nullable: true })
   @IsOptional()
   @IsEnum($Enums.UserRoleType)
   newRole?: $Enums.UserRoleType;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  hardDelete?: boolean; // If true, permanently delete the user
 }
 
 @InputType()
@@ -433,4 +438,10 @@ export class AdminResetPasswordInput {
   @IsNotEmpty({ message: 'User ID không được để trống' })
   @IsUUID(undefined, { message: 'User ID phải là UUID hợp lệ' })
   userId: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  @MinLength(8, { message: 'Mật khẩu phải có ít nhất 8 ký tự' })
+  customPassword?: string;
 }

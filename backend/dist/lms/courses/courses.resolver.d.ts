@@ -51,8 +51,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -63,7 +63,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -73,6 +75,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     findAll(filters?: CourseFiltersInput): Promise<{
         data: {
@@ -101,8 +106,8 @@ export declare class CoursesResolver {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            tags: string[];
             description: string | null;
+            tags: string[];
             title: string;
             slug: string;
             status: import("@prisma/client").$Enums.CourseStatus;
@@ -113,7 +118,9 @@ export declare class CoursesResolver {
             metaDescription: string | null;
             price: import("@prisma/client/runtime/library").Decimal;
             viewCount: number;
+            approvedAt: Date | null;
             duration: number | null;
+            approvedBy: string | null;
             trailer: string | null;
             whatYouWillLearn: string[];
             requirements: string[];
@@ -123,6 +130,9 @@ export declare class CoursesResolver {
             avgRating: number;
             reviewCount: number;
             enrollmentCount: number;
+            approvalRequested: boolean;
+            approvalRequestedAt: Date | null;
+            rejectionReason: string | null;
         }[];
         total: number;
         page: number;
@@ -181,8 +191,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -193,7 +203,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -203,6 +215,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     findBySlug(slug: string): Promise<{
         sourceDocumentsCount: number;
@@ -256,8 +271,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -268,7 +283,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -278,6 +295,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     getMyCourses(user: any): Promise<{
         sourceDocumentsCount: number;
@@ -300,8 +320,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -312,7 +332,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -322,6 +344,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }[]>;
     updateCourse(user: any, updateCourseInput: UpdateCourseInput): Promise<{
         category: {
@@ -363,8 +388,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -375,7 +400,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -385,14 +412,17 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     publishCourse(user: any, id: string): Promise<{
         level: import("@prisma/client").$Enums.CourseLevel;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -403,7 +433,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -413,14 +445,17 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     archiveCourse(user: any, id: string): Promise<{
         level: import("@prisma/client").$Enums.CourseLevel;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -431,7 +466,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -441,8 +478,110 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     removeCourse(user: any, id: string): Promise<boolean>;
+    requestCourseApproval(user: any, courseId: string): Promise<{
+        level: import("@prisma/client").$Enums.CourseLevel;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        tags: string[];
+        title: string;
+        slug: string;
+        status: import("@prisma/client").$Enums.CourseStatus;
+        publishedAt: Date | null;
+        thumbnail: string | null;
+        categoryId: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        price: import("@prisma/client/runtime/library").Decimal;
+        viewCount: number;
+        approvedAt: Date | null;
+        duration: number | null;
+        approvedBy: string | null;
+        trailer: string | null;
+        whatYouWillLearn: string[];
+        requirements: string[];
+        targetAudience: string[];
+        instructorId: string;
+        language: string | null;
+        avgRating: number;
+        reviewCount: number;
+        enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
+    }>;
+    approveCourse(user: any, courseId: string): Promise<{
+        level: import("@prisma/client").$Enums.CourseLevel;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        tags: string[];
+        title: string;
+        slug: string;
+        status: import("@prisma/client").$Enums.CourseStatus;
+        publishedAt: Date | null;
+        thumbnail: string | null;
+        categoryId: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        price: import("@prisma/client/runtime/library").Decimal;
+        viewCount: number;
+        approvedAt: Date | null;
+        duration: number | null;
+        approvedBy: string | null;
+        trailer: string | null;
+        whatYouWillLearn: string[];
+        requirements: string[];
+        targetAudience: string[];
+        instructorId: string;
+        language: string | null;
+        avgRating: number;
+        reviewCount: number;
+        enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
+    }>;
+    rejectCourse(user: any, courseId: string, reason: string): Promise<{
+        level: import("@prisma/client").$Enums.CourseLevel;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        tags: string[];
+        title: string;
+        slug: string;
+        status: import("@prisma/client").$Enums.CourseStatus;
+        publishedAt: Date | null;
+        thumbnail: string | null;
+        categoryId: string | null;
+        metaTitle: string | null;
+        metaDescription: string | null;
+        price: import("@prisma/client/runtime/library").Decimal;
+        viewCount: number;
+        approvedAt: Date | null;
+        duration: number | null;
+        approvedBy: string | null;
+        trailer: string | null;
+        whatYouWillLearn: string[];
+        requirements: string[];
+        targetAudience: string[];
+        instructorId: string;
+        language: string | null;
+        avgRating: number;
+        reviewCount: number;
+        enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
+    }>;
     createModule(user: any, input: CreateModuleInput): Promise<{
         lessons: {
             order: number;
@@ -685,8 +824,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -697,7 +836,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -707,6 +848,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     generateCourseFromDocuments(user: any, input: GenerateCourseFromDocumentsInput): Promise<{
         category: {
@@ -810,8 +954,8 @@ export declare class CoursesResolver {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        tags: string[];
         description: string | null;
+        tags: string[];
         title: string;
         slug: string;
         status: import("@prisma/client").$Enums.CourseStatus;
@@ -822,7 +966,9 @@ export declare class CoursesResolver {
         metaDescription: string | null;
         price: import("@prisma/client/runtime/library").Decimal;
         viewCount: number;
+        approvedAt: Date | null;
         duration: number | null;
+        approvedBy: string | null;
         trailer: string | null;
         whatYouWillLearn: string[];
         requirements: string[];
@@ -832,6 +978,9 @@ export declare class CoursesResolver {
         avgRating: number;
         reviewCount: number;
         enrollmentCount: number;
+        approvalRequested: boolean;
+        approvalRequestedAt: Date | null;
+        rejectionReason: string | null;
     }>;
     getSampleCoursePrompts(): string[];
     getCoursePromptTemplates(): {

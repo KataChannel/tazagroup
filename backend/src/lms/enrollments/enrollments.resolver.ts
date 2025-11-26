@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID, Int, Float } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { EnrollmentsService } from './enrollments.service';
 import { Enrollment } from './entities/enrollment.entity';
@@ -61,5 +61,35 @@ export class EnrollmentsResolver {
     @Args('lessonId', { type: () => ID }) lessonId: string,
   ) {
     return this.enrollmentsService.markLessonComplete(user.id, enrollmentId, lessonId);
+  }
+
+  @Mutation(() => LessonProgress, { name: 'unmarkLessonComplete' })
+  @UseGuards(JwtAuthGuard)
+  unmarkLessonComplete(
+    @CurrentUser() user: any,
+    @Args('enrollmentId', { type: () => ID }) enrollmentId: string,
+    @Args('lessonId', { type: () => ID }) lessonId: string,
+  ) {
+    return this.enrollmentsService.unmarkLessonComplete(user.id, enrollmentId, lessonId);
+  }
+
+  @Mutation(() => LessonProgress, { name: 'updateVideoProgress' })
+  @UseGuards(JwtAuthGuard)
+  updateVideoProgress(
+    @CurrentUser() user: any,
+    @Args('enrollmentId', { type: () => ID }) enrollmentId: string,
+    @Args('lessonId', { type: () => ID }) lessonId: string,
+    @Args('videoProgress', { type: () => Float }) videoProgress: number,
+    @Args('watchTime', { type: () => Int }) watchTime: number,
+    @Args('timeSpent', { type: () => Int }) timeSpent: number,
+  ) {
+    return this.enrollmentsService.updateVideoProgress(
+      user.id,
+      enrollmentId,
+      lessonId,
+      videoProgress,
+      Math.floor(watchTime),
+      Math.floor(timeSpent)
+    );
   }
 }

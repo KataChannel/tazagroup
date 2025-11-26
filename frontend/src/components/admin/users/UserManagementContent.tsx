@@ -247,20 +247,22 @@ export function UserManagementContent() {
   };
 
   // Handle delete user
-  const handleDeleteUser = async (user: any) => {
+  const handleDeleteUser = async (user: any, hardDelete: boolean = false) => {
     try {
       await bulkUserAction({
         variables: {
           input: {
             userIds: [user.id],
-            action: 'delete',
+            action: hardDelete ? 'hardDelete' : 'delete',
           },
         },
       });
 
       toast({
         title: 'Success',
-        description: `User ${user.username} has been deleted.`,
+        description: hardDelete 
+          ? `User ${user.username} has been permanently deleted.`
+          : `User ${user.username} has been deactivated.`,
         type: 'success',
       });
 

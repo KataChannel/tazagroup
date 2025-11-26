@@ -397,7 +397,7 @@ export class CoursesService {
     // Send notification to all admins
     const admins = await this.prisma.user.findMany({
       where: {
-        roles: {
+        userRoles: {
           some: {
             role: {
               name: 'ADMIN',

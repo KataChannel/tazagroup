@@ -72,8 +72,17 @@ export function BulkActions({ selectedCount, onBulkAction, onClearSelection, loa
     },
     {
       value: 'delete',
-      label: 'Delete Users',
-      description: 'Permanently remove selected users',
+      label: 'Soft Delete',
+      description: 'Deactivate selected users (reversible)',
+      icon: Trash2,
+      variant: 'secondary' as const,
+      color: 'text-orange-600',
+      dangerous: false,
+    },
+    {
+      value: 'hardDelete',
+      label: 'Hard Delete',
+      description: 'Permanently remove selected users from database',
       icon: Trash2,
       variant: 'destructive' as const,
       color: 'text-red-600',
@@ -139,7 +148,11 @@ export function BulkActions({ selectedCount, onBulkAction, onClearSelection, loa
     }
     
     if (selectedAction === 'delete') {
-      return `Are you sure you want to permanently delete ${selectedCount} selected user${selectedCount > 1 ? 's' : ''}?`;
+      return `Are you sure you want to soft delete (deactivate) ${selectedCount} selected user${selectedCount > 1 ? 's' : ''}? This can be reversed later.`;
+    }
+    
+    if (selectedAction === 'hardDelete') {
+      return `⚠️ WARNING: Are you sure you want to PERMANENTLY delete ${selectedCount} selected user${selectedCount > 1 ? 's' : ''}? This action CANNOT be undone and will remove all user data from the database!`;
     }
     
     if (selectedAction === 'activate') {
@@ -239,16 +252,16 @@ export function BulkActions({ selectedCount, onBulkAction, onClearSelection, loa
         </div>
 
         {/* Confirmation Dialog */}
-        {/* <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Confirm Bulk Action</AlertDialogTitle>
               <AlertDialogDescription>
                 {getActionDescription()}
-                {selectedAction === 'delete' && (
+                {selectedAction === 'hardDelete' && (
                   <div className="mt-3 p-3 bg-red-50 rounded-md border border-red-200">
-                    <strong className="text-red-800">⚠️ Warning:</strong>
-                    <p className="text-red-700 text-sm mt-1">This action cannot be undone. All selected user data will be permanently deleted.</p>
+                    <strong className="text-red-800">⚠️ DANGER:</strong>
+                    <p className="text-red-700 text-sm mt-1">This action CANNOT be undone. All selected user data will be PERMANENTLY deleted from the database.</p>
                   </div>
                 )}
               </AlertDialogDescription>
@@ -260,7 +273,7 @@ export function BulkActions({ selectedCount, onBulkAction, onClearSelection, loa
               <AlertDialogAction
                 onClick={handleConfirm}
                 disabled={loading}
-                className={selectedAction === 'delete' ? 'bg-red-600 hover:bg-red-700' : ''}
+                className={selectedAction === 'hardDelete' ? 'bg-red-600 hover:bg-red-700' : ''}
               >
                 {loading ? (
                   <>
@@ -273,7 +286,7 @@ export function BulkActions({ selectedCount, onBulkAction, onClearSelection, loa
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
-        </AlertDialog> */}
+        </AlertDialog>
       </CardContent>
     </Card>
   );
