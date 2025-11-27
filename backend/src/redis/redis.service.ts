@@ -35,34 +35,52 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       db,
       maxRetriesPerRequest: 3,
       retryStrategy: (times: number) => {
+        // Stop retrying after 3 attempts
+        if (times > 3) {
+          console.warn('[RedisService] Max retry attempts reached, giving up');
+          return null; // Stop retrying
+        }
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
       lazyConnect: true,
-      enableOfflineQueue: true,
-      connectTimeout: 10000,
-      commandTimeout: 5000,
+      enableOfflineQueue: false, // Don't queue commands when offline
+      connectTimeout: 5000,
+      commandTimeout: 3000,
+      enableReadyCheck: true,
+      autoResubscribe: false, // Don't auto resubscribe
+      autoResendUnfulfilledCommands: false, // Don't resend commands
     });
 
-    // Set up error handlers
-    this.client.on('error', (err) => {
-      console.warn(`[RedisService] Connection error: ${err.message}`);
+    // Set up error handlers BEFORE connecting
+    this.client.on('error', (err: any) => {
+      // Silently handle connection errors
+      if (err.code === 'ECONNREFUSED') {
+        console.warn(`[RedisService] ⚠️ Cannot connect to Redis (${host}:${port}) - running without cache`);
+      } else {
+        console.warn(`[RedisService] Connection error: ${err.message}`);
+      }
     });
 
     this.client.on('connect', () => {
       console.log('[RedisService] ✅ Connected successfully');
     });
 
-    this.client.on('reconnecting', () => {
-      console.log('[RedisService] 🔄 Attempting to reconnect...');
+    this.client.on('close', () => {
+      console.log('[RedisService] Connection closed');
     });
 
     try {
       await this.client.connect();
       console.log('✅ Redis connected successfully');
     } catch (error) {
-      console.warn('⚠️ Redis connection failed, running without cache:', error.message);
-      // Don't throw - allow app to run without Redis
+      console.warn('⚠️ Redis connection failed, running without cache');
+      // Disconnect and set client to null to prevent further errors
+      try {
+        await this.client.disconnect();
+      } catch (e) {
+        // Ignore disconnect errors
+      }
     }
   }
 
