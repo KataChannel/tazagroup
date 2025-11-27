@@ -80,7 +80,7 @@ while true; do
         1)
             print_color $GREEN "🚀 Starting development (backend + frontend)..."
             print_color $YELLOW "Press Ctrl+C to stop"
-            bun run dev
+            concurrently "cd backend && bun run dev" "cd frontend && bun run dev" --names "backend,frontend" --prefix-colors "blue,green"
             ;;
         2)
             print_color $GREEN "🚀 Starting backend (Port 13001)..."
