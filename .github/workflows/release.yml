@@ -1,0 +1,438 @@
+name: Release Management
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_type:
+        description: 'Release type'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      pre_release:
+        description: 'Pre-release?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  validate-release:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Determine version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+          IS_PRERELEASE="${{ github.event.inputs.pre_release }}"
+        else
+          VERSION="${GITHUB_REF#refs/tags/}"
+          # Check if version contains pre-release identifiers
+          if [[ "$VERSION" =~ -[a-zA-Z] ]]; then
+            IS_PRERELEASE=true
+          else
+            IS_PRERELEASE=false
+          fi
+        fi
+        
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+        
+        echo "Release version: $VERSION"
+        echo "Is pre-release: $IS_PRERELEASE"
+    
+    - name: Validate version format
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        # Remove 'v' prefix if present
+        VERSION_NUMBER="${VERSION#v}"
+        
+        # Validate semantic versioning format
+        if [[ ! "$VERSION_NUMBER" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$ ]]; then
+          echo "❌ Invalid version format: $VERSION"
+          echo "Version must follow semantic versioning (e.g., 1.0.0, 1.0.0-alpha.1)"
+          exit 1
+        fi
+        
+        echo "✅ Version format is valid: $VERSION"
+    
+    - name: Check if tag exists
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        if git tag --list | grep -q "^$VERSION$"; then
+          echo "❌ Tag $VERSION already exists"
+          exit 1
+        fi
+        
+        echo "✅ Tag $VERSION is available"
+    
+    - name: Validate branch
+      run: |
+        CURRENT_BRANCH=$(git branch --show-current)
+        
+        # For manual releases, ensure we're on main or develop
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [[ "$CURRENT_BRANCH" != "main" && "$CURRENT_BRANCH" != "develop" ]]; then
+            echo "❌ Manual releases must be from main or develop branch"
+            echo "Current branch: $CURRENT_BRANCH"
+            exit 1
+          fi
+        fi
+        
+        echo "✅ Branch validation passed"
+
+  generate-changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    needs: validate-release
+    
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        
+        echo "Generating changelog for $VERSION..."
+        
+        # Get the latest tag (previous release)
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        
+        if [ -z "$PREVIOUS_TAG" ]; then
+          echo "No previous tag found, including all commits"
+          COMMIT_RANGE="HEAD"
+        else
+          echo "Previous tag: $PREVIOUS_TAG"
+          COMMIT_RANGE="$PREVIOUS_TAG..HEAD"
+        fi
+        
+        # Generate changelog
+        CHANGELOG="## What's Changed\n\n"
+        
+        # Features
+        FEATURES=$(git log $COMMIT_RANGE --oneline --grep="feat" --grep="feature" | head -10)
+        if [ -n "$FEATURES" ]; then
+          CHANGELOG="${CHANGELOG}### ✨ New Features\n"
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              CHANGELOG="${CHANGELOG}- $line\n"
+            fi
+          done <<< "$FEATURES"
+          CHANGELOG="${CHANGELOG}\n"
+        fi
+        
+        # Bug fixes
+        BUGFIXES=$(git log $COMMIT_RANGE --oneline --grep="fix" --grep="bug" | head -10)
+        if [ -n "$BUGFIXES" ]; then
+          CHANGELOG="${CHANGELOG}### 🐛 Bug Fixes\n"
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              CHANGELOG="${CHANGELOG}- $line\n"
+            fi
+          done <<< "$BUGFIXES"
+          CHANGELOG="${CHANGELOG}\n"
+        fi
+        
+        # Improvements
+        IMPROVEMENTS=$(git log $COMMIT_RANGE --oneline --grep="improve" --grep="enhance" --grep="update" | head -10)
+        if [ -n "$IMPROVEMENTS" ]; then
+          CHANGELOG="${CHANGELOG}### 🔧 Improvements\n"
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              CHANGELOG="${CHANGELOG}- $line\n"
+            fi
+          done <<< "$IMPROVEMENTS"
+          CHANGELOG="${CHANGELOG}\n"
+        fi
+        
+        # Documentation
+        DOCS=$(git log $COMMIT_RANGE --oneline --grep="docs" --grep="documentation" | head -5)
+        if [ -n "$DOCS" ]; then
+          CHANGELOG="${CHANGELOG}### 📚 Documentation\n"
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              CHANGELOG="${CHANGELOG}- $line\n"
+            fi
+          done <<< "$DOCS"
+          CHANGELOG="${CHANGELOG}\n"
+        fi
+        
+        # Dependencies
+        DEPS=$(git log $COMMIT_RANGE --oneline --grep="deps" --grep="dependencies" --grep="chore" | head -5)
+        if [ -n "$DEPS" ]; then
+          CHANGELOG="${CHANGELOG}### 📦 Dependencies\n"
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              CHANGELOG="${CHANGELOG}- $line\n"
+            fi
+          done <<< "$DEPS"
+          CHANGELOG="${CHANGELOG}\n"
+        fi
+        
+        # Add contributor information
+        CONTRIBUTORS=$(git log $COMMIT_RANGE --format='%an' | sort -u | wc -l)
+        COMMIT_COUNT=$(git log $COMMIT_RANGE --oneline | wc -l)
+        
+        CHANGELOG="${CHANGELOG}### 👥 Contributors\n"
+        CHANGELOG="${CHANGELOG}This release includes $COMMIT_COUNT commits from $CONTRIBUTORS contributor(s).\n\n"
+        
+        # Add technical details
+        CHANGELOG="${CHANGELOG}### 🔧 Technical Details\n"
+        CHANGELOG="${CHANGELOG}- Backend: NestJS + GraphQL with Bun.js runtime\n"
+        CHANGELOG="${CHANGELOG}- Frontend: Next.js + TailwindCSS with Bun.js runtime\n"
+        CHANGELOG="${CHANGELOG}- Database: PostgreSQL with Prisma ORM\n"
+        CHANGELOG="${CHANGELOG}- Cache: Redis Cluster\n"
+        CHANGELOG="${CHANGELOG}- Deployment: Kubernetes with automated CI/CD\n"
+        CHANGELOG="${CHANGELOG}- Monitoring: Prometheus + Grafana\n\n"
+        
+        if [ "${{ needs.validate-release.outputs.is_prerelease }}" = "true" ]; then
+          CHANGELOG="${CHANGELOG}### ⚠️ Pre-release Notice\n"
+          CHANGELOG="${CHANGELOG}This is a pre-release version and may contain bugs or incomplete features.\n"
+          CHANGELOG="${CHANGELOG}Use in production environments at your own risk.\n\n"
+        fi
+        
+        CHANGELOG="${CHANGELOG}**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$VERSION"
+        
+        # Save changelog to file and output
+        echo -e "$CHANGELOG" > changelog.md
+        
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: Upload changelog artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: changelog
+        path: changelog.md
+
+  build-and-test:
+    name: Build and Test for Release
+    runs-on: ubuntu-latest
+    needs: validate-release
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+    
+    - name: Run full test suite
+      run: |
+        echo "Running comprehensive tests for release..."
+        
+        # Backend tests
+        echo "=== Backend Tests ==="
+        cd backend
+        bun install --frozen-lockfile
+        bun run lint
+        bun run type-check
+        bun run test
+        bun run build
+        cd ..
+        
+        # Frontend tests
+        echo "=== Frontend Tests ==="
+        cd frontend
+        bun install --frozen-lockfile
+        bun run lint
+        bun run type-check
+        bun run build
+        bun run test
+        cd ..
+        
+        echo "✅ All tests passed for release"
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [validate-release, generate-changelog, build-and-test]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Download changelog
+      uses: actions/download-artifact@v3
+      with:
+        name: changelog
+    
+    - name: Create Git tag
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git tag -a "$VERSION" -m "Release $VERSION"
+        git push origin "$VERSION"
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.validate-release.outputs.version }}
+        release_name: Release ${{ needs.validate-release.outputs.version }}
+        body: ${{ needs.generate-changelog.outputs.changelog }}
+        draft: false
+        prerelease: ${{ needs.validate-release.outputs.is_prerelease }}
+
+  deploy-release:
+    name: Deploy Release
+    runs-on: ubuntu-latest
+    needs: [validate-release, create-release]
+    if: needs.validate-release.outputs.is_prerelease == 'false'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+    
+    - name: Deploy to production
+      run: |
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        
+        echo "Deploying $VERSION to production..."
+        
+        # Update image tags in manifests
+        sed -i "s|rausachcore/backend:latest|ghcr.io/${{ github.repository }}/backend:$VERSION|g" k8s/backend/backend.yaml
+        sed -i "s|rausachcore/frontend:latest|ghcr.io/${{ github.repository }}/frontend:$VERSION|g" k8s/frontend/frontend.yaml
+        
+        # Apply manifests
+        kubectl apply -f k8s/ --namespace=rausachcore
+        
+        # Wait for rollout
+        kubectl rollout restart deployment/backend --namespace=rausachcore
+        kubectl rollout restart deployment/frontend --namespace=rausachcore
+        
+        kubectl wait --for=condition=available deployment/backend --namespace=rausachcore --timeout=600s
+        kubectl wait --for=condition=available deployment/frontend --namespace=rausachcore --timeout=600s
+        
+        echo "✅ Deployment completed successfully"
+    
+    - name: Verify deployment
+      run: |
+        echo "Verifying deployment..."
+        
+        # Test health endpoints
+        kubectl exec -n rausachcore deployment/backend -- curl -f http://localhost:4000/health
+        kubectl exec -n rausachcore deployment/frontend -- curl -f http://localhost:3000
+        
+        echo "✅ Deployment verification passed"
+    
+    - name: Update deployment status
+      run: |
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        
+        echo "Release $VERSION successfully deployed to production!"
+        echo "Timestamp: $(date -u)"
+
+  notify-release:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [validate-release, create-release, deploy-release]
+    if: always()
+    
+    steps:
+    - name: Send Slack notification
+      if: env.SLACK_WEBHOOK_URL != ''
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        IS_PRERELEASE="${{ needs.validate-release.outputs.is_prerelease }}"
+        
+        if [ "${{ needs.deploy-release.result }}" = "success" ]; then
+          STATUS_EMOJI="🚀"
+          STATUS_TEXT="successfully deployed"
+          COLOR="good"
+        elif [ "${{ needs.create-release.result }}" = "success" ]; then
+          STATUS_EMOJI="📦"
+          STATUS_TEXT="released"
+          COLOR="warning"
+        else
+          STATUS_EMOJI="❌"
+          STATUS_TEXT="failed"
+          COLOR="danger"
+        fi
+        
+        RELEASE_TYPE="Release"
+        if [ "$IS_PRERELEASE" = "true" ]; then
+          RELEASE_TYPE="Pre-release"
+        fi
+        
+        curl -X POST $SLACK_WEBHOOK_URL \
+          -H 'Content-type: application/json' \
+          --data "{
+            \"text\": \"${STATUS_EMOJI} rausachcore ${RELEASE_TYPE}\",
+            \"attachments\": [
+              {
+                \"color\": \"${COLOR}\",
+                \"fields\": [
+                  {
+                    \"title\": \"Version\",
+                    \"value\": \"$VERSION\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Status\",
+                    \"value\": \"$STATUS_TEXT\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Repository\",
+                    \"value\": \"<https://github.com/${{ github.repository }}|${{ github.repository }}>\",
+                    \"short\": false
+                  }
+                ]
+              }
+            ]
+          }"

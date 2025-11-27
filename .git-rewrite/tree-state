@@ -1,0 +1,15 @@
+.env.example
+.github/ISSUE_TEMPLATE/bug_report.md
+.github/ISSUE_TEMPLATE/feature_request.md
+.github/pull_request_template.md
+CHANGELOG.md
+CONTRIBUTING.md
+DEPLOY-TO-GITHUB.md
+GITHUB-RELEASE-READY.md
+README.md
+SECURITY.md
+docs/backend-setup.md
+docs/bun-integration.md
+docs/frontend-setup.md
+scripts/update-deps.sh
+setup.sh

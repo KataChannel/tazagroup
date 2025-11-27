@@ -1,0 +1,373 @@
+name: Infrastructure Monitoring
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+jobs:
+  health-check:
+    name: Health Check Services
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+    
+    - name: Check service health
+      id: health_check
+      run: |
+        # Check all deployments
+        echo "Checking deployment status..."
+        FAILED_DEPLOYMENTS=$(kubectl get deployments -n rausachcore --no-headers | grep -v "READY" | grep "0/" || true)
+        
+        if [ -n "$FAILED_DEPLOYMENTS" ]; then
+          echo "Failed deployments found:"
+          echo "$FAILED_DEPLOYMENTS"
+          echo "health_status=failed" >> $GITHUB_OUTPUT
+          echo "failed_services=$FAILED_DEPLOYMENTS" >> $GITHUB_OUTPUT
+        else
+          echo "All deployments are healthy"
+          echo "health_status=healthy" >> $GITHUB_OUTPUT
+        fi
+        
+        # Check service endpoints
+        echo "Checking service endpoints..."
+        ENDPOINT_ERRORS=""
+        
+        # Backend health check
+        if ! kubectl exec -n rausachcore deployment/backend -- curl -f http://localhost:4000/health >/dev/null 2>&1; then
+          ENDPOINT_ERRORS="${ENDPOINT_ERRORS}Backend health check failed\n"
+        fi
+        
+        # Frontend health check
+        if ! kubectl exec -n rausachcore deployment/frontend -- curl -f http://localhost:3000 >/dev/null 2>&1; then
+          ENDPOINT_ERRORS="${ENDPOINT_ERRORS}Frontend health check failed\n"
+        fi
+        
+        # Database connectivity
+        if ! kubectl exec -n rausachcore deployment/postgres -- pg_isready -U rausachcore >/dev/null 2>&1; then
+          ENDPOINT_ERRORS="${ENDPOINT_ERRORS}Database connectivity failed\n"
+        fi
+        
+        # Redis connectivity
+        if ! kubectl exec -n rausachcore deployment/redis-master -- redis-cli ping >/dev/null 2>&1; then
+          ENDPOINT_ERRORS="${ENDPOINT_ERRORS}Redis connectivity failed\n"
+        fi
+        
+        if [ -n "$ENDPOINT_ERRORS" ]; then
+          echo "Endpoint errors found:"
+          echo -e "$ENDPOINT_ERRORS"
+          echo "endpoint_status=failed" >> $GITHUB_OUTPUT
+          echo "endpoint_errors<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$ENDPOINT_ERRORS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "All endpoints are healthy"
+          echo "endpoint_status=healthy" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Check resource usage
+      id: resource_check
+      run: |
+        echo "Checking resource usage..."
+        
+        # Get resource usage
+        echo "=== Node Resource Usage ==="
+        kubectl top nodes
+        
+        echo "=== Pod Resource Usage ==="
+        kubectl top pods -n rausachcore
+        
+        echo "=== Storage Usage ==="
+        kubectl get pv
+        
+        # Check for resource warnings
+        RESOURCE_WARNINGS=""
+        
+        # Check memory usage (warn if > 80%)
+        HIGH_MEMORY_PODS=$(kubectl top pods -n rausachcore --no-headers | awk '{if($3 ~ /%/ && $3+0 > 80) print $1}' || true)
+        if [ -n "$HIGH_MEMORY_PODS" ]; then
+          RESOURCE_WARNINGS="${RESOURCE_WARNINGS}High memory usage pods: $HIGH_MEMORY_PODS\n"
+        fi
+        
+        # Check CPU usage (warn if > 80%)
+        HIGH_CPU_PODS=$(kubectl top pods -n rausachcore --no-headers | awk '{if($2 ~ /%/ && $2+0 > 80) print $1}' || true)
+        if [ -n "$HIGH_CPU_PODS" ]; then
+          RESOURCE_WARNINGS="${RESOURCE_WARNINGS}High CPU usage pods: $HIGH_CPU_PODS\n"
+        fi
+        
+        if [ -n "$RESOURCE_WARNINGS" ]; then
+          echo "Resource warnings found:"
+          echo -e "$RESOURCE_WARNINGS"
+          echo "resource_status=warning" >> $GITHUB_OUTPUT
+          echo "resource_warnings<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$RESOURCE_WARNINGS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "Resource usage is normal"
+          echo "resource_status=normal" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Check SSL certificates
+      id: ssl_check
+      run: |
+        echo "Checking SSL certificate status..."
+        
+        if [ "${{ secrets.PRODUCTION_DOMAIN }}" != "" ]; then
+          # Check certificate expiry
+          CERT_EXPIRY=$(echo | openssl s_client -servername ${{ secrets.PRODUCTION_DOMAIN }} -connect ${{ secrets.PRODUCTION_DOMAIN }}:443 2>/dev/null | openssl x509 -noout -dates | grep notAfter | cut -d= -f2)
+          CERT_EXPIRY_DATE=$(date -d "$CERT_EXPIRY" +%s)
+          CURRENT_DATE=$(date +%s)
+          DAYS_UNTIL_EXPIRY=$(( ($CERT_EXPIRY_DATE - $CURRENT_DATE) / 86400 ))
+          
+          echo "SSL certificate expires in $DAYS_UNTIL_EXPIRY days"
+          
+          if [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
+            echo "ssl_status=warning" >> $GITHUB_OUTPUT
+            echo "ssl_message=SSL certificate expires in $DAYS_UNTIL_EXPIRY days" >> $GITHUB_OUTPUT
+          else
+            echo "ssl_status=ok" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "ssl_status=skip" >> $GITHUB_OUTPUT
+          echo "ssl_message=No production domain configured" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Generate summary report
+      id: summary
+      run: |
+        echo "Generating monitoring summary..."
+        
+        OVERALL_STATUS="healthy"
+        SUMMARY_MESSAGE="rausachcore Infrastructure Health Report\n\n"
+        
+        # Health status
+        if [ "${{ steps.health_check.outputs.health_status }}" = "failed" ]; then
+          OVERALL_STATUS="critical"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}🔴 **CRITICAL**: Service deployments failed\n"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}Failed services: ${{ steps.health_check.outputs.failed_services }}\n\n"
+        else
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}✅ All deployments are healthy\n\n"
+        fi
+        
+        # Endpoint status
+        if [ "${{ steps.health_check.outputs.endpoint_status }}" = "failed" ]; then
+          OVERALL_STATUS="critical"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}🔴 **CRITICAL**: Service endpoints failed\n"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}Endpoint errors:\n${{ steps.health_check.outputs.endpoint_errors }}\n"
+        else
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}✅ All service endpoints are healthy\n\n"
+        fi
+        
+        # Resource status
+        if [ "${{ steps.resource_check.outputs.resource_status }}" = "warning" ]; then
+          if [ "$OVERALL_STATUS" != "critical" ]; then
+            OVERALL_STATUS="warning"
+          fi
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}⚠️ **WARNING**: High resource usage detected\n"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}Resource warnings:\n${{ steps.resource_check.outputs.resource_warnings }}\n"
+        else
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}✅ Resource usage is normal\n\n"
+        fi
+        
+        # SSL status
+        if [ "${{ steps.ssl_check.outputs.ssl_status }}" = "warning" ]; then
+          if [ "$OVERALL_STATUS" != "critical" ]; then
+            OVERALL_STATUS="warning"
+          fi
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}⚠️ **WARNING**: SSL certificate expiring soon\n"
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}${{ steps.ssl_check.outputs.ssl_message }}\n\n"
+        elif [ "${{ steps.ssl_check.outputs.ssl_status }}" = "ok" ]; then
+          SUMMARY_MESSAGE="${SUMMARY_MESSAGE}✅ SSL certificates are valid\n\n"
+        fi
+        
+        SUMMARY_MESSAGE="${SUMMARY_MESSAGE}Timestamp: $(date -u)\n"
+        SUMMARY_MESSAGE="${SUMMARY_MESSAGE}Environment: Production"
+        
+        echo "overall_status=$OVERALL_STATUS" >> $GITHUB_OUTPUT
+        echo "summary_message<<EOF" >> $GITHUB_OUTPUT
+        echo -e "$SUMMARY_MESSAGE" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    
+    - name: Send Slack notification (Critical/Warning)
+      if: steps.summary.outputs.overall_status != 'healthy' && env.SLACK_WEBHOOK_URL != ''
+      run: |
+        STATUS_EMOJI="⚠️"
+        STATUS_COLOR="warning"
+        
+        if [ "${{ steps.summary.outputs.overall_status }}" = "critical" ]; then
+          STATUS_EMOJI="🔴"
+          STATUS_COLOR="danger"
+        fi
+        
+        curl -X POST ${{ env.SLACK_WEBHOOK_URL }} \
+          -H 'Content-type: application/json' \
+          --data "{
+            \"text\": \"${STATUS_EMOJI} rausachcore Infrastructure Alert\",
+            \"attachments\": [
+              {
+                \"color\": \"${STATUS_COLOR}\",
+                \"fields\": [
+                  {
+                    \"title\": \"Status\",
+                    \"value\": \"${{ steps.summary.outputs.overall_status }}\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Environment\",
+                    \"value\": \"Production\",
+                    \"short\": true
+                  },
+                  {
+                    \"title\": \"Details\",
+                    \"value\": \"$(echo '${{ steps.summary.outputs.summary_message }}' | head -c 1000)\",
+                    \"short\": false
+                  }
+                ]
+              }
+            ]
+          }"
+    
+    - name: Create GitHub issue on critical failure
+      if: steps.summary.outputs.overall_status == 'critical'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const title = `🔴 Critical Infrastructure Issue - ${new Date().toISOString().split('T')[0]}`;
+          const body = `## Critical Infrastructure Alert
+          
+          **Status:** Critical
+          **Environment:** Production
+          **Timestamp:** ${new Date().toISOString()}
+          
+          ## Details
+          
+          \`\`\`
+          ${{ steps.summary.outputs.summary_message }}
+          \`\`\`
+          
+          ## Actions Required
+          
+          1. Investigate failed services immediately
+          2. Check system logs: \`kubectl logs -n rausachcore deployment/[service-name]\`
+          3. Verify resource availability
+          4. Contact on-call engineer if needed
+          
+          ---
+          *This issue was automatically created by the infrastructure monitoring workflow.*`;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['infrastructure', 'critical', 'automated']
+          });
+
+  performance-metrics:
+    name: Collect Performance Metrics
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+    
+    - name: Collect metrics
+      run: |
+        echo "=== Performance Metrics Collection ==="
+        echo "Timestamp: $(date -u)"
+        
+        echo "=== Pod Metrics ==="
+        kubectl top pods -n rausachcore --sort-by=memory
+        
+        echo "=== Node Metrics ==="
+        kubectl top nodes
+        
+        echo "=== Service Response Times ==="
+        # Test backend response time
+        BACKEND_RESPONSE_TIME=$(kubectl exec -n rausachcore deployment/backend -- curl -w "%{time_total}" -s -o /dev/null http://localhost:4000/health)
+        echo "Backend health endpoint: ${BACKEND_RESPONSE_TIME}s"
+        
+        # Test frontend response time
+        FRONTEND_RESPONSE_TIME=$(kubectl exec -n rausachcore deployment/frontend -- curl -w "%{time_total}" -s -o /dev/null http://localhost:3000)
+        echo "Frontend response time: ${FRONTEND_RESPONSE_TIME}s"
+        
+        echo "=== Database Connection Pool ==="
+        kubectl exec -n rausachcore deployment/backend -- curl -s http://localhost:4000/metrics | grep pool || echo "No pool metrics available"
+        
+        echo "=== Redis Metrics ==="
+        kubectl exec -n rausachcore deployment/redis-master -- redis-cli info memory | grep used_memory || echo "Redis metrics unavailable"
+    
+    - name: Store metrics
+      run: |
+        # This could be extended to store metrics in a time-series database
+        echo "Metrics collection completed at $(date -u)"
+
+  log-analysis:
+    name: Analyze Application Logs
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > ~/.kube/config
+        chmod 600 ~/.kube/config
+    
+    - name: Analyze error logs
+      run: |
+        echo "=== Log Analysis (Last 1 hour) ==="
+        
+        # Get recent error logs from backend
+        echo "=== Backend Error Logs ==="
+        kubectl logs -n rausachcore deployment/backend --since=1h | grep -i "error\|exception\|fail" | tail -20 || echo "No recent backend errors"
+        
+        # Get recent error logs from frontend
+        echo "=== Frontend Error Logs ==="
+        kubectl logs -n rausachcore deployment/frontend --since=1h | grep -i "error\|exception\|fail" | tail -20 || echo "No recent frontend errors"
+        
+        # Check for failed requests
+        echo "=== Failed Request Analysis ==="
+        ERROR_COUNT=$(kubectl logs -n rausachcore deployment/backend --since=1h | grep -c "HTTP 5" || echo "0")
+        echo "HTTP 5xx errors in last hour: $ERROR_COUNT"
+        
+        if [ $ERROR_COUNT -gt 10 ]; then
+          echo "⚠️ WARNING: High error rate detected ($ERROR_COUNT errors in last hour)"
+        fi
+        
+        # Check database errors
+        echo "=== Database Error Analysis ==="
+        DB_ERRORS=$(kubectl logs -n rausachcore deployment/postgres --since=1h | grep -i "error\|fatal" | wc -l || echo "0")
+        echo "Database errors in last hour: $DB_ERRORS"

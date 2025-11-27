@@ -1,0 +1,129 @@
+{
+  "name": "tazagroup",
+  "version": "1.0.0",
+  "description": "TazaGroup - Modern Fullstack Application with Next.js + NestJS + GraphQL + Prisma + Redis + TailwindCSS v4",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "menu": "./scripts/menu.sh",
+    "dev": "./scripts/vscode-menu.sh",
+    "dev:backend": "cd backend && bun run dev",
+    "dev:frontend": "cd frontend && bun run dev",
+    "deploy": "./scripts/deploy-complete.sh",
+    "deploy:quick": "./scripts/quick-deploy-server.sh",
+    "deploy:tazagroup": "./scripts/deploy-tazagroup.sh up",
+    "deploy:tazagroup:down": "./scripts/deploy-tazagroup.sh down",
+    "deploy:tazagroup:logs": "./scripts/deploy-tazagroup.sh logs",
+    "deploy:build": "./scripts/deploy-1-build-local.sh",
+    "deploy:export": "./scripts/deploy-2-export-images.sh",
+    "deploy:server": "./scripts/deploy-3-deploy-server.sh",
+    "deploy:cleanup": "./scripts/deploy-4-cleanup.sh local",
+    "build": "bun run build:backend && bun run build:frontend",
+    "build:backend": "cd backend && bun run build",
+    "build:frontend": "cd frontend && bun run build",
+    "test": "bun run test:backend && bun run test:frontend",
+    "test:backend": "cd backend && bun test",
+    "test:frontend": "cd frontend && bun test",
+    "lint": "bun run lint:backend && bun run lint:frontend",
+    "lint:backend": "cd backend && bun run lint",
+    "lint:frontend": "cd frontend && bun run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:ps": "docker compose ps",
+    "docker:restart": "docker compose restart",
+    "docker:build": "docker compose build --no-cache --pull backend frontend",
+    "docker:rebuild": "docker compose down && docker compose build --no-cache --pull backend frontend && docker compose up -d",
+    "docker:fresh": "docker compose down -v && docker compose build --no-cache --pull && docker compose up -d",
+    "docker:hybrid": "docker compose -f docker-compose.hybrid.yml up -d",
+    "docker:hybrid:down": "docker compose -f docker-compose.hybrid.yml down",
+    "setup": "bun install && cd backend && bun install && cd ../frontend && bun install",
+    "clean": "rm -rf node_modules backend/node_modules frontend/node_modules bun.lockb backend/bun.lockb frontend/bun.lockb",
+    "clean:build": "./scripts/clean-build.sh",
+    "db:migrate": "cp .env.tazagroup backend/.env && cd backend && npx prisma migrate dev",
+    "db:reset": "cp .env.tazagroup backend/.env && cd backend && npx prisma migrate reset",
+    "db:seed": "cp .env.tazagroup backend/.env && cd backend && npx prisma db seed",
+    "db:studio": "cp .env.tazagroup backend/.env && cd backend && npx prisma studio",
+    "db:pushforce": "cp .env.tazagroup backend/.env && cd backend && npx prisma db push --force-reset",
+    "db:push": "cp .env.tazagroup backend/.env && cd backend && npx prisma db push",
+    "db:restore": "cp .env.tazagroup backend/.env && cd backend && bunx prisma generate && bun run prisma/restore.ts",
+    "db:backup": "cp .env.tazagroup backend/.env && cd backend && bun run prisma/backup.ts",
+    "kill:13000": "./scripts/kill-ports.sh 13000",
+    "kill:13001": "./scripts/kill-ports.sh 13001",
+    "kill:all": "./scripts/kill-ports.sh"
+  },
+  "devDependencies": {
+    "@types/validator": "^13.15.3",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "concurrently": "^9.2.0",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2",
+    "prisma": "^6.18.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "keywords": [
+    "bun",
+    "bunjs",
+    "fullstack",
+    "typescript",
+    "starter-kit",
+    "nextjs",
+    "nestjs",
+    "graphql",
+    "prisma",
+    "postgresql",
+    "redis",
+    "minio",
+    "docker",
+    "tailwindcss",
+    "apollo",
+    "enterprise",
+    "modern",
+    "fast"
+  ],
+  "author": "TazaGroup Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KataChannel/tazagroup.git"
+  },
+  "homepage": "https://github.com/KataChannel/tazagroup#readme",
+  "bugs": {
+    "url": "https://github.com/KataChannel/tazagroup/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@apollo/server": "^4.12.2",
+    "@heroicons/react": "^2.2.0",
+    "apollo-upload-client": "^19.0.0",
+    "cross-fetch": "^4.1.0",
+    "graphql-request": "^7.2.0",
+    "graphql-type-json": "^0.3.2",
+    "install": "^0.13.0",
+    "recharts": "^3.3.0",
+    "validator": "^13.15.20"
+  }
+}
