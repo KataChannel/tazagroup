@@ -11,7 +11,7 @@
     "menu": "./scripts/menu.sh",
     "dev": "./scripts/dev-menu.sh",
     "dev:both": "concurrently \"bun run dev:backend\" \"bun run dev:frontend\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",
-    "dev:backend": "cd backend && bun run dev",
+    "dev:backend": "cd backend && cp ../.env.tazagroup .env && bun run dev",
     "dev:frontend": "cd frontend && bun run dev",
     "deploy": "./scripts/deploy-complete.sh",
     "deploy:quick": "./scripts/quick-deploy-server.sh",

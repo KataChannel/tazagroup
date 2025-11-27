@@ -25,8 +25,13 @@ async function getHomepageRedirect(): Promise<string | null> {
         query: GET_HOMEPAGE_SETTINGS_QUERY,
       }),
       cache: 'no-store', // Don't cache redirect setting
+    }).catch((error) => {
+      console.error('Failed to fetch homepage settings:', error.message);
+      return null;
     });
 
+    if (!response) return null;
+    
     const { data } = await response.json();
     const settings = data?.publicWebsiteSettings || [];
     const homepageSetting = settings.find((s: any) => s.key === 'site.homepage_url');
