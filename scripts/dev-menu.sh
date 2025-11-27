@@ -111,7 +111,7 @@ while true; do
     case $choice in
         1)
             print_color $GREEN "🚀 Starting development (backend + frontend)..."
-            run_in_terminal "Dev - Backend + Frontend" "cd $(pwd) && bun run dev"
+            run_in_terminal "Dev - Backend + Frontend" "cd $(pwd) && bun run dev:both"
             ;;
         2)
             print_color $GREEN "🚀 Starting backend..."
